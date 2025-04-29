@@ -18,7 +18,3 @@ spring:
     url: jdbc:h2:mem:test
     username: sa
     password:
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:data-local.sql
