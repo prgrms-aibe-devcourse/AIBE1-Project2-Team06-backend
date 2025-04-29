@@ -1,4 +1,4 @@
-package com.eum.example.dto.request;
+package com.eum.example.model.dto.request;
 
 public record ExampleReqeust(
 		String param1,

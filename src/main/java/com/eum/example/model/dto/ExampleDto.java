@@ -1,4 +1,4 @@
-package com.eum.example.dto;
+package com.eum.example.model.dto;
 
 public record ExampleDto(
 		String data1,

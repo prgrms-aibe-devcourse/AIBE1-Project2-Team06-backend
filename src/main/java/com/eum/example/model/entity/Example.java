@@ -1,4 +1,4 @@
-package com.eum.example.domain;
+package com.eum.example.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

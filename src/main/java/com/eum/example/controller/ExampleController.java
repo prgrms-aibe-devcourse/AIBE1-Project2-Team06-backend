@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eum.example.dto.request.ExampleReqeust;
-import com.eum.example.dto.response.ExampleResponse;
+import com.eum.example.model.dto.request.ExampleReqeust;
+import com.eum.example.model.dto.response.ExampleResponse;
 import com.eum.example.service.ExampleService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ public class ExampleController {
 	private final ExampleService exampleService;
 
 	@PostMapping
-	public ResponseEntity<ExampleResponse> postExample(
+	public ResponseEntity<ExampleResponse> createExample(
 			@RequestBody ExampleReqeust reqeust
 	) {
 
 		return ResponseEntity.ok(
 				ExampleResponse.from(
-						exampleService.postExample(reqeust)
+						exampleService.addExample(reqeust)
 				)
 		);
 	}
