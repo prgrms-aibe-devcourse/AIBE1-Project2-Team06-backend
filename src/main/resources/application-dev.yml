@@ -18,3 +18,10 @@ spring:
     url: jdbc:h2:mem:test
     username: sa
     password:
+
+kakao:
+  client-id: ${KAKAO_CLEINT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: http://localhost:3000/auth/kakao/callback
+  token-uri: https://kauth.kakao.com/oauth/token
+  user-info-uri: https://kapi.kakao.com/v2/user/me
