@@ -2,7 +2,7 @@ package com.eum.review.service.impl;
 
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
-import com.eum.review.model.dto.response.UserReviewSummaryResponse;
+import com.eum.review.model.dto.response.UserReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import com.eum.review.service.PeerReviewService;
@@ -29,7 +29,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     }
 
     @Override
-    public UserReviewSummaryResponse calculateUserReviewScore(Long userId) {
+    public UserReviewScoreResponse calculateUserReviewScore(Long userId) {
         Double overallAvgScore = peerReviewRepository.calculateOverallAverageScore(userId);
 
         if (overallAvgScore == null) {overallAvgScore = 0.0;}
@@ -37,6 +37,6 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeUserId(userId);
         int reviewCount = reviews.size();
 
-        return UserReviewSummaryResponse.from(userId, overallAvgScore, reviewCount);
+        return UserReviewScoreResponse.from(userId, overallAvgScore, reviewCount);
     }
 }

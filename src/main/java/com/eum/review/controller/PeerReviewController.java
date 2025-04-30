@@ -2,7 +2,7 @@ package com.eum.review.controller;
 
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
-import com.eum.review.model.dto.response.UserReviewSummaryResponse;
+import com.eum.review.model.dto.response.UserReviewScoreResponse;
 import com.eum.review.service.PeerReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,8 +24,8 @@ public class PeerReviewController {
     }
 
     @GetMapping("/user/{userId}/score")
-    public ResponseEntity<UserReviewSummaryResponse> getUserReviewScore(@PathVariable Long userId) {
-        UserReviewSummaryResponse response = peerReviewService.calculateUserReviewScore(userId);
+    public ResponseEntity<UserReviewScoreResponse> getUserReviewScore(@PathVariable Long userId) {
+        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(userId);
         return ResponseEntity.ok(response);
     }
 }

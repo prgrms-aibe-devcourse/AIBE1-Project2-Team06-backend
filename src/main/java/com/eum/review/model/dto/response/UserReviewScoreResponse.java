@@ -1,15 +1,15 @@
 package com.eum.review.model.dto.response;
 
-public record UserReviewSummaryResponse(
+public record UserReviewScoreResponse(
         Long userId,
         Double overallAverageScore,
         Integer reviewCount
 ) {
-    public static UserReviewSummaryResponse from(
+    public static UserReviewScoreResponse from(
             Long userId,
             Double overallAverageScore,
             Integer reviewCount
     ) {
-        return new UserReviewSummaryResponse(userId, overallAverageScore, reviewCount);
+        return new UserReviewScoreResponse(userId, overallAverageScore, reviewCount);
     }
 }
