@@ -1,10 +1,7 @@
 package com.eum.project.model.dto.response;
 
 import com.eum.project.model.entity.Project;
-import com.eum.project.model.entity.enumerated.Period;
-import com.eum.project.model.entity.enumerated.ProgressMethod;
-import com.eum.project.model.entity.enumerated.RecruitType;
-import com.eum.project.model.entity.enumerated.Status;
+import com.eum.project.model.entity.enumerated.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +17,7 @@ public record ProjectResponse(
         ProgressMethod progressMethod,
         Period period,
         LocalDate deadline,
-        String linkType,
+        LinkType linkType,
         String link,
         Status status,
         LocalDateTime createdAt,
@@ -40,25 +37,25 @@ public record ProjectResponse(
 
     // Entity와 기술 스택 정보를 함께 Response로 변환하는 정적 메서드
     public static ProjectResponse from(
-            Project entity,
+            Project project,
             List<TechStackResponse> techStacks,
             List<PositionResponse> positions) {
 
         return new ProjectResponse(
-                entity.getId(),
-                entity.getUserId(),
-                entity.getProjectTitle(),
-                entity.getProjectContent(),
-                entity.getRecruitType(),
-                entity.getRecruitMember(),
-                entity.getProgressMethod(),
-                entity.getPeriod(),
-                entity.getDeadline(),
-                entity.getLinkType(),
-                entity.getLink(),
-                entity.getStatus(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt(),
+                project.getId(),
+                project.getUserId(),
+                project.getTitle(),
+                project.getContent(),
+                project.getRecruitType(),
+                project.getRecruitMember(),
+                project.getProgressMethod(),
+                project.getPeriod(),
+                project.getDeadline(),
+                project.getLinkType(),
+                project.getLink(),
+                project.getStatus(),
+                project.getCreatedAt(),
+                project.getUpdatedAt(),
                 techStacks,
                 positions
         );

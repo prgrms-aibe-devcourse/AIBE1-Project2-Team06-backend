@@ -15,13 +15,13 @@ public class TechStack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String stackName;
+    private String name;
 
     public static TechStack of(
-            String stackName
+            String name
     ){
         TechStack techStackEntity = new TechStack();
-        techStackEntity.stackName = stackName;
+        techStackEntity.name = name;
         return techStackEntity;
     }
 }

@@ -15,13 +15,13 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String positionName;
+    private String name;
 
     public static Position of(
-            String positionName
+            String name
     ){
         Position position = new Position();
-        position.positionName = positionName;
+        position.name = name;
         return position;
     }
 }

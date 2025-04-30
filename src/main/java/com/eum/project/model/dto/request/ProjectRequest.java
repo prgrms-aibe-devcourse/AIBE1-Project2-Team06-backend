@@ -1,6 +1,7 @@
 package com.eum.project.model.dto.request;
 
 import com.eum.project.model.entity.Project;
+import com.eum.project.model.entity.enumerated.LinkType;
 import com.eum.project.model.entity.enumerated.Period;
 import com.eum.project.model.entity.enumerated.ProgressMethod;
 import com.eum.project.model.entity.enumerated.RecruitType;
@@ -10,14 +11,14 @@ import java.util.List;
 
 public record ProjectRequest(
         Long userId,
-        String projectTitle,
-        String projectContent,
+        String title,
+        String content,
         RecruitType recruitType,
         Integer recruitMember,
         ProgressMethod progressMethod,
         Period period,
         LocalDate deadline,
-        String linkType,
+        LinkType linkType,
         String link,
         List<Long> techStackIds,
         List<Long> positionIds
@@ -26,8 +27,8 @@ public record ProjectRequest(
     public Project toEntity() {
         return Project.of(
                 userId,
-                projectTitle,
-                projectContent,
+                title,
+                content,
                 recruitType,
                 recruitMember,
                 progressMethod,

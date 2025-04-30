@@ -1,9 +1,6 @@
 package com.eum.project.model.entity;
 
-import com.eum.project.model.entity.enumerated.Period;
-import com.eum.project.model.entity.enumerated.ProgressMethod;
-import com.eum.project.model.entity.enumerated.RecruitType;
-import com.eum.project.model.entity.enumerated.Status;
+import com.eum.project.model.entity.enumerated.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,10 +25,10 @@ public class Project {
     private Long userId; // 모집자 ID
 
     @Column(nullable = false , length = 255)
-    private String projectTitle; // 게시물 제목
+    private String title; // 게시물 제목
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String projectContent; // 게시물 내용
+    private String content; // 게시물 내용
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -52,7 +49,8 @@ public class Project {
     private LocalDate deadline; // 게시물 마감일
 
     @Column(nullable = false)
-    private String linkType;
+    @Enumerated(EnumType.STRING)
+    private LinkType linkType;
 
     @Column(nullable = false)
     private String link;
@@ -73,21 +71,21 @@ public class Project {
     // 정적 팩토리 메서드
     public static Project of(
             Long userId,
-            String projectTitle,
-            String projectContent,
+            String title,
+            String content,
             RecruitType recruitType,
             Integer recruitMember,
             ProgressMethod progressMethod,
             Period period,
             LocalDate deadline,
-            String linkType,
+            LinkType linkType,
             String link
             ) {
 
         Project project = new Project();
         project.userId = userId;
-        project.projectTitle = projectTitle;
-        project.projectContent = projectContent;
+        project.title = title;
+        project.content = content;
         project.recruitType = recruitType;
         project.recruitMember = recruitMember;
         project.progressMethod = progressMethod;
