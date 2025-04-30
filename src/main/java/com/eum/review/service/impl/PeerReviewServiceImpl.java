@@ -2,6 +2,7 @@ package com.eum.review.service.impl;
 
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
+import com.eum.review.model.dto.response.UserReviewCommentResponse;
 import com.eum.review.model.dto.response.UserReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +40,13 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         int reviewCount = reviews.size();
 
         return UserReviewScoreResponse.from(userId, overallAvgScore, reviewCount);
+    }
+
+    @Override
+    public List<UserReviewCommentResponse> getUserReviewComments(Long userId) {
+        List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeUserId(userId);
+        return reviews.stream()
+                .map(UserReviewCommentResponse::from)
+                .collect(Collectors.toList());
     }
 }
