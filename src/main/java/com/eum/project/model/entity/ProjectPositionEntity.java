@@ -16,11 +16,11 @@ public class ProjectPositionEntity {
     private Long id;
 
     @ManyToOne
-    @Column(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false)
     private ProjectEntity project;
 
     @ManyToOne
-    @Column(name = "position_id", nullable = false)
+    @JoinColumn(name = "position_id", nullable = false)
     private PositionEntity position;
 
     public static ProjectPositionEntity of(ProjectEntity project, PositionEntity position) {

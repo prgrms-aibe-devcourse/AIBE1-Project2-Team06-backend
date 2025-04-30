@@ -17,11 +17,11 @@ public class ProjectTechStackEntity {
     private Long id;
 
     @ManyToOne
-    @Column(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false)
     private ProjectEntity project;
 
     @ManyToOne
-    @Column(name = "techStack_id", nullable = false)
+    @JoinColumn(name = "techStack_id", nullable = false)
     private TechStackEntity techStack;
 
     public static ProjectTechStackEntity of(ProjectEntity project, TechStackEntity techStack) {
