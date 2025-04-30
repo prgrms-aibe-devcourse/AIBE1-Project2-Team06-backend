@@ -18,3 +18,10 @@ spring:
     url: jdbc:h2:mem:test
     username: sa
     password:
+
+kakao:
+  client-id: ${KAKAO_CLEINT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT-URI}
+  token-uri: ${KAKAO_TOKEN_URI}
+  user-info-uri: ${KAKAO_USER_INFO_URI}
