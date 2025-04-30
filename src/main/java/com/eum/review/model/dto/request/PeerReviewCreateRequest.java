@@ -2,7 +2,7 @@ package com.eum.review.model.dto.request;
 
 import com.eum.review.model.entity.PeerReview;
 
-public record CreatePeerReviewRequest(
+public record PeerReviewCreateRequest(
         Long projectId,
         Long revieweeUserId,
         Integer collaborationScore,
