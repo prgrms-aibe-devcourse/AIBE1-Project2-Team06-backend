@@ -1,16 +1,15 @@
-package com.eum.project.model.dto.request;
+package com.eum.post.model.dto.request;
 
-import com.eum.project.model.entity.Project;
-import com.eum.project.model.entity.enumerated.LinkType;
-import com.eum.project.model.entity.enumerated.Period;
-import com.eum.project.model.entity.enumerated.ProgressMethod;
-import com.eum.project.model.entity.enumerated.RecruitType;
+import com.eum.post.model.entity.Post;
+import com.eum.post.model.entity.enumerated.LinkType;
+import com.eum.post.model.entity.enumerated.Period;
+import com.eum.post.model.entity.enumerated.ProgressMethod;
+import com.eum.post.model.entity.enumerated.RecruitType;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record ProjectRequest(
-        Long userId,
+public record PostRequest(
         String title,
         String content,
         RecruitType recruitType,
@@ -23,9 +22,10 @@ public record ProjectRequest(
         List<Long> techStackIds,
         List<Long> positionIds
 ) {
-    // Entity로 변환하는 메서드
-    public Project toEntity() {
-        return Project.of(
+
+    // userId는 인증된 유저에서 따로 주입
+    public Post toEntity(Long userId) {
+        return Post.of(
                 userId,
                 title,
                 content,

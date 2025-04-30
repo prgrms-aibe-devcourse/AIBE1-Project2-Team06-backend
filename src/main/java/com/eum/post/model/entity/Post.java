@@ -1,6 +1,6 @@
-package com.eum.project.model.entity;
+package com.eum.post.model.entity;
 
-import com.eum.project.model.entity.enumerated.*;
+import com.eum.post.model.entity.enumerated.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "Project")
+@Table(name = "Post")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Project {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,7 +69,7 @@ public class Project {
 
 
     // 정적 팩토리 메서드
-    public static Project of(
+    public static Post of(
             Long userId,
             String title,
             String content,
@@ -82,19 +82,19 @@ public class Project {
             String link
             ) {
 
-        Project project = new Project();
-        project.userId = userId;
-        project.title = title;
-        project.content = content;
-        project.recruitType = recruitType;
-        project.recruitMember = recruitMember;
-        project.progressMethod = progressMethod;
-        project.period = period;
-        project.deadline = deadline;
-        project.status = Status.RECRUITING; // 기본값 설정
-        project.linkType = linkType;
-        project.link = link;
+        Post post = new Post();
+        post.userId = userId;
+        post.title = title;
+        post.content = content;
+        post.recruitType = recruitType;
+        post.recruitMember = recruitMember;
+        post.progressMethod = progressMethod;
+        post.period = period;
+        post.deadline = deadline;
+        post.status = Status.RECRUITING; // 기본값 설정
+        post.linkType = linkType;
+        post.link = link;
 
-        return project;
+        return post;
     }
 }

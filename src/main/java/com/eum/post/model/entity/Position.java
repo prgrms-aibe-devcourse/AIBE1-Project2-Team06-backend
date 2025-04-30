@@ -1,4 +1,4 @@
-package com.eum.project.model.entity;
+package com.eum.post.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

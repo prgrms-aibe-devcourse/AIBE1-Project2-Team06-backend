@@ -1,4 +1,4 @@
-package com.eum.project.model.entity.enumerated;
+package com.eum.post.model.entity.enumerated;
 
 public enum Period {
     TDB, MONTH_1, MONTH_2, MONTH_3,
