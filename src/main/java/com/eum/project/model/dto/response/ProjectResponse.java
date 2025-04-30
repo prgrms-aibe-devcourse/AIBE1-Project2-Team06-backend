@@ -1,7 +1,6 @@
 package com.eum.project.model.dto.response;
 
-import com.eum.project.model.entity.ProjectEntity;
-import org.hibernate.dialect.function.ListaggGroupConcatEmulation;
+import com.eum.project.model.entity.Project;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,14 +11,14 @@ public record ProjectResponse(
         Long userId,
         String projectTitle,
         String projectContent,
-        ProjectEntity.RecruitType recruitType,
+        Project.RecruitType recruitType,
         Integer recruitMember,
-        ProjectEntity.ProgressMethod progressMethod,
-        ProjectEntity.Period period,
+        Project.ProgressMethod progressMethod,
+        Project.Period period,
         LocalDate deadline,
         String linkType,
         String link,
-        ProjectEntity.Status status,
+        Project.Status status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         List<TechStackResponse> techStacks,
@@ -37,7 +36,7 @@ public record ProjectResponse(
 
     // Entity와 기술 스택 정보를 함께 Response로 변환하는 정적 메서드
     public static ProjectResponse from(
-            ProjectEntity entity,
+            Project entity,
             List<TechStackResponse> techStacks,
             List<PositionResponse> positions) {
 

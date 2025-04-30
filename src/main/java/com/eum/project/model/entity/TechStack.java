@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "TechStack")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TechStackEntity {
+public class TechStack {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +17,10 @@ public class TechStackEntity {
     @Column(nullable = false)
     private String stackName;
 
-    public static TechStackEntity of(
+    public static TechStack of(
             String stackName
     ){
-        TechStackEntity techStackEntity = new TechStackEntity();
+        TechStack techStackEntity = new TechStack();
         techStackEntity.stackName = stackName;
         return techStackEntity;
     }

@@ -1,5 +1,9 @@
 package com.eum.project.model.entity;
 
+import com.eum.project.model.entity.enumerated.Period;
+import com.eum.project.model.entity.enumerated.ProgressMethod;
+import com.eum.project.model.entity.enumerated.RecruitType;
+import com.eum.project.model.entity.enumerated.Status;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,7 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Project")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProjectEntity {
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,32 +69,9 @@ public class ProjectEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt; // 게시물 수정날짜
 
-    // Enum 정의
-    public enum RecruitType {
-        STUDY,
-        PROJECT;
-    }
-
-    public enum ProgressMethod {
-        ONLINE,
-        OFFLINE,
-        ALL;
-    }
-
-    public enum Period {
-        TDB, MONTH_1, MONTH_2, MONTH_3,
-        MONTH_4, MONTH_5, MONTH_6, LONG_TERM;
-    }
-
-    public enum Status {
-        RECRUITING,
-        CLOSED,
-        ONGOING,
-        COMPLETED;
-    }
 
     // 정적 팩토리 메서드
-    public static ProjectEntity of(
+    public static Project of(
             Long userId,
             String projectTitle,
             String projectContent,
@@ -103,7 +84,7 @@ public class ProjectEntity {
             String link
             ) {
 
-        ProjectEntity project = new ProjectEntity();
+        Project project = new Project();
         project.userId = userId;
         project.projectTitle = projectTitle;
         project.projectContent = projectContent;

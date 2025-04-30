@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "Project_Position")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProjectPositionEntity {
+public class ProjectPosition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,14 +17,14 @@ public class ProjectPositionEntity {
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    private ProjectEntity project;
+    private Project project;
 
     @ManyToOne
     @JoinColumn(name = "position_id", nullable = false)
-    private PositionEntity position;
+    private Position position;
 
-    public static ProjectPositionEntity of(ProjectEntity project, PositionEntity position) {
-        ProjectPositionEntity projectPositionEntity = new ProjectPositionEntity();
+    public static ProjectPosition of(Project project, Position position) {
+        ProjectPosition projectPositionEntity = new ProjectPosition();
         projectPositionEntity.project = project;
         projectPositionEntity.position = position;
         return projectPositionEntity;

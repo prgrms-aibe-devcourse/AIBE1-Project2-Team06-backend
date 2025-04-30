@@ -1,7 +1,6 @@
 package com.eum.project.model.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.Enabled;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "Project_TechStack")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProjectTechStackEntity {
+public class ProjectTechStack {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,14 +17,14 @@ public class ProjectTechStackEntity {
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    private ProjectEntity project;
+    private Project project;
 
     @ManyToOne
     @JoinColumn(name = "techStack_id", nullable = false)
-    private TechStackEntity techStack;
+    private TechStack techStack;
 
-    public static ProjectTechStackEntity of(ProjectEntity project, TechStackEntity techStack) {
-        ProjectTechStackEntity projectTechStackEntity = new ProjectTechStackEntity();
+    public static ProjectTechStack of(Project project, TechStack techStack) {
+        ProjectTechStack projectTechStackEntity = new ProjectTechStack();
         projectTechStackEntity.project = project;
         projectTechStackEntity.techStack = techStack;
         return projectTechStackEntity;

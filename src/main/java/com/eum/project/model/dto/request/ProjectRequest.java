@@ -1,6 +1,9 @@
 package com.eum.project.model.dto.request;
 
-import com.eum.project.model.entity.ProjectEntity;
+import com.eum.project.model.entity.Project;
+import com.eum.project.model.entity.enumerated.Period;
+import com.eum.project.model.entity.enumerated.ProgressMethod;
+import com.eum.project.model.entity.enumerated.RecruitType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,10 +12,10 @@ public record ProjectRequest(
         Long userId,
         String projectTitle,
         String projectContent,
-        ProjectEntity.RecruitType recruitType,
+        RecruitType recruitType,
         Integer recruitMember,
-        ProjectEntity.ProgressMethod progressMethod,
-        ProjectEntity.Period period,
+        ProgressMethod progressMethod,
+        Period period,
         LocalDate deadline,
         String linkType,
         String link,
@@ -20,8 +23,8 @@ public record ProjectRequest(
         List<Long> positionIds
 ) {
     // Entity로 변환하는 메서드
-    public ProjectEntity toEntity() {
-        return ProjectEntity.of(
+    public Project toEntity() {
+        return Project.of(
                 userId,
                 projectTitle,
                 projectContent,

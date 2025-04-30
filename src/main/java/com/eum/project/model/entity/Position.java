@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "Position")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PositionEntity {
+public class Position {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +17,10 @@ public class PositionEntity {
     @Column(nullable = false)
     private String positionName;
 
-    public static PositionEntity of(
+    public static Position of(
             String positionName
     ){
-        PositionEntity position = new PositionEntity();
+        Position position = new Position();
         position.positionName = positionName;
         return position;
     }
