@@ -1,6 +1,10 @@
 package com.eum.project.model.dto.response;
 
 import com.eum.project.model.entity.Project;
+import com.eum.project.model.entity.enumerated.Period;
+import com.eum.project.model.entity.enumerated.ProgressMethod;
+import com.eum.project.model.entity.enumerated.RecruitType;
+import com.eum.project.model.entity.enumerated.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,14 +15,14 @@ public record ProjectResponse(
         Long userId,
         String projectTitle,
         String projectContent,
-        Project.RecruitType recruitType,
+        RecruitType recruitType,
         Integer recruitMember,
-        Project.ProgressMethod progressMethod,
-        Project.Period period,
+        ProgressMethod progressMethod,
+        Period period,
         LocalDate deadline,
         String linkType,
         String link,
-        Project.Status status,
+        Status status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         List<TechStackResponse> techStacks,
