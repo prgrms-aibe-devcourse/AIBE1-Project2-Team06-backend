@@ -20,49 +20,49 @@ public class ProjectEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 게시물 ID
 
-    @Column(name = "user_id", nullable = false)
+    @Column(nullable = false)
     private Long userId; // 모집자 ID
 
-    @Column(name = "project_title", nullable = false , length = 255)
+    @Column(nullable = false , length = 255)
     private String projectTitle; // 게시물 제목
 
-    @Column(name = "project_content", nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String projectContent; // 게시물 내용
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "recruit_type", nullable = false)
+    @Column(nullable = false)
     private RecruitType recruitType; // 게시물이 스터디, 프로젝트
 
-    @Column(name = "recruit_member", nullable = false)
+    @Column(nullable = false)
     private Integer recruitMember; // 모집 인원
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "progress_method", nullable = false)
+    @Column(nullable = false)
     private ProgressMethod progressMethod; // 진행 방식 (온라인, 오프라인, 온/오프라인)
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "period", nullable = false)
+    @Column(nullable = false)
     private Period period; // 게시물 -> 프로젝트 or 스터디 기간
 
-    @Column(name = "deadline", nullable = false)
+    @Column(nullable = false)
     private LocalDate deadline; // 게시물 마감일
 
-    @Column(name = "link_type", nullable = false)
+    @Column(nullable = false)
     private String linkType;
 
-    @Column(name = "link", nullable = false)
+    @Column(nullable = false)
     private String link;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private Status status = Status.RECRUITING; // 게시물에 대한 상태 (모집중, 마감)
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt; // 게시물 생성날짜
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updatedAt; // 게시물 수정날짜
 
     // Enum 정의
