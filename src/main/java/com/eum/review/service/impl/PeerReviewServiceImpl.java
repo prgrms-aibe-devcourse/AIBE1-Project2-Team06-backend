@@ -9,6 +9,7 @@ import com.eum.review.model.repository.PeerReviewRepository;
 import com.eum.review.service.PeerReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class PeerReviewServiceImpl implements PeerReviewService {
     private final PeerReviewRepository peerReviewRepository;
 
+    @Transactional
     @Override
     public PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerUserId) {
         if (reviewerUserId.equals(request.revieweeUserId())){
@@ -30,6 +32,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         return PeerReviewResponse.from(savedReview);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserReviewScoreResponse calculateUserReviewScore(Long userId) {
         Double overallAvgScore = peerReviewRepository.calculateOverallAverageScore(userId);
@@ -42,6 +45,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         return UserReviewScoreResponse.from(userId, overallAvgScore, reviewCount);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<UserReviewCommentResponse> getUserReviewComments(Long userId) {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeUserId(userId);
