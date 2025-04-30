@@ -1,4 +1,4 @@
-package com.eum.post.model.repository;
+package com.eum.global.model.repository;
 
 import com.eum.global.model.entity.TechStack;
 import org.springframework.data.jpa.repository.JpaRepository;
