@@ -21,32 +21,31 @@ public class PeerReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "reviewer_user_id", nullable = false)
+    @Column(nullable = false)
     private Long reviewerUserId;
 
-    @Column(name = "reviewee_user_id", nullable = false)
+    @Column(nullable = false)
     private Long revieweeUserId;
 
-    @Column(name = "project_id", nullable = false)
+    @Column(nullable = false)
     private Long projectId;
 
-    @Column(name = "collaboration_score", nullable = false)
+    @Column(nullable = false)
     private Integer collaborationScore;
 
-    @Column(name = "technical_score", nullable = false)
+    @Column(nullable = false)
     private Integer technicalScore;
 
-    @Column(name = "work_again_score", nullable = false)
+    @Column(nullable = false)
     private Integer workAgainScore;
 
-    @Column(name = "average_score", nullable = false)
+    @Column(nullable = false)
     private Double averageScore;
 
-    @Column(name = "review_comment")
     private String reviewComment;
 
     @CreationTimestamp
-    @Column(name = "review_date", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime reviewDate;
 
 
