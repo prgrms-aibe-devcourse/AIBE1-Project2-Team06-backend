@@ -1,5 +1,6 @@
 package com.eum.post.model.entity;
 
+import com.eum.global.model.entity.TechStack;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

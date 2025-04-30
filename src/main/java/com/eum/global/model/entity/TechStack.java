@@ -1,4 +1,4 @@
-package com.eum.post.model.entity;
+package com.eum.global.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "Position")
+@Table(name = "TechStack")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Position {
+public class TechStack {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +17,12 @@ public class Position {
     @Column(nullable = false)
     private String name;
 
-    public static Position of(
+    public static TechStack of(
             String name
     ){
-        Position position = new Position();
-        position.name = name;
-        return position;
+        TechStack techStackEntity = new TechStack();
+        techStackEntity.name = name;
+        return techStackEntity;
     }
 }
+
