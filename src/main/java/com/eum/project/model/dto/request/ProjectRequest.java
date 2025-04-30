@@ -22,8 +22,8 @@ public record ProjectRequest(
         LocalDate deadline,
         String linkType,
         String link,
-        // 선택적 필드
-        List<Long> techStackIds
+        List<Long> techStackIds,
+        List<Long> positionIds
 ) {
     // Entity로 변환하는 메서드
     public ProjectEntity toEntity() {
