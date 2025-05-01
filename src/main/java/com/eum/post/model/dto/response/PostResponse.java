@@ -1,7 +1,6 @@
 package com.eum.post.model.dto.response;
 
 import com.eum.post.model.dto.PostDto;
-import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.*;
 
 import java.time.LocalDate;
@@ -27,16 +26,13 @@ public record PostResponse(
         List<PositionResponse> positions
 ) {
 
-    public record TechStackResponse(Long id, String name) {}
-    public record PositionResponse(Long id, String name) {}
-
     public static PostResponse from(PostDto dto) {
         List<TechStackResponse> techStackResponses = dto.techStacks().stream()
-                .map(ts -> new TechStackResponse(ts.id(), ts.name()))
+                .map(TechStackResponse::from)
                 .toList();
 
         List<PositionResponse> positionResponses = dto.positions().stream()
-                .map(p -> new PositionResponse(p.id(), p.name()))
+                .map(PositionResponse::from)
                 .toList();
 
         return new PostResponse(

@@ -25,8 +25,6 @@ public record PostDto(
         List<TechStackDto> techStacks,
         List<PositionDto> positions
 ) {
-    public record TechStackDto(Long id, String name) {}
-    public record PositionDto(Long id, String name) {}
 
     public static PostDto from(Post post, List<TechStackDto> techStacks, List<PositionDto> positions) {
         return new PostDto(
