@@ -1,6 +1,6 @@
-package com.eum.project.model.repository;
+package com.eum.global.model.repository;
 
-import com.eum.project.model.entity.TechStack;
+import com.eum.global.model.entity.TechStack;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,6 @@
-package com.eum.project.model.entity;
+package com.eum.post.model.entity;
 
-import com.eum.project.model.entity.enumerated.Period;
-import com.eum.project.model.entity.enumerated.ProgressMethod;
-import com.eum.project.model.entity.enumerated.RecruitType;
-import com.eum.project.model.entity.enumerated.Status;
+import com.eum.post.model.entity.enumerated.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,9 +13,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "Project")
+@Table(name = "Post")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Project {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +25,10 @@ public class Project {
     private Long userId; // 모집자 ID
 
     @Column(nullable = false , length = 255)
-    private String projectTitle; // 게시물 제목
+    private String title; // 게시물 제목
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String projectContent; // 게시물 내용
+    private String content; // 게시물 내용
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -52,7 +49,8 @@ public class Project {
     private LocalDate deadline; // 게시물 마감일
 
     @Column(nullable = false)
-    private String linkType;
+    @Enumerated(EnumType.STRING)
+    private LinkType linkType;
 
     @Column(nullable = false)
     private String link;
@@ -71,32 +69,32 @@ public class Project {
 
 
     // 정적 팩토리 메서드
-    public static Project of(
+    public static Post of(
             Long userId,
-            String projectTitle,
-            String projectContent,
+            String title,
+            String content,
             RecruitType recruitType,
             Integer recruitMember,
             ProgressMethod progressMethod,
             Period period,
             LocalDate deadline,
-            String linkType,
+            LinkType linkType,
             String link
             ) {
 
-        Project project = new Project();
-        project.userId = userId;
-        project.projectTitle = projectTitle;
-        project.projectContent = projectContent;
-        project.recruitType = recruitType;
-        project.recruitMember = recruitMember;
-        project.progressMethod = progressMethod;
-        project.period = period;
-        project.deadline = deadline;
-        project.status = Status.RECRUITING; // 기본값 설정
-        project.linkType = linkType;
-        project.link = link;
+        Post post = new Post();
+        post.userId = userId;
+        post.title = title;
+        post.content = content;
+        post.recruitType = recruitType;
+        post.recruitMember = recruitMember;
+        post.progressMethod = progressMethod;
+        post.period = period;
+        post.deadline = deadline;
+        post.status = Status.RECRUITING; // 기본값 설정
+        post.linkType = linkType;
+        post.link = link;
 
-        return project;
+        return post;
     }
 }
