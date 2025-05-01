@@ -6,7 +6,7 @@ import com.eum.post.model.dto.TechStackDto;
 public record PostTechStackResponse(
         Long id,
         Long postId,
-        Long teckStackId,
+        Long techStackId,
         String name
 ) {
     public static PostTechStackResponse from(PostTechStackDto dto) {

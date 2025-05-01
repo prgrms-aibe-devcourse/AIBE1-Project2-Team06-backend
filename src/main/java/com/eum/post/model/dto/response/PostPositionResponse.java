@@ -9,8 +9,8 @@ public record PostPositionResponse(
         Long positionId,
         String name
 ) {
-    public static PostPositionDto from(PostPositionDto dto) {
-        return new PostPositionDto(
+    public static PostPositionResponse from(PostPositionDto dto) {
+        return new PostPositionResponse(
                 dto.id(),
                 dto.postId(),
                 dto.positionId(),
