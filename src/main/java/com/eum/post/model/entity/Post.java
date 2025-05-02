@@ -67,6 +67,9 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime updatedAt; // 게시물 수정날짜
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CultureFit cultureFit;
 
     // 정적 팩토리 메서드
     public static Post of(
@@ -79,7 +82,8 @@ public class Post {
             Period period,
             LocalDate deadline,
             LinkType linkType,
-            String link
+            String link,
+            CultureFit cultureFit
             ) {
 
         Post post = new Post();
@@ -94,8 +98,14 @@ public class Post {
         post.status = Status.RECRUITING; // 기본값 설정
         post.linkType = linkType;
         post.link = link;
+        post.cultureFit = cultureFit; // 기본값 자율형
 
         return post;
+    }
+
+    // 컬처핏 업데이트 메서드
+    public void updateCultureFit(CultureFit cultureFit) {
+        this.cultureFit = cultureFit;
     }
 
     public void updateStatus(Status newStatus) {
