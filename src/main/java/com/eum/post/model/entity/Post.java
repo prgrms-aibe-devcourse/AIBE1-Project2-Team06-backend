@@ -97,4 +97,8 @@ public class Post {
 
         return post;
     }
+
+    public void updateStatus(Status newStatus) {
+        this.status = newStatus;
+    }
 }
