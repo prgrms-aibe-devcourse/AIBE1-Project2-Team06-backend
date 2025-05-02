@@ -8,7 +8,7 @@ import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.Status;
 import com.eum.post.model.repository.ProjectRepository;
 import com.eum.post.sevice.PortfolioService;
-import com.eum.post.sevice.ProjectService;
+import com.eum.post.sevice.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProjectServiceImpl implements ProjectService {
+public class PostServiceImpl implements PostService {
 
     private final ProjectRepository projectRepository;
     private final PortfolioService portfolioService;
