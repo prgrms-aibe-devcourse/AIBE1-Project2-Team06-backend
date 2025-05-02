@@ -4,6 +4,10 @@ import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +29,35 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
         PostResponse response = postService.findByPostId(postId);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 게시글 목록 조회 API
+     *
+     * @param page 페이지 번호 (0부터 시작)
+     * @param size 페이지 크기
+     * @param sort 정렬 기준 (예: createdAt,desc)
+     * @return 게시글 목록
+     */
+    @GetMapping
+    public ResponseEntity<Page<PostResponse>> getAllPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt,desc") String sort) {
+
+        // 정렬 정보 파싱
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc") ?
+                Sort.Direction.ASC : Sort.Direction.DESC;
+
+        // 페이지네이션 및 정렬 객체 생성
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+
+        // 서비스 호출
+        Page<PostResponse> responses = postService.findByAllPosts(pageable);
+
+        return ResponseEntity.ok(responses);
     }
 
     /**

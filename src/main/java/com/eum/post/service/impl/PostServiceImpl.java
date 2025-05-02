@@ -95,8 +95,8 @@ public class PostServiceImpl implements PostService{
 
         return result;
     }
-    // 포지션 저장 메소드
 
+    // 포지션 저장 메소드
     private List<PositionDto> savePositions(Post post, List<Long> positionIds) {
         List<PositionDto> result = new ArrayList<>();
 
@@ -148,6 +148,28 @@ public class PostServiceImpl implements PostService{
         // DTO 변환 및 반환
         PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
         return PostResponse.from(postDto);
+    }
+
+    /**
+     * 전체 게시글 조회
+     *
+     * @param pageable
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponse> findByAllPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        return posts.map(post -> {
+            // 각 게시글에 연결된 기술 스택과 포지션 조회
+            List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
+            List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
+
+            // DTO 변환
+            PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
+            return PostResponse.from(postDto);
+        });
     }
 
     //merge 된 부분
