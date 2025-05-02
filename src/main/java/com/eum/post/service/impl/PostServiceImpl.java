@@ -16,6 +16,7 @@ import com.eum.post.model.repository.PostPositionRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.post.model.repository.PostTechStackRepository;
 import com.eum.post.service.PostService;
+import com.eum.post.validation.ValidatePostRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,11 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +45,8 @@ public class PostServiceImpl implements PostService{
     @Override
     @Transactional
     public PostResponse create(PostRequest postRequest, Long userId) {
+        ValidatePostRequest.validatePostRequest(postRequest);
+
         try{
             // Post 엔티티 생성 및 저장
             Post post = postRequest.toEntity(userId);
@@ -55,10 +61,10 @@ public class PostServiceImpl implements PostService{
             // 4. DTO 변환 및 반환
             PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
             return PostResponse.from(postDto);
-        } catch (EntityNotFoundException e) {
+        } catch (Exception e) {
             // 예외 발생 시 트랜잭션이 롤백됨
             log.error("게시글 생성 중 오류 발생: {}", e.getMessage(), e);
-            throw e; // 글로벌 예외 핸들러에서 처리될 수 있도록 예외 다시 던짐
+            throw e;
         }
     }
 
