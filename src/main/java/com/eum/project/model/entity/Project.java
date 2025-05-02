@@ -99,4 +99,8 @@ public class Project {
 
         return project;
     }
+
+    public void updateStatus(Status newStatus) {
+        this.status = newStatus;
+    }
 }
