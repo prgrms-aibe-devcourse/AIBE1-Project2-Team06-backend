@@ -1,4 +1,4 @@
-package com.eum.post.sevice;
+package com.eum.post.service;
 
 import com.eum.post.model.dto.PortfolioDto;
 

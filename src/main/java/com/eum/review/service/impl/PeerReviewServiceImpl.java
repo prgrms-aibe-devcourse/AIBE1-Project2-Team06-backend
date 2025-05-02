@@ -1,7 +1,7 @@
 package com.eum.review.service.impl;
 
 import com.eum.post.model.entity.Post;
-import com.eum.post.model.repository.ProjectRepository;
+import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
 import com.eum.review.model.dto.response.UserReviewCommentResponse;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PeerReviewServiceImpl implements PeerReviewService {
     private final PeerReviewRepository peerReviewRepository;
-    private final ProjectRepository projectRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     @Override
@@ -30,7 +30,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
             throw new IllegalArgumentException("자기 자신에 대한 리뷰는 작성할 수 없습니다.");
         }
 
-        Post post = projectRepository.findById(request.postId())
+        Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new EntityNotFoundException("Post가 존재하지 않습니다. ID : " + request.postId()));
 
         PeerReview peerReview = request.toEntity(reviewerUserId, post);

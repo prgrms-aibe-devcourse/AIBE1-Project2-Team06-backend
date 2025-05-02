@@ -1,10 +1,7 @@
 package com.eum.post.model.dto.request;
 
 import com.eum.post.model.entity.Post;
-import com.eum.post.model.entity.enumerated.LinkType;
-import com.eum.post.model.entity.enumerated.Period;
-import com.eum.post.model.entity.enumerated.ProgressMethod;
-import com.eum.post.model.entity.enumerated.RecruitType;
+import com.eum.post.model.entity.enumerated.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +16,7 @@ public record PostRequest(
         LocalDate deadline,
         LinkType linkType,
         String link,
+        CultureFit cultureFit,
         List<Long> techStackIds,
         List<Long> positionIds
 ) {
@@ -35,7 +33,8 @@ public record PostRequest(
                 period,
                 deadline,
                 linkType,
-                link
+                link,
+                cultureFit
         );
     }
 }
