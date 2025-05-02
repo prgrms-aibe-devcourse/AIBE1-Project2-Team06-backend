@@ -1,12 +1,13 @@
 package com.eum.review.model.dto;
 
+import com.eum.post.model.entity.Post;
 import com.eum.review.model.entity.PeerReview;
 
 public record PeerReviewDto(
         Integer id,
         Long reviewerUserId,
         Long revieweeUserId,
-        Long postId,
+        Post post,
         Integer collaborationScore,
         Integer technicalScore,
         Integer workAgainScore,
@@ -18,7 +19,7 @@ public record PeerReviewDto(
                 peerReview.getId(),
                 peerReview.getReviewerUserId(),
                 peerReview.getRevieweeUserId(),
-                peerReview.getPostId(),
+                peerReview.getPost(),
                 peerReview.getCollaborationScore(),
                 peerReview.getTechnicalScore(),
                 peerReview.getWorkAgainScore(),

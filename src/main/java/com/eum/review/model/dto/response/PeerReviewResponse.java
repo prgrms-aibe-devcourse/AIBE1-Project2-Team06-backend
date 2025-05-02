@@ -1,5 +1,6 @@
 package com.eum.review.model.dto.response;
 
+import com.eum.post.model.entity.Post;
 import com.eum.review.model.entity.PeerReview;
 
 import java.time.LocalDateTime;
@@ -8,7 +9,7 @@ public record PeerReviewResponse(
         Integer id,
         Long reviewerUserId,
         Long revieweeUserId,
-        Long postId,
+        Post post,
         Integer collaborationScore,
         Integer technicalScore,
         Integer workAgainScore,
@@ -21,7 +22,7 @@ public record PeerReviewResponse(
                 peerReview.getId(),
                 peerReview.getReviewerUserId(),
                 peerReview.getRevieweeUserId(),
-                peerReview.getPostId(),
+                peerReview.getPost(),
                 peerReview.getCollaborationScore(),
                 peerReview.getTechnicalScore(),
                 peerReview.getWorkAgainScore(),
