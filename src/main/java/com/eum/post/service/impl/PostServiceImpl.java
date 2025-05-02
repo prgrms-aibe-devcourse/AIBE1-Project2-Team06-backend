@@ -12,9 +12,12 @@ import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostPosition;
 import com.eum.post.model.entity.PostTechStack;
+import com.eum.post.model.entity.enumerated.Status;
+import com.eum.post.model.repository.PortfolioRepository;
 import com.eum.post.model.repository.PostPositionRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.post.model.repository.PostTechStackRepository;
+import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -43,6 +46,8 @@ public class PostServiceImpl implements PostService{
     private final PostPositionRepository postPositionRepository;
     private final PositionRepository positionRepository;
     private final TechStackRepository techStackRepository;
+
+    private final PortfolioService portfolioService;
 
     @Override
     @Transactional
@@ -110,16 +115,16 @@ public class PostServiceImpl implements PostService{
         }
         return result;
     }
-    // 게시글에 연결된 기술 스택 조회
 
+    // 게시글에 연결된 기술 스택 조회
     private List<TechStackDto> findTechStacksByPostId(Long postId) {
         List<PostTechStack> postTechStacks = postTechStackRepository.findByPostId(postId);
         return postTechStacks.stream()
                 .map(pts -> TechStackDto.from(pts.getTechStack()))
                 .collect(Collectors.toList());
     }
-    // 게시글에 연결된 포지션 조회
 
+    // 게시글에 연결된 포지션 조회
     private List<PositionDto> findPositionsByPostId(Long postId) {
         List<PostPosition> postPositions = postPositionRepository.findByPostId(postId);
         return postPositions.stream()
@@ -145,4 +150,23 @@ public class PostServiceImpl implements PostService{
         return PostResponse.from(postDto);
     }
 
+    //merge 된 부분
+    @Override
+    public PostResponse completePost(Long postId, Long userId, String githubLink) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+
+        post.updateStatus(Status.COMPLETED);
+
+        portfolioService.createPortfolio(userId, postId, githubLink);
+
+        // 추후 가져오는 로직 연결 필요
+        //List<TechStackDto> techStackDtos = new ArrayList<>();
+        List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
+        //List<PositionDto> positionDtos = new ArrayList<>();
+        List<PositionDto> positionDtos = findPositionsByPostId(postId);
+
+        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
+        return PostResponse.from(postDto);
+    }
 }

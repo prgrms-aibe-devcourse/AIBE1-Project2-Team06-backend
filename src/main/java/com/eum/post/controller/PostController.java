@@ -1,32 +1,20 @@
 package com.eum.post.controller;
 
-<<<<<<< HEAD
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-=======
-import com.eum.post.model.dto.response.PostResponse;
-import com.eum.post.sevice.PostService;
-import lombok.RequiredArgsConstructor;
->>>>>>> origin/main
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-<<<<<<< HEAD
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
-=======
-@RequiredArgsConstructor
-@RequestMapping("/api/v1/posts")
->>>>>>> origin/main
 public class PostController {
 
     private final PostService postService;
 
-<<<<<<< HEAD
     /**
      * 게시글 개별 조회 API
      *
@@ -51,14 +39,13 @@ public class PostController {
         PostResponse response = postService.create(request, userId);
         // 201 Created 상태코드와 함께 응답
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-=======
+    }
+
     @PatchMapping("/{postId}/complete")
     public ResponseEntity<PostResponse> completePost(
             @PathVariable Long postId,
             @RequestHeader("X-USER-ID") Long userId,
-            @RequestParam String githubLink
-    ) {
+            @RequestParam String githubLink) {
         return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
->>>>>>> origin/main
     }
 }
