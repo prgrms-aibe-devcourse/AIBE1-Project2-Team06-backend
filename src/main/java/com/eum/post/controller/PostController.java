@@ -16,14 +16,14 @@ public class PostController {
     private final PostService postService;
 
     /**
-     * 게시글 조회 API
+     * 게시글 개별 조회 API
      *
      * @param postId 게시글 ID
      * @return 조회된 게시글 정보
      */
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
-        PostResponse response = postService.getPost(postId);
+        PostResponse response = postService.findByPostId(postId);
         return ResponseEntity.ok(response);
     }
 

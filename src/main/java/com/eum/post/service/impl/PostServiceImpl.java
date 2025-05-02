@@ -21,6 +21,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,26 +69,8 @@ public class PostServiceImpl implements PostService{
             throw e;
         }
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PostResponse getPost(Long postId) {
-        // 게시글 조회
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
-
-        // 관련 기술 스택 조회
-        List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
-
-        // 관련 포지션 조회
-        List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
-
-        // DTO 변환 및 반환
-        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
-    }
-
     // 기술 스택 저장 메소드
+
     private List<TechStackDto> saveTechStacks(Post post, List<Long> techStackIds) {
         List<TechStackDto> result = new ArrayList<>();
 
@@ -106,8 +90,8 @@ public class PostServiceImpl implements PostService{
 
         return result;
     }
-
     // 포지션 저장 메소드
+
     private List<PositionDto> savePositions(Post post, List<Long> positionIds) {
         List<PositionDto> result = new ArrayList<>();
 
@@ -126,20 +110,39 @@ public class PostServiceImpl implements PostService{
         }
         return result;
     }
-
     // 게시글에 연결된 기술 스택 조회
+
     private List<TechStackDto> findTechStacksByPostId(Long postId) {
         List<PostTechStack> postTechStacks = postTechStackRepository.findByPostId(postId);
         return postTechStacks.stream()
                 .map(pts -> TechStackDto.from(pts.getTechStack()))
                 .collect(Collectors.toList());
     }
-
     // 게시글에 연결된 포지션 조회
+
     private List<PositionDto> findPositionsByPostId(Long postId) {
         List<PostPosition> postPositions = postPositionRepository.findByPostId(postId);
         return postPositions.stream()
                 .map(pp -> PositionDto.from(pp.getPosition()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PostResponse findByPostId(Long postId) {
+        // 게시글 조회
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        // 관련 기술 스택 조회
+        List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
+
+        // 관련 포지션 조회
+        List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
+
+        // DTO 변환 및 반환
+        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
+        return PostResponse.from(postDto);
+    }
+
 }
