@@ -7,13 +7,13 @@ import java.time.LocalDateTime;
 public record UserReviewCommentResponse(
         String reviewComment,
         LocalDateTime reviewDate,
-        Long projectId
+        Long postId
 ) {
     public static UserReviewCommentResponse from(PeerReview peerReview){
         return new UserReviewCommentResponse(
                 peerReview.getReviewComment(),
                 peerReview.getReviewDate(),
-                peerReview.getProjectId()
+                peerReview.getPostId()
         );
     }
 }

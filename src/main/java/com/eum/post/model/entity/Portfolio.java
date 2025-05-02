@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "portfolio",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "project_id"})
+                @UniqueConstraint(columnNames = {"user_id", "post_id"})
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Portfolio {
@@ -25,13 +25,13 @@ public class Portfolio {
     private Long userId;
 
     @Column(nullable = false)
-    private Long projectId;
+    private Long postId;
 
     @Column(nullable = false, length = 255)
-    private String projectTitle;
+    private String postTitle;
 
     @Column(columnDefinition = "TEXT")
-    private String projectLink;
+    private String postLink;
 
     @Column
     private Double averageScore;
@@ -42,16 +42,16 @@ public class Portfolio {
 
     public static Portfolio of(
             Long userId,
-            Long projectId,
-            String projectTitle,
-            String projectLink,
+            Long postId,
+            String postTitle,
+            String postLink,
             Double averageScore
     ) {
         Portfolio portfolio = new Portfolio();
         portfolio.userId = userId;
-        portfolio.projectId = projectId;
-        portfolio.projectTitle = projectTitle;
-        portfolio.projectLink = projectLink;
+        portfolio.postId = postId;
+        portfolio.postTitle = postTitle;
+        portfolio.postLink = postLink;
         portfolio.averageScore = averageScore;
         return portfolio;
     }

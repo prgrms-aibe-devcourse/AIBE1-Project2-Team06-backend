@@ -4,5 +4,5 @@ import com.eum.post.model.dto.response.PostResponse;
 
 public interface PostService {
 
-    PostResponse completeProject(Long projectId, Long userId, String githubLink);
+    PostResponse completePost(Long postId, Long userId, String githubLink);
 }

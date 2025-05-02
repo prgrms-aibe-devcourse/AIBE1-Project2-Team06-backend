@@ -25,7 +25,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public PostResponse completeProject(Long postId, Long userId, String githubLink) {
+    public PostResponse completePost(Long postId, Long userId, String githubLink) {
         Post post = projectRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
 

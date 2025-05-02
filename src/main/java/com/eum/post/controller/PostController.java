@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/projects")
-public class PosctController {
+@RequestMapping("/api/v1/posts")
+public class PostController {
 
     private final PostService postService;
 
-    @PatchMapping("/{projectId}/complete")
-    public ResponseEntity<PostResponse> completeProject(
-            @PathVariable Long projectId,
+    @PatchMapping("/{postId}/complete")
+    public ResponseEntity<PostResponse> completePost(
+            @PathVariable Long postId,
             @RequestHeader("X-USER-ID") Long userId,
             @RequestParam String githubLink
     ) {
-        return ResponseEntity.ok(postService.completeProject(projectId, userId, githubLink));
+        return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
     }
 }
