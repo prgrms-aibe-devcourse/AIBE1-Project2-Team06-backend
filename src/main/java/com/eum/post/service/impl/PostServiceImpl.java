@@ -152,6 +152,7 @@ public class PostServiceImpl implements PostService{
 
     //merge 된 부분
     @Override
+    @Transactional
     public PostResponse completePost(Long postId, Long userId, String githubLink) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));

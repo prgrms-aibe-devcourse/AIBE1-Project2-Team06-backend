@@ -45,7 +45,7 @@ public class PostController {
     public ResponseEntity<PostResponse> completePost(
             @PathVariable Long postId,
             @RequestHeader("X-USER-ID") Long userId,
-            @RequestParam String githubLink) {
+            @RequestBody String githubLink) {
         return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
     }
 }
