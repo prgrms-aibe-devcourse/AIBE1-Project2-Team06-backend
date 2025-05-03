@@ -36,49 +36,6 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-//    /**
-//     * 게시글 목록 조회 API (필터링 포함)
-//     *
-//     * @param recruitType 모집 유형 필터 (STUDY 또는 PROJECT)
-//     * @param page 페이지 번호 (0부터 시작)
-//     * @param size 페이지 크기
-//     * @param sort 정렬 기준 (예: createdAt,desc)
-//     * @return 게시글 목록
-//     */
-//    @GetMapping
-//    public ResponseEntity<Page<PostResponse>> getAllPosts(
-//            @RequestParam(required = false) String recruitType,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "createdAt,desc") String sort) {
-//
-//        // 정렬 정보 파싱
-//        String[] sortParams = sort.split(",");
-//        String sortField = sortParams[0];
-//        Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc") ?
-//                Sort.Direction.ASC : Sort.Direction.DESC;
-//
-//        // 페이지네이션 및 정렬 객체 생성
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
-//
-//        // RecruitType 필터 적용
-//        Page<PostResponse> responses;
-//        if (recruitType != null && !recruitType.isEmpty()) {
-//            try {
-//                RecruitType recruitTypeEnum = RecruitType.valueOf(recruitType.toUpperCase());
-//                responses = postService.findAllByRecruitType(recruitTypeEnum, pageable);
-//            } catch (IllegalArgumentException e) {
-//                // 잘못된 RecruitType 값이 들어온 경우
-//                return ResponseEntity.badRequest().build();
-//            }
-//        } else {
-//            // 필터 없이 전체 조회
-//            responses = postService.findByAllPosts(pageable);
-//        }
-//
-//        return ResponseEntity.ok(responses);
-//    }
-
     /**
      * 게시글 목록 조회 API (필터링 포함)
      *
@@ -148,7 +105,6 @@ public class PostController {
                 positionId,
                 techStackIds,
                 pageable);
-
         return ResponseEntity.ok(responses);
     }
 

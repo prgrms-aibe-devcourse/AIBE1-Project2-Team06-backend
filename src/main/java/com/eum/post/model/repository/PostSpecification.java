@@ -1,7 +1,5 @@
 package com.eum.post.model.repository;
 
-import com.eum.global.model.entity.Position;
-import com.eum.global.model.entity.TechStack;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostPosition;
 import com.eum.post.model.entity.PostTechStack;
@@ -25,6 +23,7 @@ public class PostSpecification {
             return criteriaBuilder.equal(root.get("recruitType"), recruitType);
         };
     }
+
     // ProgressMethod로 필터링
     public static Specification<Post> hasProgressMethod(ProgressMethod progressMethod) {
         return (root, query, criteriaBuilder) -> {
@@ -44,7 +43,8 @@ public class PostSpecification {
             return criteriaBuilder.equal(root.get("cultureFit"), cultureFit);
         };
     }
-    // Position으로 필터링 (단일 선택)
+
+    // Position으로 필터링 (단일 선택) - 서브쿼리 사용
     public static Specification<Post> hasPosition(Long positionId) {
         return (root, query, criteriaBuilder) -> {
             if (positionId == null) {
@@ -54,13 +54,19 @@ public class PostSpecification {
             // 중복 제거
             query.distinct(true);
 
-            // Join으로 PostPosition 연결
-            Join<Post, PostPosition> postPositionJoin = root.join("postPositions", JoinType.LEFT);
-            Join<PostPosition, Position> positionJoin = postPositionJoin.join("position", JoinType.LEFT);
+            // 서브쿼리 생성
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<PostPosition> postPositionRoot = subquery.from(PostPosition.class);
 
-            return criteriaBuilder.equal(positionJoin.get("id"), positionId);
+            // postPosition 서브쿼리 조건 설정
+            subquery.select(postPositionRoot.get("post").get("id"))
+                    .where(criteriaBuilder.equal(postPositionRoot.get("position").get("id"), positionId));
+
+            // 메인 쿼리에 서브쿼리 조건 적용
+            return root.get("id").in(subquery);
         };
     }
+
     // TechStack으로 필터링 (여러 기술 스택 모두 포함 - AND 조건)
     public static Specification<Post> hasTechStacks(List<Long> techStackIds) {
         return (root, query, criteriaBuilder) -> {
@@ -78,13 +84,12 @@ public class PostSpecification {
                 Subquery<Long> subquery = query.subquery(Long.class);
                 Root<PostTechStack> subRoot = subquery.from(PostTechStack.class);
 
-                Join<PostTechStack, Post> postJoin = subRoot.join("post");
-                Join<PostTechStack, TechStack> techStackJoin = subRoot.join("techStack");
+                // 서브쿼리 조건 설정
+                subquery.select(subRoot.get("post").get("id"))
+                        .where(criteriaBuilder.equal(subRoot.get("techStack").get("id"), techStackId));
 
-                subquery.select(postJoin.get("id"))
-                        .where(criteriaBuilder.equal(techStackJoin.get("id"), techStackId));
-
-                predicates.add(criteriaBuilder.in(root.get("id")).value(subquery));
+                // 메인 쿼리에 서브쿼리 조건 적용
+                predicates.add(root.get("id").in(subquery));
             }
 
             // AND 조건 (모든 기술 스택을 포함하는 게시글)

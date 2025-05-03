@@ -16,10 +16,6 @@ public interface PostService {
 
     PostResponse findByPostId(Long postId); // 개별만 조회
 
-    Page<PostResponse> findByAllPosts(Pageable pageable);
-
-    Page<PostResponse> findAllByRecruitType(RecruitType recruitType, Pageable pageable);
-
     PostResponse completePost(Long postId, Long userId, String githubLink);
 
     // 필터링 기능 추가

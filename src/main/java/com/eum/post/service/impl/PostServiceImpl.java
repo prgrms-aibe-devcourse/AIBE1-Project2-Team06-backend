@@ -151,51 +151,6 @@ public class PostServiceImpl implements PostService{
         return PostResponse.from(postDto);
     }
 
-    /**
-     * 전체 게시글 조회
-     *
-     * @param pageable
-     * @return
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<PostResponse> findByAllPosts(Pageable pageable) {
-        Page<Post> posts = postRepository.findAll(pageable);
-
-        return posts.map(post -> {
-            // 각 게시글에 연결된 기술 스택과 포지션 조회
-            List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
-            List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
-
-            // DTO 변환
-            PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-            return PostResponse.from(postDto);
-        });
-    }
-
-    /**
-     * recruitType으로 필터링
-     *
-     * @param recruitType
-     * @param pageable
-     * @return
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<PostResponse> findAllByRecruitType(RecruitType recruitType, Pageable pageable) {
-        Page<Post> posts = postRepository.findAllByRecruitType(recruitType, pageable);
-
-        return posts.map(post -> {
-            // 각 게시글에 연결된 기술 스택과 포지션 조회
-            List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
-            List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
-
-            // DTO 변환
-            PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-            return PostResponse.from(postDto);
-        });
-    }
-
     //merge 된 부분
     @Override
     @Transactional
@@ -218,6 +173,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<PostResponse> findPostsWithFilters(RecruitType recruitType, ProgressMethod progressMethod, CultureFit cultureFit, Long positionId, List<Long> techStackIds, Pageable pageable) {
         // 명세 조합
         Specification<Post> spec = Specification.where(null);

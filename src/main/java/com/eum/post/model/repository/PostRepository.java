@@ -10,6 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post>{
-    // RecruitType으로 조회하는 메소드
-    Page<Post> findAllByRecruitType(RecruitType recruitType, Pageable pageable);
+
 }
