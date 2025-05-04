@@ -1,10 +1,7 @@
 package com.eum.post.model.dto.request;
 
 import com.eum.post.model.entity.Post;
-import com.eum.post.model.entity.enumerated.LinkType;
-import com.eum.post.model.entity.enumerated.Period;
-import com.eum.post.model.entity.enumerated.ProgressMethod;
-import com.eum.post.model.entity.enumerated.RecruitType;
+import com.eum.post.model.entity.enumerated.*;
 
 import java.time.LocalDate;
 import java.util.List;
