@@ -14,20 +14,33 @@ import java.util.List;
 
 public class PostSpecification {
 
-    // 키워드 검색 (제목 또는 내용에 포함)
+    // 키워드로 검색 필터링 (제목, 글 내용)
     public static Specification<Post> hasKeyword(String keyword) {
         return (root, query, criteriaBuilder) -> {
             if (keyword == null || keyword.trim().isEmpty()) {
                 return null;
             }
 
-            String likePattern = "%" + keyword.toLowerCase() + "%";
+            // 공백으로 검색어 분리
+            String[] words = keyword.toLowerCase().trim().split("\\s+");
+            List<Predicate> predicates = new ArrayList<>();
 
-            // 제목 또는 내용에 키워드가 포함되는 경우
-            return criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern),
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), likePattern)
-            );
+            for (String word : words) {
+                if (!word.isEmpty()) {
+                    String likePattern = "%" + word + "%";
+
+                    // 대소문자 구분 없이 검색하기 위해 lower 함수 사용
+                    Predicate wordPredicate = criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), likePattern)
+                    );
+
+                    predicates.add(wordPredicate);
+                }
+            }
+
+            // AND 조건: 모든 단어가 포함되어야 함
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
