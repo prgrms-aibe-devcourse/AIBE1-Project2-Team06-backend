@@ -43,6 +43,7 @@ public class Member {
     LocalDateTime createdAt;
 
     public static Member of (
+            String authId,
             String nickname,
             String profileImageUrl,
             String position,
@@ -50,6 +51,7 @@ public class Member {
             String shortDescription
     ) {
         Member member = new Member();
+        member.authId = authId;
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
         member.position = position;
