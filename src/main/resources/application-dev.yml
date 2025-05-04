@@ -20,8 +20,8 @@ spring:
     password:
 
 kakao:
-  client-id: ${KAKAO_CLEINT_ID}
+  client-id: ${KAKAO_CLIENT_ID}
   client-secret: ${KAKAO_CLIENT_SECRET}
-  redirect-uri: ${KAKAO_REDIRECT-URI}
+  redirect-uri: ${KAKAO_REDIRECT_URI}
   token-uri: ${KAKAO_TOKEN_URI}
   user-info-uri: ${KAKAO_USER_INFO_URI}
