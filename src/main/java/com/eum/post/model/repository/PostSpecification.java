@@ -14,6 +14,23 @@ import java.util.List;
 
 public class PostSpecification {
 
+    // 키워드 검색 (제목 또는 내용에 포함)
+    public static Specification<Post> hasKeyword(String keyword) {
+        return (root, query, criteriaBuilder) -> {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                return null;
+            }
+
+            String likePattern = "%" + keyword.toLowerCase() + "%";
+
+            // 제목 또는 내용에 키워드가 포함되는 경우
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), likePattern),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), likePattern)
+            );
+        };
+    }
+
     // RecruitType으로 필터링
     public static Specification<Post> hasRecruitType(RecruitType recruitType) {
         return (root, query, criteriaBuilder) -> {

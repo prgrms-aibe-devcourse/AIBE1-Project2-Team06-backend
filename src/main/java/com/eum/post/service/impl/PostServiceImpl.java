@@ -174,27 +174,36 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> findPostsWithFilters(RecruitType recruitType, ProgressMethod progressMethod, CultureFit cultureFit, Long positionId, List<Long> techStackIds, Pageable pageable) {
+    public Page<PostResponse> findPostsWithFilters(String keyword, RecruitType recruitType, ProgressMethod progressMethod, CultureFit cultureFit, Long positionId, List<Long> techStackIds, Pageable pageable) {
         // 명세 조합
         Specification<Post> spec = Specification.where(null);
 
-        // 각 필터 조건 적용
+        // 키워드 검색 조건 추가
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            spec = spec.and(PostSpecification.hasKeyword(keyword));
+        }
+
+        // 모집 방식에 대한 필터링
         if (recruitType != null) {
             spec = spec.and(PostSpecification.hasRecruitType(recruitType));
         }
 
+        // 진행 방식에 대한 필터링
         if (progressMethod != null) {
             spec = spec.and(PostSpecification.hasProgressMethod(progressMethod));
         }
 
+        // 컬처핏에 대한 필터링
         if (cultureFit != null) {
             spec = spec.and(PostSpecification.hasCultureFit(cultureFit));
         }
 
+        // 포지션에 대한 필터링
         if (positionId != null) {
             spec = spec.and(PostSpecification.hasPosition(positionId));
         }
 
+        // 기술 스택에 대한 필터링
         if (techStackIds != null && !techStackIds.isEmpty()) {
             spec = spec.and(PostSpecification.hasTechStacks(techStackIds));
         }

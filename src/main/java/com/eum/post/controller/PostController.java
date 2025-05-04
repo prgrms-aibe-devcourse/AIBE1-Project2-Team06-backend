@@ -51,6 +51,7 @@ public class PostController {
      */
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPosts(
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String recruitType,
             @RequestParam(required = false) String progressMethod,
             @RequestParam(required = false) String cultureFit,
@@ -99,6 +100,7 @@ public class PostController {
 
         // 서비스 호출
         Page<PostResponse> responses = postService.findPostsWithFilters(
+                keyword,
                 recruitTypeEnum,
                 progressMethodEnum,
                 cultureFitEnum,

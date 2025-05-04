@@ -20,6 +20,7 @@ public interface PostService {
 
     // 필터링 기능 추가
     Page<PostResponse> findPostsWithFilters(
+            String keyword,
             RecruitType recruitType,
             ProgressMethod progressMethod,
             CultureFit cultureFit,
