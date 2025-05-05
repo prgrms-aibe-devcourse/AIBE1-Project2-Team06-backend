@@ -36,7 +36,7 @@ public class CultureFitRecommendationService {
     @Value(("${gemini.api.key}"))
     private String geminiApiKey;
 
-    public Mono<CultureFit> recomendCultureFit(Long postId, CultureFitRequest cultureFitRequest) {
+    public Mono<CultureFit> recommendCultureFit(Long postId, CultureFitRequest cultureFitRequest) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시물을 찾을 수 없습니다. ID : " + postId));
 

@@ -18,6 +18,6 @@ public class CultureFitController {
     public Mono<CultureFit> recommendCultureFit(
             @PathVariable Long postId,
             @RequestBody CultureFitRequest request) {
-        return cultureFitService.recomendCultureFit(postId, request);
+        return cultureFitService.recommendCultureFit(postId, request);
     }
 }
