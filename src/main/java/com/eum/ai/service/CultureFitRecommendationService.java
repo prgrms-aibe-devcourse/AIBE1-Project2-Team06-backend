@@ -2,6 +2,7 @@ package com.eum.ai.service;
 
 import com.eum.ai.model.dto.request.CultureFitRequest;
 import com.eum.post.model.entity.Post;
+import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.repository.PostRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,14 +36,14 @@ public class CultureFitRecommendationService {
     @Value(("${gemini.api.key}"))
     private String geminiApiKey;
 
-    public Mono<String> recomendCultureFit(Long postId, CultureFitRequest cultureFitRequest) {
+    public Mono<CultureFit> recomendCultureFit(Long postId, CultureFitRequest cultureFitRequest) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시물을 찾을 수 없습니다. ID : " + postId));
 
         return callGeminiApi(cultureFitRequest);
     }
 
-    public Mono<String> callGeminiApi(CultureFitRequest cultureFitRequest) {
+    public Mono<CultureFit> callGeminiApi(CultureFitRequest cultureFitRequest) {
         Map<String, Object> requestBody = new HashMap<>();
         Map<String, Object> contents = new HashMap<>();
         Map<String, Object> parts = new HashMap<>();
@@ -70,10 +71,23 @@ public class CultureFitRecommendationService {
                 .flatMap(responseBody -> {
                     try {
                         JsonNode rootNode = objectMapper.readTree(responseBody);
-                        log.info(responseBody);
-                        String response = rootNode.asText().trim();
-                        log.info(response);
-                        return Mono.just(response);
+                        JsonNode textNode = rootNode
+                                .path("candidates").get(0)
+                                .path("content").path("parts").get(0)
+                                .path("text");
+
+                        String rawText = textNode.asText();
+                        log.info("Gemini 응답 원본 : {}", rawText);
+
+                        // 응답 형식 : "```json\n{\n   \"cultureFitType\": \"COMMUNICATIVE\"\n}\n```\n"
+                        String jsonPart = rawText.replaceAll("(?s)```json\\s*", "") // ```json\n 제거
+                                .replaceAll("(?s)```\\s*", "")   // ```제거
+                                .trim();
+
+                        JsonNode parsedJson = objectMapper.readTree(jsonPart);
+                        String cultureFitStr = parsedJson.path("cultureFitType").asText().trim();
+
+                        return Mono.just(CultureFit.valueOf(cultureFitStr));
                     } catch (Exception e) {
                         log.error("Gemini API 응답 파싱 중 오류 발생", e);
                         return Mono.error(new RuntimeException("Gemini API 응답 파싱 중 오류가 발생했습니다: " + e.getMessage(), e));
