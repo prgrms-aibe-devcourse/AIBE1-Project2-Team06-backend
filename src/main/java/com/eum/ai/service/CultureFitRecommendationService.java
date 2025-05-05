@@ -54,6 +54,8 @@ public class CultureFitRecommendationService {
 
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
+                        .scheme("https")
+                        .host("generativelanguage.googleapis.com")
                         .path(geminiApiUrl)
                         .queryParam("key", geminiApiKey)
                         .build())
@@ -68,7 +70,7 @@ public class CultureFitRecommendationService {
                 .flatMap(responseBody -> {
                     try {
                         JsonNode rootNode = objectMapper.readTree(responseBody);
-
+                        log.info(responseBody);
                         String response = rootNode.asText().trim();
                         log.info(response);
                         return Mono.just(response);
