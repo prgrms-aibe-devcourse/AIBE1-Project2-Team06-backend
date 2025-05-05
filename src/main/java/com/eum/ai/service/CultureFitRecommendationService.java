@@ -40,7 +40,13 @@ public class CultureFitRecommendationService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시물을 찾을 수 없습니다. ID : " + postId));
 
-        return callGeminiApi(cultureFitRequest);
+        return callGeminiApi(cultureFitRequest)
+                .flatMap(cultureFit -> {
+                    post.updateCultureFit(cultureFit);
+                    Post savedPost = postRepository.save(post);
+
+                    return Mono.just(cultureFit);
+                });
     }
 
     public Mono<CultureFit> callGeminiApi(CultureFitRequest cultureFitRequest) {
