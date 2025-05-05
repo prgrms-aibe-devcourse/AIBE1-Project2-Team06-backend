@@ -12,11 +12,11 @@ import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostPosition;
 import com.eum.post.model.entity.PostTechStack;
+import com.eum.post.model.entity.enumerated.CultureFit;
+import com.eum.post.model.entity.enumerated.ProgressMethod;
+import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.model.entity.enumerated.Status;
-import com.eum.post.model.repository.PortfolioRepository;
-import com.eum.post.model.repository.PostPositionRepository;
-import com.eum.post.model.repository.PostRepository;
-import com.eum.post.model.repository.PostTechStackRepository;
+import com.eum.post.model.repository.*;
 import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,8 +96,8 @@ public class PostServiceImpl implements PostService{
 
         return result;
     }
-    // 포지션 저장 메소드
 
+    // 포지션 저장 메소드
     private List<PositionDto> savePositions(Post post, List<Long> positionIds) {
         List<PositionDto> result = new ArrayList<>();
 
@@ -169,5 +170,56 @@ public class PostServiceImpl implements PostService{
 
         PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
         return PostResponse.from(postDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponse> findPostsWithFilters(String keyword, RecruitType recruitType, ProgressMethod progressMethod, CultureFit cultureFit, Long positionId, List<Long> techStackIds, Pageable pageable) {
+        // 명세 조합
+        Specification<Post> spec = Specification.where(null);
+
+        // 키워드 검색 조건 추가
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            spec = spec.and(PostSpecification.hasKeyword(keyword));
+        }
+
+        // 모집 방식에 대한 필터링
+        if (recruitType != null) {
+            spec = spec.and(PostSpecification.hasRecruitType(recruitType));
+        }
+
+        // 진행 방식에 대한 필터링
+        if (progressMethod != null) {
+            spec = spec.and(PostSpecification.hasProgressMethod(progressMethod));
+        }
+
+        // 컬처핏에 대한 필터링
+        if (cultureFit != null) {
+            spec = spec.and(PostSpecification.hasCultureFit(cultureFit));
+        }
+
+        // 포지션에 대한 필터링
+        if (positionId != null) {
+            spec = spec.and(PostSpecification.hasPosition(positionId));
+        }
+
+        // 기술 스택에 대한 필터링
+        if (techStackIds != null && !techStackIds.isEmpty()) {
+            spec = spec.and(PostSpecification.hasTechStacks(techStackIds));
+        }
+
+        // 필터링된 결과 조회
+        Page<Post> posts = postRepository.findAll(spec, pageable);
+
+        // 응답 변환
+        return posts.map(post -> {
+            // 각 게시글에 연결된 기술 스택과 포지션 조회
+            List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
+            List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
+
+            // DTO 변환
+            PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
+            return PostResponse.from(postDto);
+        });
     }
 }
