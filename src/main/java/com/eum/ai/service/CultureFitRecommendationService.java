@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.HandlerMapping;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ public class CultureFitRecommendationService {
                 .orElseThrow(() -> new EntityNotFoundException("게시물을 찾을 수 없습니다. ID : " + postId));
 
         return callGeminiApi(cultureFitRequest)
+                .publishOn(Schedulers.boundedElastic())
                 .flatMap(cultureFit -> {
                     post.updateCultureFit(cultureFit);
                     Post savedPost = postRepository.save(post);
