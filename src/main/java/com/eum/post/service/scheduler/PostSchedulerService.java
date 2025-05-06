@@ -23,7 +23,7 @@ public class PostSchedulerService {
     public void updatePostStatus() {
         LocalDate today = LocalDate.now();
 
-        // 모집중(RECRUITING) → 마감(CLOSED)로 변경
+        // 모집중(RECRUITING) → 마감(CLOSED)로 일괄 변경 및 마감이 적용된 컬럼 수 확인
         int closedCount = postRepository.bulkUpdateStatusForExpiredPosts(
                 Status.RECRUITING, Status.CLOSED, today);
 

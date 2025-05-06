@@ -46,9 +46,9 @@ public class ValidatePostRequest {
             throw new IllegalArgumentException("모집 인원은 1명 이상이어야 합니다.");
         }
 
-//        // 날짜 유효성 검증
-//        if (request.deadline() != null && request.deadline().isBefore(LocalDate.now())) {
-//            throw new IllegalArgumentException("마감일은 현재 날짜 이후로 설정해야 합니다.");
-//        }
+        // 날짜 유효성 검증
+        if (request.deadline() != null && request.deadline().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("마감일은 현재 날짜 이후로 설정해야 합니다.");
+        }
     }
 }
