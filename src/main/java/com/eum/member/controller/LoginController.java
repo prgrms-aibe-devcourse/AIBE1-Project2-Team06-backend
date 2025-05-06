@@ -5,11 +5,9 @@ import com.eum.member.model.dto.response.LoginResponseDto;
 import com.eum.member.service.KakaoLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -21,13 +19,27 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> socialLogin(@RequestBody LoginRequestDto request) {
-        log.info("Login request: {}", request.code());
+        log.info("Login request code: {}", request.code());
 
         if ("kakao".equalsIgnoreCase(request.provider())) {
-            LoginResponseDto response = kakaoLoginService.kakaoLogin(request.code());
+            LoginResponseDto response = kakaoLoginService.kakaoLogin(request.code(), request.provider());
+            log.info("Login response: {}", response);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // JWT 유효성 검사 엔드포인트
+    @PostMapping("/validate-token")
+    public ResponseEntity<String> validateToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        // Bearer 접두사를 제거
+        String jwtToken = token.replace("Bearer ", "");
+
+        if (kakaoLoginService.validateJwtToken(jwtToken)) {
+            return ResponseEntity.ok("Token is valid");
+        } else {
+            return ResponseEntity.status(401).body("Invalid or expired token");
         }
     }
 }
