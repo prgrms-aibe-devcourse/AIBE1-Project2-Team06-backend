@@ -16,25 +16,24 @@ import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.model.entity.enumerated.Status;
-import com.eum.post.model.repository.*;
+import com.eum.post.model.repository.PostPositionRepository;
+import com.eum.post.model.repository.PostRepository;
+import com.eum.post.model.repository.PostSpecification;
+import com.eum.post.model.repository.PostTechStackRepository;
 import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -158,14 +157,15 @@ public class PostServiceImpl implements PostService{
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
 
+        if (!post.getUserId().equals(userId)){
+            throw new IllegalArgumentException("프로젝트 작성자만 완료 처리할 수 있습니다.");
+        }
+
         post.updateStatus(Status.COMPLETED);
 
         portfolioService.createPortfolio(userId, postId, githubLink);
 
-        // 추후 가져오는 로직 연결 필요
-        //List<TechStackDto> techStackDtos = new ArrayList<>();
         List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
-        //List<PositionDto> positionDtos = new ArrayList<>();
         List<PositionDto> positionDtos = findPositionsByPostId(postId);
 
         PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
