@@ -76,11 +76,9 @@ public class PostController {
      */
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
-            @RequestBody PostRequest request) {
-
-        //TODO: userId 받아오는 부분 개발
-        Long userId = 2L;
-
+            @RequestBody PostRequest request,
+            @RequestHeader("X-USER-ID") Long userId
+        ) {
         PostResponse response = postService.create(request, userId);
         // 201 Created 상태코드와 함께 응답
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
