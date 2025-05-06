@@ -9,4 +9,7 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByAuthId(String authId);
+
+    // 닉네임으로 멤버 찾기
+    Optional<Member> findByNickname(String nickname);
 }

@@ -10,7 +10,8 @@ public record PostMemberResponse(
         Long memberId,
         String nickname,
         Boolean isOwner,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
     public static PostMemberResponse from(PostMemberDto dto) {
         return new PostMemberResponse(
@@ -19,7 +20,8 @@ public record PostMemberResponse(
                 dto.memberId(),
                 dto.nickname(),
                 dto.isOwner(),
-                dto.createdAt()
+                dto.createdAt(),
+                dto.updatedAt()
         );
     }
 }
