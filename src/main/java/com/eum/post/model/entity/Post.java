@@ -99,15 +99,10 @@ public class Post {
         post.status = Status.RECRUITING; // 기본값 설정
         post.linkType = linkType;
         post.link = link;
-        post.cultureFit = cultureFit; // 기본값 자율형
+        post.cultureFit = cultureFit;
 
         return post;
     }
-
-    // 컬처핏 업데이트 메서드
-//    public void updateCultureFit(CultureFit cultureFit) {
-//        this.cultureFit = cultureFit;
-//    }
 
     public void updatePost(PostUpdateDto dto) {
         this.title = dto.title();

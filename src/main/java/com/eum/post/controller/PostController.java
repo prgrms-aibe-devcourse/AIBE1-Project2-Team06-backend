@@ -37,6 +37,11 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * 전체 글 조회 및 필터링 API
+     * @param filter
+     * @return
+     */
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPosts(PostFilterDto filter) {
         // 정렬 정보 파싱
@@ -81,6 +86,13 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * 게시글 삭제 API
+     *
+     * @param postId
+     * @param userId
+     * @return
+     */
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long postId,
@@ -89,6 +101,14 @@ public class PostController {
         return ResponseEntity.noContent().build(); // 204 No Content 상태코드 반환
     }
 
+    /**
+     * 게시글 수정 API
+     *
+     * @param postId
+     * @param request
+     * @param userId
+     * @return
+     */
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
@@ -105,6 +125,4 @@ public class PostController {
             @RequestBody String githubLink) {
         return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
     }
-
-
 }
