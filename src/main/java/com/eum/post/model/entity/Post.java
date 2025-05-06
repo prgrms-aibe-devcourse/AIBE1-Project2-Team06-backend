@@ -114,7 +114,7 @@ public class Post {
         this.deadline = dto.deadline();
         this.linkType = dto.linkType();
         this.link = dto.link();
-        this.cultureFit = dto.cultureFit();
+        //this.cultureFit = dto.cultureFit();
         // createdAt은 수정하지 않음 (JPA에서 @UpdateTimestamp로 updatedAt은 자동 업데이트)
     }
 

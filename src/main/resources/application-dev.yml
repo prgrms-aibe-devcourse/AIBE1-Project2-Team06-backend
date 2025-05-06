@@ -25,3 +25,9 @@ kakao:
   redirect-uri: ${KAKAO_REDIRECT-URI}
   token-uri: ${KAKAO_TOKEN_URI}
   user-info-uri: ${KAKAO_USER_INFO_URI}
+
+gemini:
+  api:
+    base-url: ${GEMINI_API_BASE_URL}
+    url: ${GEMINI_API_URL}
+    key: ${GEMINI_API_KEY}
