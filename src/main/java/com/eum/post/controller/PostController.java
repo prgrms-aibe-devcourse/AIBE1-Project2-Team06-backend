@@ -1,5 +1,6 @@
 package com.eum.post.controller;
 
+import com.eum.post.model.dto.request.GithubLinkRequest;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
@@ -128,8 +129,8 @@ public class PostController {
     public ResponseEntity<PostResponse> completePost(
             @PathVariable Long postId,
             @RequestHeader("X-USER-ID") Long userId,
-            @RequestBody String githubLink) {
-        return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
+            @RequestBody GithubLinkRequest request) {
+        return ResponseEntity.ok(postService.completePost(postId, userId, request.githubLink()));
     }
 
 
