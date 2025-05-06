@@ -1,5 +1,6 @@
 package com.eum.post.controller;
 
+import com.eum.post.model.dto.PostFilterDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
@@ -36,76 +37,30 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 게시글 목록 조회 API (필터링 포함)
-     *
-     * @param recruitType 모집 유형 필터
-     * @param progressMethod 진행 방식 필터
-     * @param cultureFit 컬처핏 필터
-     * @param positionId 포지션 ID 필터 (단일 선택)
-     * @param techStackIds 기술 스택 ID 필터 (다중 선택)
-     * @param page 페이지 번호 (0부터 시작)
-     * @param size 페이지 크기
-     * @param sort 정렬 기준 (예: createdAt,desc)
-     * @return 필터링된 게시글 목록
-     */
     @GetMapping
-    public ResponseEntity<Page<PostResponse>> getPosts(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String recruitType,
-            @RequestParam(required = false) String progressMethod,
-            @RequestParam(required = false) String cultureFit,
-            @RequestParam(required = false) Long positionId,
-            @RequestParam(required = false) List<Long> techStackIds,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt,desc") String sort) {
-
+    public ResponseEntity<Page<PostResponse>> getPosts(PostFilterDto filter) {
         // 정렬 정보 파싱
-        String[] sortParams = sort.split(",");
+        String[] sortParams = filter.getSortValue().split(",");
         String sortField = sortParams[0];
         Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc") ?
                 Sort.Direction.ASC : Sort.Direction.DESC;
 
         // 페이지네이션 및 정렬 객체 생성
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        Pageable pageable = PageRequest.of(filter.getPageValue(), filter.getSizeValue(), Sort.by(direction, sortField));
 
-        // Enum 문자열 변환
-        RecruitType recruitTypeEnum = null;
-        if (recruitType != null && !recruitType.isEmpty()) {
-            try {
-                recruitTypeEnum = RecruitType.valueOf(recruitType.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-
-        ProgressMethod progressMethodEnum = null;
-        if (progressMethod != null && !progressMethod.isEmpty()) {
-            try {
-                progressMethodEnum = ProgressMethod.valueOf(progressMethod.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-
-        CultureFit cultureFitEnum = null;
-        if (cultureFit != null && !cultureFit.isEmpty()) {
-            try {
-                cultureFitEnum = CultureFit.valueOf(cultureFit.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
+        // DTO의 변환 메서드 사용
+        RecruitType recruitTypeEnum = filter.getRecruitTypeEnum();
+        ProgressMethod progressMethodEnum = filter.getProgressMethodEnum();
+        CultureFit cultureFitEnum = filter.getCultureFitEnum();
 
         // 서비스 호출
         Page<PostResponse> responses = postService.findPostsWithFilters(
-                keyword,
+                filter.keyword(),
                 recruitTypeEnum,
                 progressMethodEnum,
                 cultureFitEnum,
-                positionId,
-                techStackIds,
+                filter.positionId(),
+                filter.techStackIds(),
                 pageable);
         return ResponseEntity.ok(responses);
     }
