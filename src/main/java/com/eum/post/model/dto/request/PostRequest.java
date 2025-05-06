@@ -21,7 +21,6 @@ public record PostRequest(
         List<Long> positionIds
 ) {
 
-    // userId는 인증된 유저에서 따로 주입
     public Post toEntity(Long userId) {
         // 임시 기본값 설정 (나중에 AI 분석으로 대체)
         CultureFit actualCultureFit = cultureFit != null ? cultureFit : CultureFit.AUTONOMOUS;
