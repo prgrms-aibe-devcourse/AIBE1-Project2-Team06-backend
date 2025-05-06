@@ -24,19 +24,14 @@ import com.eum.post.validation.ValidatePostRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -165,31 +160,31 @@ public class PostServiceImpl implements PostService{
             throw new IllegalArgumentException("해당 게시글의 수정 권한이 없습니다.");
         }
 
+        // 마감된 게시글 수정 제한
+        if (post.getStatus() == Status.CLOSED) {
+            throw new IllegalStateException("마감된 게시글은 수정할 수 없습니다.");
+        }
+
         // 요청 유효성 검증
         ValidatePostRequest.validatePostRequest(postRequest);
 
-        try {
-            // PostRequest를 PostUpdateDto로 변환하고 엔티티 업데이트
-            PostUpdateDto updateDto = PostUpdateDto.from(postRequest);
-            post.updatePost(updateDto);
+        // PostRequest를 PostUpdateDto로 변환하고 엔티티 업데이트
+        PostUpdateDto updateDto = PostUpdateDto.from(postRequest);
+        post.updatePost(updateDto);
 
-            // 기존 연결된 기술 스택 및 포지션 삭제
-            List<PostTechStack> techStacks = postTechStackRepository.findByPostId(postId);
-            List<PostPosition> positions = postPositionRepository.findByPostId(postId);
-            postTechStackRepository.deleteAll(techStacks);
-            postPositionRepository.deleteAll(positions);
+        // 기존 연결된 기술 스택 및 포지션 삭제
+        List<PostTechStack> techStacks = postTechStackRepository.findByPostId(postId);
+        List<PostPosition> positions = postPositionRepository.findByPostId(postId);
+        postTechStackRepository.deleteAll(techStacks);
+        postPositionRepository.deleteAll(positions);
 
-            // 새로운 기술 스택 및 포지션 연결
-            List<TechStackDto> techStackDtos = saveTechStacks(post, postRequest.techStackIds());
-            List<PositionDto> positionDtos = savePositions(post, postRequest.positionIds());
+        // 새로운 기술 스택 및 포지션 연결
+        List<TechStackDto> techStackDtos = saveTechStacks(post, postRequest.techStackIds());
+        List<PositionDto> positionDtos = savePositions(post, postRequest.positionIds());
 
-            // DTO 변환 및 반환
-            PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-            return PostResponse.from(postDto);
-        } catch (Exception e) {
-            log.error("게시글 수정 중 오류 발생: {}", e.getMessage(), e);
-            throw e;
-        }
+        // DTO 변환 및 반환
+        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
+        return PostResponse.from(postDto);
     }
 
     @Override

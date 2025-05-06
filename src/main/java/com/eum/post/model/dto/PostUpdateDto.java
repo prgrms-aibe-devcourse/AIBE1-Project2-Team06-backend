@@ -15,7 +15,8 @@ public record PostUpdateDto(
         LocalDate deadline,
         LinkType linkType,
         String link,
-        CultureFit cultureFit) {
+        CultureFit cultureFit
+        ) {
     public static PostUpdateDto from(PostRequest request) {
         return new PostUpdateDto(
                 request.title(),

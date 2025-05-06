@@ -5,9 +5,13 @@ import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
+import com.eum.post.model.entity.enumerated.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PostService {

@@ -105,9 +105,9 @@ public class Post {
     }
 
     // 컬처핏 업데이트 메서드
-    public void updateCultureFit(CultureFit cultureFit) {
-        this.cultureFit = cultureFit;
-    }
+//    public void updateCultureFit(CultureFit cultureFit) {
+//        this.cultureFit = cultureFit;
+//    }
 
     public void updatePost(PostUpdateDto dto) {
         this.title = dto.title();
