@@ -115,13 +115,32 @@ public class PostController {
      * @return 등록된 게시글 정보
      */
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest request) {
+    public ResponseEntity<PostResponse> createPost(
+            @RequestBody PostRequest request) {
+
         //TODO: userId 받아오는 부분 개발
-        Long userId = 1L;
+        Long userId = 2L;
 
         PostResponse response = postService.create(request, userId);
         // 201 Created 상태코드와 함께 응답
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(
+            @PathVariable Long postId,
+            @RequestHeader("X-USER-ID") Long userId) {
+        postService.deletePost(postId, userId);
+        return ResponseEntity.noContent().build(); // 204 No Content 상태코드 반환
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostResponse> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostRequest request,
+            @RequestHeader("X-USER-ID") Long userId) {
+        PostResponse response = postService.update(postId, request, userId);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{postId}/complete")

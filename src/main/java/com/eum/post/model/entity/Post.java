@@ -1,5 +1,6 @@
 package com.eum.post.model.entity;
 
+import com.eum.post.model.dto.PostUpdateDto;
 import com.eum.post.model.entity.enumerated.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -106,6 +107,20 @@ public class Post {
     // 컬처핏 업데이트 메서드
     public void updateCultureFit(CultureFit cultureFit) {
         this.cultureFit = cultureFit;
+    }
+
+    public void updatePost(PostUpdateDto dto) {
+        this.title = dto.title();
+        this.content = dto.content();
+        this.recruitType = dto.recruitType();
+        this.recruitMember = dto.recruitMember();
+        this.progressMethod = dto.progressMethod();
+        this.period = dto.period();
+        this.deadline = dto.deadline();
+        this.linkType = dto.linkType();
+        this.link = dto.link();
+        this.cultureFit = dto.cultureFit();
+        // createdAt은 수정하지 않음 (JPA에서 @UpdateTimestamp로 updatedAt은 자동 업데이트)
     }
 
     public void updateStatus(Status newStatus) {

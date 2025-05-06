@@ -16,6 +16,10 @@ public interface PostService {
 
     PostResponse findByPostId(Long postId); // 개별만 조회
 
+    PostResponse update(Long postId, PostRequest postRequest, Long userId);
+
+    void deletePost(Long postId, Long userId);
+
     PostResponse completePost(Long postId, Long userId, String githubLink);
 
     // 필터링 기능 추가
