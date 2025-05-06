@@ -83,8 +83,7 @@ public class Post {
             Period period,
             LocalDate deadline,
             LinkType linkType,
-            String link,
-            CultureFit cultureFit
+            String link
             ) {
 
         Post post = new Post();
@@ -99,7 +98,7 @@ public class Post {
         post.status = Status.RECRUITING; // 기본값 설정
         post.linkType = linkType;
         post.link = link;
-        post.cultureFit = cultureFit;
+        post.cultureFit = CultureFit.NONE;
 
         return post;
     }
@@ -120,5 +119,9 @@ public class Post {
 
     public void updateStatus(Status newStatus) {
         this.status = newStatus;
+    }
+
+    public void updateCultureFit(CultureFit cultureFit){
+        this.cultureFit = cultureFit;
     }
 }

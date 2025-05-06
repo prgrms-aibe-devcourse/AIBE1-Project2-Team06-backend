@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CultureFit {
+    NONE, // 없음
     AUTONOMOUS, // 자율형
     PLANNER, // 계획형
     COMMUNICATIVE, //소통 협업형

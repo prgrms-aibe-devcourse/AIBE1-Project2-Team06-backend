@@ -1,5 +1,6 @@
 package com.eum.post.controller;
 
+import com.eum.ai.model.dto.request.CultureFitRequest;
 import com.eum.post.model.dto.PostFilterDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;

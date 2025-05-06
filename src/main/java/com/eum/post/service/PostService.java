@@ -1,5 +1,6 @@
 package com.eum.post.service;
 
+import com.eum.ai.model.dto.request.CultureFitRequest;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;

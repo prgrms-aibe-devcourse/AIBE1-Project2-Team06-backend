@@ -1,5 +1,7 @@
 package com.eum.post.service.impl;
 
+import com.eum.ai.model.dto.request.CultureFitRequest;
+import com.eum.ai.service.CultureFitRecommendationService;
 import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
