@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.servlet.HandlerMapping;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -30,7 +29,6 @@ public class CultureFitRecommendationServiceImpl implements CultureFitRecommenda
     private final PostRepository postRepository;
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
-    private final HandlerMapping resourceHandlerMapping;
 
     @Value("${gemini.api.url}")
     private String geminiApiUrl;
