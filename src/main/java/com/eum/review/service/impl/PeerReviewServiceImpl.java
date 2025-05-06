@@ -1,6 +1,7 @@
 package com.eum.review.service.impl;
 
 import com.eum.post.model.entity.Post;
+import com.eum.post.model.entity.enumerated.Status;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
@@ -32,6 +33,13 @@ public class PeerReviewServiceImpl implements PeerReviewService {
 
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new EntityNotFoundException("Post가 존재하지 않습니다. ID : " + request.postId()));
+
+        if (!post.getStatus().equals(Status.COMPLETED)) {
+            throw new IllegalArgumentException("완료된 프로젝트에 대해서만 리뷰를 작성할 수 있습니다.");
+        }
+
+        // TODO: 리뷰 작성자와 대상자가 프로젝트의 팀원인지 검증하는 로직 추가 필요
+        // 팀원 관계 테이블 개발 완료 후 코드 추가 예정
 
         PeerReview peerReview = request.toEntity(reviewerUserId, post);
         PeerReview savedReview = peerReviewRepository.save(peerReview);
