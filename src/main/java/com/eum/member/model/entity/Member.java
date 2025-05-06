@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -18,16 +19,18 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    private UUID publicId;
+    @Setter
+    private UUID publicId; // 외부 통신에 쓰이는 id -> jwt 만들기
 
     // 카카오에서 받은 user 식별자
     @Column(nullable = false, unique = true)
     private String authId;
-    // 닉네임
     @Column(nullable = false)
-    private String nickname;
+    private String provider;
 
     // 프로필에서 설정할 정보
+    @Column(nullable = false, unique = true)
+    private String nickname;
     @Column
     private String profileImageUrl;
     // 직무
@@ -44,6 +47,7 @@ public class Member {
 
     public static Member of (
             String authId,
+            String provider,
             String nickname,
             String profileImageUrl,
             String position,
@@ -52,6 +56,7 @@ public class Member {
     ) {
         Member member = new Member();
         member.authId = authId;
+        member.provider = provider;
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
         member.position = position;
@@ -60,6 +65,5 @@ public class Member {
 
         return member;
     }
-
 
 }
