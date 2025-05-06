@@ -25,3 +25,7 @@ kakao:
   redirect-uri: http://localhost:3000/auth/kakao/callback
   token-uri: https://kauth.kakao.com/oauth/token
   user-info-uri: https://kapi.kakao.com/v2/user/me
+
+jwt:
+  secret: oiYrT+VQBAVivGDjSQINjHoyBpIW7Sz/89cFZq7WRGU=
+  expiration: 3600000
