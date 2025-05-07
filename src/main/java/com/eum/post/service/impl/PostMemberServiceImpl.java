@@ -3,7 +3,6 @@ package com.eum.post.service.impl;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.PostMemberDto;
-import com.eum.post.model.dto.request.PostMemberRequest;
 import com.eum.post.model.dto.response.PostMemberResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostMember;
@@ -27,15 +26,16 @@ public class PostMemberServiceImpl implements PostMemberService {
     private final MemberRepository memberRepository;
     private final PostMemberRepository postMemberRepository;
 
+
     @Override
+    @Transactional
     public List<PostMemberResponse> updateMembers(Long postId, List<String> nicknames, Long ownerId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
 
-        // 1. 닉네임 목록으로 멤버 조회
+        // 닉네임 목록으로 멤버 조회
         List<Member> requestedMembers = memberRepository.findAllByNicknameIn(nicknames);
-
-        // 닉네임 유효성 검사
+        // 닉네임 유효성 검사 (추가적 검증)
         if (requestedMembers.size() < nicknames.size()) {
             Set<String> foundNicknames = requestedMembers.stream()
                     .map(Member::getNickname)
@@ -50,16 +50,16 @@ public class PostMemberServiceImpl implements PostMemberService {
             }
         }
 
-        // 2. 현재 게시글의 모든 멤버 조회
+        // 현재 게시글의 모든 멤버 조회
         List<PostMember> existingMembers = postMemberRepository.findAllWithMemberByPostId(postId);
 
-        // 3. 소유자 확인
+        // 모집자 확인
         PostMember ownerMember = existingMembers.stream()
                 .filter(PostMember::getIsOwner)
                 .findFirst()
                 .orElse(null);
 
-        // 소유자가 없으면 새로 추가
+        // 모집자가 없으면 새로 추가 (추가적인 검증)
         if (ownerMember == null) {
             Member owner = memberRepository.findById(ownerId)
                     .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + ownerId));
@@ -69,9 +69,9 @@ public class PostMemberServiceImpl implements PostMemberService {
             log.info("게시글 소유자 추가: postId={}, ownerId={}", postId, ownerId);
         }
 
-        // 4. 소유자를 제외한 기존 멤버 삭제
+        // 모집자를 제외한 기존 멤버 삭제
         List<PostMember> membersToRemove = existingMembers.stream()
-                .filter(pm -> !pm.getIsOwner())
+                .filter(member -> !member.getIsOwner())
                 .collect(Collectors.toList());
 
         if (!membersToRemove.isEmpty()) {
@@ -79,26 +79,25 @@ public class PostMemberServiceImpl implements PostMemberService {
             log.info("게시글 멤버 삭제: postId={}, count={}", postId, membersToRemove.size());
         }
 
-        // 5. 새 멤버 목록 생성 (소유자 제외)
-        Set<Long> memberIdsToAdd = requestedMembers.stream()
+        // 새 멤버 목록 생성 (모집자 제외)
+        Set<Long> membersToAdd = requestedMembers.stream()
                 .map(Member::getId)
                 .filter(id -> !id.equals(ownerId)) // 소유자 제외
                 .collect(Collectors.toSet());
 
         List<PostMember> newMembers = new ArrayList<>();
         for (Member member : requestedMembers) {
-            if (memberIdsToAdd.contains(member.getId())) {
+            if (membersToAdd.contains(member.getId())) {
                 newMembers.add(PostMember.of(post, member, false));
             }
         }
 
-        List<PostMember> savedMembers = Collections.emptyList();
         if (!newMembers.isEmpty()) {
-            savedMembers = postMemberRepository.saveAll(newMembers);
+            List<PostMember> savedMembers = postMemberRepository.saveAll(newMembers);
             log.info("게시글 멤버 추가: postId={}, count={}", postId, savedMembers.size());
         }
 
-        // 6. 결과 조회 및 반환
+        // 결과 조회 및 반환
         List<PostMember> resultMembers = postMemberRepository.findAllWithMemberByPostId(postId);
 
         return resultMembers.stream()
@@ -119,5 +118,4 @@ public class PostMemberServiceImpl implements PostMemberService {
     public boolean isOwner(Long postId, Long memberId) {
         return postMemberRepository.existsByPostIdAndMemberIdAndIsOwnerTrue(postId, memberId);
     }
-
 }

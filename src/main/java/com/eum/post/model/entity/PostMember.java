@@ -6,16 +6,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "Post_Member",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"post_id", "member_id"})
-        })
+@Table(name = "Post_Member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostMember {
 

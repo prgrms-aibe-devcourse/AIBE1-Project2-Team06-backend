@@ -14,5 +14,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 닉네임으로 멤버 찾기
     Optional<Member> findByNickname(String nickname);
 
+    //PostMemeberSerivceImpl에서 사용
     List<Member> findAllByNicknameIn(List<String> allNicknames);
 }
