@@ -1,5 +1,7 @@
 package com.eum.post.service.impl;
 
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
@@ -9,6 +11,7 @@ import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.TechStackDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
+import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostPosition;
 import com.eum.post.model.entity.PostTechStack;
@@ -23,7 +26,6 @@ import com.eum.post.model.repository.PostTechStackRepository;
 import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class PostServiceImpl implements PostService{
 
     private final PostRepository postRepository;
@@ -50,7 +53,6 @@ public class PostServiceImpl implements PostService{
     private final PortfolioService portfolioService;
 
     @Override
-    @Transactional
     public PostResponse create(PostRequest postRequest, Long userId) {
         ValidatePostRequest.validatePostRequest(postRequest);
 
@@ -74,15 +76,15 @@ public class PostServiceImpl implements PostService{
             throw e;
         }
     }
-    // 기술 스택 저장 메소드
 
+    // 기술 스택 저장 메소드
     private List<TechStackDto> saveTechStacks(Post post, List<Long> techStackIds) {
         List<TechStackDto> result = new ArrayList<>();
 
         for (Long techStackId : techStackIds) {
             // 1. 기술 스택 엔티티 조회
             TechStack techStack = techStackRepository.findById(techStackId)
-                    .orElseThrow(() -> new EntityNotFoundException(
+                    .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND,
                             "기술 스택을 찾을 수 없습니다. ID: " + techStackId));
 
             // 2. 게시글-기술스택 연결 엔티티 생성 및 저장
@@ -103,7 +105,7 @@ public class PostServiceImpl implements PostService{
         for (Long positionId : positionIds) {
             // 1. 포지션 엔티티 조회
             Position position = positionRepository.findById(positionId)
-                    .orElseThrow(() -> new EntityNotFoundException(
+                    .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND,
                             "포지션을 찾을 수 없습니다. ID: " + positionId));
 
             // 2. 게시글-포지션 연결 엔티티 생성 및 저장
@@ -137,7 +139,7 @@ public class PostServiceImpl implements PostService{
     public PostResponse findByPostId(Long postId) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 관련 기술 스택 조회
         List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
@@ -150,12 +152,74 @@ public class PostServiceImpl implements PostService{
         return PostResponse.from(postDto);
     }
 
-    //merge 된 부분
     @Override
     @Transactional
+    public PostResponse update(Long postId, PostRequest postRequest, Long userId) {
+        // 게시글 조회
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        // 작성자 검증
+        if (!post.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("해당 게시글의 수정 권한이 없습니다.");
+        }
+
+        // 마감된 게시글 수정 제한
+        if (post.getStatus() == Status.CLOSED) {
+            throw new IllegalStateException("마감된 게시글은 수정할 수 없습니다.");
+        }
+
+        // 요청 유효성 검증
+        ValidatePostRequest.validatePostRequest(postRequest);
+
+        // PostRequest를 PostUpdateDto로 변환하고 엔티티 업데이트
+        PostUpdateResponse updateDto = PostUpdateResponse.from(postRequest);
+        post.updatePost(updateDto);
+
+        // 기존 연결된 기술 스택 및 포지션 삭제
+        List<PostTechStack> techStacks = postTechStackRepository.findByPostId(postId);
+        List<PostPosition> positions = postPositionRepository.findByPostId(postId);
+        postTechStackRepository.deleteAll(techStacks);
+        postPositionRepository.deleteAll(positions);
+
+        // 새로운 기술 스택 및 포지션 연결
+        List<TechStackDto> techStackDtos = saveTechStacks(post, postRequest.techStackIds());
+        List<PositionDto> positionDtos = savePositions(post, postRequest.positionIds());
+
+        // DTO 변환 및 반환
+        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
+        return PostResponse.from(postDto);
+    }
+
+    @Override
+    @Transactional
+    public void deletePost(Long postId, Long userId) {
+        //게시글 조회
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        // 작성자 확인 (권한 검증)
+        if (post.getUserId().equals(userId)) {
+            // 게시글과 연결된 기술 스택 제거
+            List<PostTechStack> postTechStacks = postTechStackRepository.findByPostId(postId);
+            postTechStackRepository.deleteAll(postTechStacks);
+
+            // 게시글과 연결된 포지션 제거
+            List<PostPosition> postPositions = postPositionRepository.findByPostId(postId);
+            postPositionRepository.deleteAll(postPositions);
+
+            postRepository.delete(post);
+        } else if (!post.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("해당 게시글의 삭제 권한이 없습니다.");
+        }
+
+    }
+
+    //merge 된 부분
+    @Override
     public PostResponse completePost(Long postId, Long userId, String githubLink) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getUserId().equals(userId)){
             throw new IllegalArgumentException("프로젝트 작성자만 완료 처리할 수 있습니다.");

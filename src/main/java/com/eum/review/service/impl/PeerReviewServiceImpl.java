@@ -1,5 +1,7 @@
 package com.eum.review.service.impl;
 
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.Status;
 import com.eum.post.model.repository.PostRepository;
@@ -10,7 +12,6 @@ import com.eum.review.model.dto.response.UserReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import com.eum.review.service.PeerReviewService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +29,11 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     @Override
     public PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerUserId) {
         if (reviewerUserId.equals(request.revieweeUserId())){
-            throw new IllegalArgumentException("자기 자신에 대한 리뷰는 작성할 수 없습니다.");
+            throw new CustomException(ErrorCode.SELF_REVIEW_NOT_ALLOWED);
         }
 
         Post post = postRepository.findById(request.postId())
-                .orElseThrow(() -> new EntityNotFoundException("Post가 존재하지 않습니다. ID : " + request.postId()));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getStatus().equals(Status.COMPLETED)) {
             throw new IllegalArgumentException("완료된 프로젝트에 대해서만 리뷰를 작성할 수 있습니다.");

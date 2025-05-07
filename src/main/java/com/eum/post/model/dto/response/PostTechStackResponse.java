@@ -1,7 +1,6 @@
 package com.eum.post.model.dto.response;
 
 import com.eum.post.model.dto.PostTechStackDto;
-import com.eum.post.model.dto.TechStackDto;
 
 public record PostTechStackResponse(
         Long id,
