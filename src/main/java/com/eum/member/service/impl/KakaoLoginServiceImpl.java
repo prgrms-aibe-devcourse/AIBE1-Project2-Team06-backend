@@ -61,6 +61,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                             "UNDEFINED",
                             "UNDEFINED",
                             "UNDEFINED",
+                            "UNDEFINED",
                             null
                     );
                     //publicId 세팅

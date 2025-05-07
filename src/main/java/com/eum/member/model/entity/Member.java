@@ -36,6 +36,10 @@ public class Member {
     // 직무
     @Column(nullable = false)
     private String position;
+    // 기술 스택
+    @Column(nullable = false)
+    private String techStack;
+    // 경력
     @Column(nullable = false)
     private String career;
     @Column
@@ -51,6 +55,7 @@ public class Member {
             String nickname,
             String profileImageUrl,
             String position,
+            String techStack,
             String career,
             String shortDescription
     ) {
@@ -60,6 +65,7 @@ public class Member {
         member.nickname = nickname;
         member.profileImageUrl = profileImageUrl;
         member.position = position;
+        member.techStack = techStack;
         member.career = career;
         member.shortDescription = shortDescription;
 
