@@ -2,12 +2,13 @@ package com.eum.ai.service.impl;
 
 import com.eum.ai.model.dto.request.CultureFitRequest;
 import com.eum.ai.service.CultureFitRecommendationService;
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.repository.PostRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +39,7 @@ public class CultureFitRecommendationServiceImpl implements CultureFitRecommenda
 
     public Mono<CultureFit> recommendCultureFit(Long postId, CultureFitRequest cultureFitRequest) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시물을 찾을 수 없습니다. ID : " + postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         return callGeminiApi(cultureFitRequest)
                 .publishOn(Schedulers.boundedElastic())
