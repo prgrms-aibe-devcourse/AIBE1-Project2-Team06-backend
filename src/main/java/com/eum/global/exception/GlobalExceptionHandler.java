@@ -118,4 +118,19 @@ public class GlobalExceptionHandler {
             return "알 수 없는 필드";
         }
     }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(
+            CustomException ex, HttpServletRequest request) {
+        ErrorCode errorCode = ex.getErrorCode();
+        log.error("Custom 예외 : {} - {}", errorCode.getCode(), ex.getMessage());
+
+        ErrorResponse response = ErrorResponse.of(
+                errorCode.getStatus(),
+                ex.getMessage(),
+                request.getRequestURI(),
+                errorCode.getCode()
+        );
+        return ResponseEntity.status(errorCode.getStatus()).body(response);
+    }
 }
