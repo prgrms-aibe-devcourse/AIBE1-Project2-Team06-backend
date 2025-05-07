@@ -19,5 +19,5 @@ public interface PeerReviewRepository extends JpaRepository<PeerReview, Long> {
     Double calculateOverallAverageScore(@Param("userId") Long userId);
 
     // 특정 프로젝트에서 특정 사용자가 받은 리뷰 목록
-    List<PeerReview> findAllByProjectIdAndRevieweeUserId(Long projectId, Long revieweeUserId);
+    List<PeerReview> findAllByPostIdAndRevieweeUserId(Long postId, Long revieweeUserId);
 }

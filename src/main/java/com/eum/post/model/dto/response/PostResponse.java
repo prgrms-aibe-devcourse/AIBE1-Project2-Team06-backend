@@ -19,6 +19,7 @@ public record PostResponse(
         LocalDate deadline,
         LinkType linkType,
         String link,
+        CultureFit cultureFit, //컬처핏 추가
         Status status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
@@ -47,6 +48,7 @@ public record PostResponse(
                 dto.deadline(),
                 dto.linkType(),
                 dto.link(),
+                dto.cultureFit(),
                 dto.status(),
                 dto.createdAt(),
                 dto.updatedAt(),

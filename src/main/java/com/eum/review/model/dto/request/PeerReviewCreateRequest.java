@@ -1,20 +1,21 @@
 package com.eum.review.model.dto.request;
 
+import com.eum.post.model.entity.Post;
 import com.eum.review.model.entity.PeerReview;
 
 public record PeerReviewCreateRequest(
-        Long projectId,
+        Long postId,
         Long revieweeUserId,
         Integer collaborationScore,
         Integer technicalScore,
         Integer workAgainScore,
         String reviewComment
 ) {
-    public PeerReview toEntity(Long reviewerUserId){
+    public PeerReview toEntity(Long reviewerUserId, Post post){
         return PeerReview.of(
                 reviewerUserId,
                 revieweeUserId,
-                projectId,
+                post,
                 collaborationScore,
                 technicalScore,
                 workAgainScore,

@@ -67,6 +67,10 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime updatedAt; // 게시물 수정날짜
 
+    @Column(nullable = true)
+    @Enumerated(EnumType.STRING)
+    private CultureFit cultureFit;
+
 
     // 정적 팩토리 메서드
     public static Post of(
@@ -96,5 +100,13 @@ public class Post {
         post.link = link;
 
         return post;
+    }
+
+    public void updateStatus(Status newStatus) {
+        this.status = newStatus;
+    }
+
+    public void updateCultureFit(CultureFit cultureFit){
+        this.cultureFit = cultureFit;
     }
 }

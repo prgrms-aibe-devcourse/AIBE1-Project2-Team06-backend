@@ -1,5 +1,6 @@
 package com.eum.review.model.entity;
 
+import com.eum.post.model.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "peer_review",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"reviewer_user_id", "reviewee_user_id", "project_id"})
+            @UniqueConstraint(columnNames = {"reviewer_user_id", "reviewee_user_id", "post_id"})
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PeerReview {
@@ -27,8 +28,9 @@ public class PeerReview {
     @Column(nullable = false)
     private Long revieweeUserId;
 
-    @Column(nullable = false)
-    private Long projectId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @Column(nullable = false)
     private Integer collaborationScore;
@@ -52,7 +54,7 @@ public class PeerReview {
     public static PeerReview of(
             Long reviewerUserId,
             Long revieweeUserId,
-            Long projectId,
+            Post post,
             Integer collaborationScore,
             Integer technicalScore,
             Integer workAgainScore,
@@ -61,7 +63,7 @@ public class PeerReview {
         PeerReview peerReview = new PeerReview();
         peerReview.reviewerUserId = reviewerUserId;
         peerReview.revieweeUserId = revieweeUserId;
-        peerReview.projectId = projectId;
+        peerReview.post = post;
         peerReview.collaborationScore = collaborationScore;
         peerReview.technicalScore = technicalScore;
         peerReview.workAgainScore = workAgainScore;
