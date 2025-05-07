@@ -1,5 +1,7 @@
 package com.eum.post.service.impl;
 
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
@@ -16,25 +18,23 @@ import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.model.entity.enumerated.Status;
-import com.eum.post.model.repository.*;
+import com.eum.post.model.repository.PostPositionRepository;
+import com.eum.post.model.repository.PostRepository;
+import com.eum.post.model.repository.PostSpecification;
+import com.eum.post.model.repository.PostTechStackRepository;
 import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService{
         for (Long techStackId : techStackIds) {
             // 1. 기술 스택 엔티티 조회
             TechStack techStack = techStackRepository.findById(techStackId)
-                    .orElseThrow(() -> new EntityNotFoundException(
+                    .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND,
                             "기술 스택을 찾을 수 없습니다. ID: " + techStackId));
 
             // 2. 게시글-기술스택 연결 엔티티 생성 및 저장
@@ -104,7 +104,7 @@ public class PostServiceImpl implements PostService{
         for (Long positionId : positionIds) {
             // 1. 포지션 엔티티 조회
             Position position = positionRepository.findById(positionId)
-                    .orElseThrow(() -> new EntityNotFoundException(
+                    .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND,
                             "포지션을 찾을 수 없습니다. ID: " + positionId));
 
             // 2. 게시글-포지션 연결 엔티티 생성 및 저장
@@ -138,7 +138,7 @@ public class PostServiceImpl implements PostService{
     public PostResponse findByPostId(Long postId) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 관련 기술 스택 조회
         List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
@@ -156,7 +156,7 @@ public class PostServiceImpl implements PostService{
     @Transactional
     public PostResponse completePost(Long postId, Long userId, String githubLink) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         post.updateStatus(Status.COMPLETED);
 
