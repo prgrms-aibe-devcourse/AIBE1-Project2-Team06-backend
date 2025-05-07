@@ -1,7 +1,6 @@
 package com.eum.post.controller;
 
-import com.eum.ai.model.dto.request.CultureFitRequest;
-import com.eum.post.model.dto.PostFilterDto;
+import com.eum.post.model.dto.request.PostFilterRequest;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
@@ -10,14 +9,12 @@ import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -44,20 +41,14 @@ public class PostController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<Page<PostResponse>> getPosts(PostFilterDto filter) {
-        // 정렬 정보 파싱
-        String[] sortParams = filter.getSortValue().split(",");
-        String sortField = sortParams[0];
-        Sort.Direction direction = sortParams.length > 1 && sortParams[1].equalsIgnoreCase("asc") ?
-                Sort.Direction.ASC : Sort.Direction.DESC;
+    public ResponseEntity<Page<PostResponse>> getPosts(
+            PostFilterRequest filter,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        // 페이지네이션 및 정렬 객체 생성
-        Pageable pageable = PageRequest.of(filter.getPageValue(), filter.getSizeValue(), Sort.by(direction, sortField));
-
-        // DTO의 변환 메서드 사용
-        RecruitType recruitTypeEnum = filter.getRecruitTypeEnum();
-        ProgressMethod progressMethodEnum = filter.getProgressMethodEnum();
-        CultureFit cultureFitEnum = filter.getCultureFitEnum();
+        // Enum 변환
+        RecruitType recruitTypeEnum = RecruitType.fromString(filter.recruitType());
+        ProgressMethod progressMethodEnum = ProgressMethod.fromString(filter.progressMethod());
+        CultureFit cultureFitEnum = CultureFit.fromString(filter.cultureFit());
 
         // 서비스 호출
         Page<PostResponse> responses = postService.findPostsWithFilters(
