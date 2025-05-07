@@ -1,6 +1,6 @@
 package com.eum.post.model.entity;
 
-import com.eum.post.model.dto.PostUpdateDto;
+import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.enumerated.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -103,7 +103,7 @@ public class Post {
         return post;
     }
 
-    public void updatePost(PostUpdateDto dto) {
+    public void updatePost(PostUpdateResponse dto) {
         this.title = dto.title();
         this.content = dto.content();
         this.recruitType = dto.recruitType();

@@ -11,5 +11,4 @@ public class EumApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EumApplication.class, args);
 	}
-
 }

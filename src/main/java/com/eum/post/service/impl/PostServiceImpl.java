@@ -1,14 +1,12 @@
 package com.eum.post.service.impl;
 
-import com.eum.ai.model.dto.request.CultureFitRequest;
-import com.eum.ai.service.CultureFitRecommendationService;
 import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
 import com.eum.post.model.dto.PositionDto;
 import com.eum.post.model.dto.PostDto;
-import com.eum.post.model.dto.PostUpdateDto;
+import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.dto.TechStackDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
@@ -171,7 +169,7 @@ public class PostServiceImpl implements PostService{
         ValidatePostRequest.validatePostRequest(postRequest);
 
         // PostRequest를 PostUpdateDto로 변환하고 엔티티 업데이트
-        PostUpdateDto updateDto = PostUpdateDto.from(postRequest);
+        PostUpdateResponse updateDto = PostUpdateResponse.from(postRequest);
         post.updatePost(updateDto);
 
         // 기존 연결된 기술 스택 및 포지션 삭제

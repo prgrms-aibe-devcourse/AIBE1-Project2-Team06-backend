@@ -1,11 +1,11 @@
-package com.eum.post.model.dto;
+package com.eum.post.model.dto.response;
 
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.entity.enumerated.*;
 
 import java.time.LocalDate;
 
-public record PostUpdateDto(
+public record PostUpdateResponse(
         String title,
         String content,
         RecruitType recruitType,
@@ -17,8 +17,8 @@ public record PostUpdateDto(
         String link
         //CultureFit cultureFit
         ) {
-    public static PostUpdateDto from(PostRequest request) {
-        return new PostUpdateDto(
+    public static PostUpdateResponse from(PostRequest request) {
+        return new PostUpdateResponse(
                 request.title(),
                 request.content(),
                 request.recruitType(),
