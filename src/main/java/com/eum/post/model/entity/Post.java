@@ -1,5 +1,6 @@
 package com.eum.post.model.entity;
 
+import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.enumerated.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -67,10 +68,9 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime updatedAt; // 게시물 수정날짜
 
-    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CultureFit cultureFit;
-
 
     // 정적 팩토리 메서드
     public static Post of(
@@ -98,8 +98,23 @@ public class Post {
         post.status = Status.RECRUITING; // 기본값 설정
         post.linkType = linkType;
         post.link = link;
+        post.cultureFit = CultureFit.NONE;
 
         return post;
+    }
+
+    public void updatePost(PostUpdateResponse dto) {
+        this.title = dto.title();
+        this.content = dto.content();
+        this.recruitType = dto.recruitType();
+        this.recruitMember = dto.recruitMember();
+        this.progressMethod = dto.progressMethod();
+        this.period = dto.period();
+        this.deadline = dto.deadline();
+        this.linkType = dto.linkType();
+        this.link = dto.link();
+        //this.cultureFit = dto.cultureFit();
+        // createdAt은 수정하지 않음 (JPA에서 @UpdateTimestamp로 updatedAt은 자동 업데이트)
     }
 
     public void updateStatus(Status newStatus) {
