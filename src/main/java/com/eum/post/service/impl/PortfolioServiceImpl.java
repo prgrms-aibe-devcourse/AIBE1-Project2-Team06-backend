@@ -1,5 +1,7 @@
 package com.eum.post.service.impl;
 
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.Post;
@@ -22,7 +24,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public PortfolioDto createPortfolio(Long userId, Long postId, String link) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         Double averageScore = peerReviewRepository.calculateOverallAverageScore(userId);
         if (averageScore == null) {
