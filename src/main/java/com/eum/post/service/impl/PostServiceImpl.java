@@ -6,6 +6,8 @@ import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
+import com.eum.member.model.entity.Member;
+import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.PositionDto;
 import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.TechStackDto;
@@ -13,19 +15,18 @@ import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
+import com.eum.post.model.entity.PostMember;
 import com.eum.post.model.entity.PostPosition;
 import com.eum.post.model.entity.PostTechStack;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.model.entity.enumerated.Status;
-import com.eum.post.model.repository.PostPositionRepository;
-import com.eum.post.model.repository.PostRepository;
-import com.eum.post.model.repository.PostSpecification;
-import com.eum.post.model.repository.PostTechStackRepository;
+import com.eum.post.model.repository.*;
 import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -49,32 +50,37 @@ public class PostServiceImpl implements PostService{
     private final PostPositionRepository postPositionRepository;
     private final PositionRepository positionRepository;
     private final TechStackRepository techStackRepository;
+    private final PostMemberRepository postMemberRepository;
+    private final MemberRepository memberRepository;
 
     private final PortfolioService portfolioService;
 
     @Override
+    @Transactional
     public PostResponse create(PostRequest postRequest, Long userId) {
         ValidatePostRequest.validatePostRequest(postRequest);
 
-        try{
-            // Post 엔티티 생성 및 저장
-            Post post = postRequest.toEntity(userId);
-            Post savedPost = postRepository.save(post);
+        // Post 엔티티 생성 및 저장
+        Post post = postRequest.toEntity(userId);
+        Post savedPost = postRepository.save(post);
 
-            // techStack 연결
-            List<TechStackDto> techStackDtos = saveTechStacks(savedPost, postRequest.techStackIds());
+        // 2. 모집자(Member) 조회
+        Member owner = memberRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + userId));
 
-            // position 연결
-            List<PositionDto> positionDtos = savePositions(savedPost, postRequest.positionIds());
+        // 3. 모집자(PostMember)로 등록
+        PostMember postMember = PostMember.of(savedPost, owner, true);
+        postMemberRepository.save(postMember);
 
-            // 4. DTO 변환 및 반환
-            PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
-            return PostResponse.from(postDto);
-        } catch (Exception e) {
-            // 예외 발생 시 트랜잭션이 롤백됨
-            log.error("게시글 생성 중 오류 발생: {}", e.getMessage(), e);
-            throw e;
-        }
+        // techStack 연결
+        List<TechStackDto> techStackDtos = saveTechStacks(savedPost, postRequest.techStackIds());
+
+        // position 연결
+        List<PositionDto> positionDtos = savePositions(savedPost, postRequest.positionIds());
+
+        // 4. DTO 변환 및 반환
+        PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
+        return PostResponse.from(postDto);
     }
 
     // 기술 스택 저장 메소드

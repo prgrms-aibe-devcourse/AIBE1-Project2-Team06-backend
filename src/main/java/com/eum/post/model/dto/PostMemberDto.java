@@ -10,8 +10,7 @@ public record PostMemberDto(
         Long memberId,
         String nickname,
         Boolean isOwner,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime createdAt
 ) {
     public static PostMemberDto from(PostMember postMember) {
         return new PostMemberDto(
@@ -20,8 +19,7 @@ public record PostMemberDto(
                 postMember.getMember().getId(),
                 postMember.getMember().getNickname(),
                 postMember.getIsOwner(),
-                postMember.getCreatedAt(),
-                postMember.getUpdatedAt()
+                postMember.getCreatedAt()
         );
     }
 }

@@ -12,72 +12,105 @@ import com.eum.post.model.repository.PostRepository;
 import com.eum.post.service.PostMemberService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostMemberServiceImpl implements PostMemberService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final PostMemberRepository postMemberRepository;
 
     @Override
-    @Transactional
-    public List<PostMemberResponse> addMembers(PostMemberRequest request, Long ownerId) {
-        Post post = postRepository.findById(request.postId())
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + request.postId()));
+    public List<PostMemberResponse> updateMembers(Long postId, List<String> nicknames, Long ownerId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
 
-        // 멤버 닉네임으로 멤버 엔티티 조회
-        List<Member> members = new ArrayList<>();
-        for (String nickname : request.nicknames()) {
-            Member member = memberRepository.findByNickname(nickname)
-                    .orElseThrow(() -> new EntityNotFoundException("닉네임으로 멤버를 찾을 수 없습니다: " + nickname));
-            members.add(member);
+        // 1. 닉네임 목록으로 멤버 조회
+        List<Member> requestedMembers = memberRepository.findAllByNicknameIn(nicknames);
+
+        // 닉네임 유효성 검사
+        if (requestedMembers.size() < nicknames.size()) {
+            Set<String> foundNicknames = requestedMembers.stream()
+                    .map(Member::getNickname)
+                    .collect(Collectors.toSet());
+
+            Optional<String> missingNickname = nicknames.stream()
+                    .filter(nick -> !foundNicknames.contains(nick))
+                    .findFirst();
+
+            if (missingNickname.isPresent()) {
+                throw new EntityNotFoundException("닉네임으로 멤버를 찾을 수 없습니다: " + missingNickname.get());
+            }
         }
 
-        List<PostMember> postMembers = new ArrayList<>();
+        // 2. 현재 게시글의 모든 멤버 조회
+        List<PostMember> existingMembers = postMemberRepository.findAllWithMemberByPostId(postId);
 
-        // 모집자(소유자) 추가 (이미 존재하는 경우 제외)
-        if (!postMemberRepository.existsByPostIdAndMemberIdAndIsOwnerTrue(post.getId(), ownerId)) {
+        // 3. 소유자 확인
+        PostMember ownerMember = existingMembers.stream()
+                .filter(PostMember::getIsOwner)
+                .findFirst()
+                .orElse(null);
+
+        // 소유자가 없으면 새로 추가
+        if (ownerMember == null) {
             Member owner = memberRepository.findById(ownerId)
                     .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + ownerId));
-            postMembers.add(PostMember.of(post, owner, true));
+
+            ownerMember = PostMember.of(post, owner, true);
+            postMemberRepository.save(ownerMember);
+            log.info("게시글 소유자 추가: postId={}, ownerId={}", postId, ownerId);
         }
 
-        // 나머지 멤버 추가 (중복 제외, 소유자 제외)
-        for (Member member : members) {
-            // 이미 소유자로 추가된 사용자는 건너뜀
-            if (member.getId().equals(ownerId)) {
-                continue;
-            }
+        // 4. 소유자를 제외한 기존 멤버 삭제
+        List<PostMember> membersToRemove = existingMembers.stream()
+                .filter(pm -> !pm.getIsOwner())
+                .collect(Collectors.toList());
 
-            // 이미 추가된 멤버인지 확인
-            if (postMemberRepository.findByPostIdAndMemberId(post.getId(), member.getId()).isEmpty()) {
-                postMembers.add(PostMember.of(post, member, false));
+        if (!membersToRemove.isEmpty()) {
+            postMemberRepository.deleteAll(membersToRemove);
+            log.info("게시글 멤버 삭제: postId={}, count={}", postId, membersToRemove.size());
+        }
+
+        // 5. 새 멤버 목록 생성 (소유자 제외)
+        Set<Long> memberIdsToAdd = requestedMembers.stream()
+                .map(Member::getId)
+                .filter(id -> !id.equals(ownerId)) // 소유자 제외
+                .collect(Collectors.toSet());
+
+        List<PostMember> newMembers = new ArrayList<>();
+        for (Member member : requestedMembers) {
+            if (memberIdsToAdd.contains(member.getId())) {
+                newMembers.add(PostMember.of(post, member, false));
             }
         }
 
-        List<PostMember> savedPostMembers = postMemberRepository.saveAll(postMembers);
+        List<PostMember> savedMembers = Collections.emptyList();
+        if (!newMembers.isEmpty()) {
+            savedMembers = postMemberRepository.saveAll(newMembers);
+            log.info("게시글 멤버 추가: postId={}, count={}", postId, savedMembers.size());
+        }
 
-        return savedPostMembers.stream()
-                .map(PostMemberDto::from)
-                .map(PostMemberResponse::from)
+        // 6. 결과 조회 및 반환
+        List<PostMember> resultMembers = postMemberRepository.findAllWithMemberByPostId(postId);
+
+        return resultMembers.stream()
+                .map(member -> PostMemberResponse.from(PostMemberDto.from(member)))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PostMemberResponse> getPostMembers(Long postId) {
-        List<PostMember> postMembers = postMemberRepository.findByPostId(postId);
-
-        return postMembers.stream()
-                .map(PostMemberDto::from)
-                .map(PostMemberResponse::from)
+        return postMemberRepository.findPostMembersWithMemberByPostId(postId).stream()
+                .map(member -> PostMemberResponse.from(PostMemberDto.from(member)))
                 .collect(Collectors.toList());
     }
 
@@ -87,40 +120,4 @@ public class PostMemberServiceImpl implements PostMemberService {
         return postMemberRepository.existsByPostIdAndMemberIdAndIsOwnerTrue(postId, memberId);
     }
 
-    @Override
-    @Transactional
-    public PostMemberResponse addOwner(Long postId, Long memberId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + memberId));
-
-        // 이미 소유자로 등록되어 있는지 확인
-        if (postMemberRepository.existsByPostIdAndMemberIdAndIsOwnerTrue(postId, memberId)) {
-            PostMember existingPostMember = postMemberRepository.findByPostIdAndMemberId(postId, memberId)
-                    .orElseThrow();
-
-            return PostMemberResponse.from(PostMemberDto.from(existingPostMember));
-        }
-
-        PostMember postMember = PostMember.of(post, member, true);
-        PostMember savedPostMember = postMemberRepository.save(postMember);
-
-        return PostMemberResponse.from(PostMemberDto.from(savedPostMember));
-    }
-
-    @Override
-    @Transactional
-    public void removeMember(Long postId, Long memberId) {
-        PostMember postMember = postMemberRepository.findByPostIdAndMemberId(postId, memberId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 게시글에 멤버가 없습니다."));
-
-        // 소유자는 삭제할 수 없음 (추가 보호 장치)
-        if (postMember.getIsOwner()) {
-            throw new IllegalArgumentException("게시글 소유자는 삭제할 수 없습니다.");
-        }
-
-        postMemberRepository.delete(postMember);
-    }
 }

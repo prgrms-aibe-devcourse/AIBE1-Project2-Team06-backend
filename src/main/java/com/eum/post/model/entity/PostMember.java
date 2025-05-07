@@ -38,10 +38,6 @@ public class PostMember {
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
     public static PostMember of(Post post, Member member, Boolean isOwner) {
         PostMember postMember = new PostMember();
         postMember.post = post;
