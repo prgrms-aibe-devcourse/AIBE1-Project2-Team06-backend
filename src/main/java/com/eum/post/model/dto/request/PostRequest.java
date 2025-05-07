@@ -16,6 +16,7 @@ public record PostRequest(
         LocalDate deadline,
         LinkType linkType,
         String link,
+        //CultureFit cultureFit,
         List<Long> techStackIds,
         List<Long> positionIds
 ) {
@@ -33,6 +34,7 @@ public record PostRequest(
                 deadline,
                 linkType,
                 link
+                //cultureFit
         );
     }
 }
