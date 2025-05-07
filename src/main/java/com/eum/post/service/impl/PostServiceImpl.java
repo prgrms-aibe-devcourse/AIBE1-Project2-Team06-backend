@@ -8,10 +8,10 @@ import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
 import com.eum.post.model.dto.PositionDto;
 import com.eum.post.model.dto.PostDto;
-import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.dto.TechStackDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
+import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostPosition;
 import com.eum.post.model.entity.PostTechStack;
@@ -157,7 +157,7 @@ public class PostServiceImpl implements PostService{
     public PostResponse update(Long postId, PostRequest postRequest, Long userId) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 작성자 검증
         if (!post.getUserId().equals(userId)) {
@@ -196,7 +196,7 @@ public class PostServiceImpl implements PostService{
     public void deletePost(Long postId, Long userId) {
         //게시글 조회
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 작성자 확인 (권한 검증)
         if (post.getUserId().equals(userId)) {
