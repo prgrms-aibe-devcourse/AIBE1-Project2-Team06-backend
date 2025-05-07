@@ -20,12 +20,12 @@ spring:
     password:
 
 kakao:
-  client-id: 47f3cbfe455bf08ea91d0a632829b65e
-  client-secret: ZOr9IJzSHRQ6Q2R3lLUBlvztaraWdLvi
-  redirect-uri: http://localhost:3000/auth/kakao/callback
-  token-uri: https://kauth.kakao.com/oauth/token
-  user-info-uri: https://kapi.kakao.com/v2/user/me
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI}
+  token-uri: ${KAKAO_TOKEN_URI}
+  user-info-uri: ${KAKAO_USER_INFO_URI}
 
 jwt:
-  secret: oiYrT+VQBAVivGDjSQINjHoyBpIW7Sz/89cFZq7WRGU=
+  secret: ${JWT_SECRET}
   expiration: 3600000
