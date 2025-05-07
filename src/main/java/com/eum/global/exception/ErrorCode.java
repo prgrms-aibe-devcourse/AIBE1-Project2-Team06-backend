@@ -27,8 +27,9 @@ public enum ErrorCode {
     AI_SERVICE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "A001", "AI 서비스 호출 중 오류가 발생했습니다"),
 
     // 리뷰 관련 오류
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R001", "리뷰를 찾을 수 없습니다"),
-    DUPLICATE_REVIEW(HttpStatus.CONFLICT, "R002", "이미 리뷰를 작성했습니다");
+    SELF_REVIEW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "R001", "자기 자신에 대한 리뷰는 작성할 수 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R002", "리뷰를 찾을 수 없습니다"),
+    DUPLICATE_REVIEW(HttpStatus.CONFLICT, "R003", "이미 리뷰를 작성했습니다");
 
     private final HttpStatus status;
     private final String code;
