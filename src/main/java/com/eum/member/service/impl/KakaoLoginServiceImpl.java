@@ -50,7 +50,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
         KakaoUserInfo userInfo = getUserInfo(accessToken);
 
-        Member member = memberRepository.findMemberByAuthId(userInfo.getId())
+        Member member = memberRepository.findMemberByAuthIdAndProvider(userInfo.getId(), provider)
                 .orElseGet(() -> {
                     UUID publicId = UUID.randomUUID();
 
@@ -69,7 +69,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                 });
         String token = jwtUtil.generateToken(member.getPublicId().toString());
 
-        return new LoginResponseDto(member.getId(), member.getAuthId(), token);
+        return new LoginResponseDto(token);
     }
 
     // JWT 토큰 유효성 검사
@@ -86,7 +86,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
         formData.add("code", code);
 
         Map<String, Object> response = webClient.post()
-                .uri("https://kauth.kakao.com/oauth/token")
+                .uri(tokenUri)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()
