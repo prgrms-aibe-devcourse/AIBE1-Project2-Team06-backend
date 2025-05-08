@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +21,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
+    @Column(nullable = false, unique = true, updatable = false)
     private UUID publicId; // 외부 통신에 쓰이는 id -> jwt 만들기
 
     // 카카오에서 받은 user 식별자
@@ -29,19 +31,16 @@ public class Member {
     private String provider;
 
     // 프로필에서 설정할 정보
+    @Setter
     @Column(nullable = false, unique = true)
     private String nickname;
     @Column
     private String profileImageUrl;
-    // 직무
-    @Column(nullable = false)
-    private String position;
-    // 기술 스택
-    @Column(nullable = false)
-    private String techStack;
     // 경력
+    @Setter
     @Column(nullable = false)
     private String career;
+    @Setter
     @Column
     private String shortDescription;
 
@@ -49,27 +48,36 @@ public class Member {
     @Column(nullable = false, updatable = false)
     LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberPosition> memberPositions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberTechStack> memberTechStacks = new ArrayList<>();
+
     public static Member of (
             String authId,
             String provider,
-            String nickname,
             String profileImageUrl,
-            String position,
-            String techStack,
             String career,
             String shortDescription
     ) {
         Member member = new Member();
+        member.publicId = UUID.randomUUID();
         member.authId = authId;
         member.provider = provider;
-        member.nickname = nickname;
+        member.nickname = member.publicId.toString();
         member.profileImageUrl = profileImageUrl;
-        member.position = position;
-        member.techStack = techStack;
         member.career = career;
         member.shortDescription = shortDescription;
 
         return member;
     }
 
+    public void addPosition(MemberPosition memberPosition) {
+        memberPositions.add(memberPosition);
+    }
+
+    public void addTechStack(MemberTechStack memberTechStack) {
+        memberTechStacks.add(memberTechStack);
+    }
 }
