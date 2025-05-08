@@ -3,11 +3,12 @@ package com.eum.post.model.dto;
 import com.eum.post.model.entity.PostMember;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record PostMemberDto(
         Long id,
         Long postId,
-        Long memberId,
+        UUID memberId,
         String nickname,
         Boolean isOwner,
         LocalDateTime createdAt
@@ -16,7 +17,7 @@ public record PostMemberDto(
         return new PostMemberDto(
                 postMember.getId(),
                 postMember.getPost().getId(),
-                postMember.getMember().getId(),
+                postMember.getMember().getPublicId(),
                 postMember.getMember().getNickname(),
                 postMember.getIsOwner(),
                 postMember.getCreatedAt()

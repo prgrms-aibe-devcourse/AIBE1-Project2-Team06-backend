@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,20 +58,18 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public PostResponse create(PostRequest postRequest, Long userId) {
-        ValidatePostRequest.validatePostRequest(postRequest);
+    public PostResponse create(
+            PostRequest postRequest,
+            //Long userId
+            UUID publicId
+    ) {
+        // Member 조회
+        Member member = memberRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + publicId));
 
         // Post 엔티티 생성 및 저장
-        Post post = postRequest.toEntity(userId);
+        Post post = postRequest.toEntity(member);
         Post savedPost = postRepository.save(post);
-
-        // 2. 모집자(Member) 조회
-        Member owner = memberRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + userId));
-
-        // 3. 모집자(PostMember)로 등록
-        PostMember postMember = PostMember.of(savedPost, owner, true);
-        postMemberRepository.save(postMember);
 
         // techStack 연결
         List<TechStackDto> techStackDtos = saveTechStacks(savedPost, postRequest.techStackIds());
@@ -81,6 +80,29 @@ public class PostServiceImpl implements PostService{
         // 4. DTO 변환 및 반환
         PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
         return PostResponse.from(postDto);
+//        ValidatePostRequest.validatePostRequest(postRequest);
+//
+//        // Post 엔티티 생성 및 저장
+//        Post post = postRequest.toEntity(userId);
+//        Post savedPost = postRepository.save(post);
+//
+//        // 2. 모집자(Member) 조회
+//        Member owner = memberRepository.findByPublicId(userId)
+//                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + userId));
+//
+//        // 3. 모집자(PostMember)로 등록
+//        PostMember postMember = PostMember.of(savedPost, owner, true);
+//        postMemberRepository.save(postMember);
+//
+//        // techStack 연결
+//        List<TechStackDto> techStackDtos = saveTechStacks(savedPost, postRequest.techStackIds());
+//
+//        // position 연결
+//        List<PositionDto> positionDtos = savePositions(savedPost, postRequest.positionIds());
+//
+//        // 4. DTO 변환 및 반환
+//        PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
+//        return PostResponse.from(postDto);
     }
 
     // 기술 스택 저장 메소드
@@ -160,13 +182,18 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public PostResponse update(Long postId, PostRequest postRequest, Long userId) {
+    public PostResponse update(
+            Long postId,
+            PostRequest postRequest,
+            //Long userId
+            UUID publicId
+    ) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 작성자 검증
-        if (!post.getUserId().equals(userId)) {
+        if (!post.getMemberPublicId().equals(publicId)) {
             throw new IllegalArgumentException("해당 게시글의 수정 권한이 없습니다.");
         }
 
@@ -195,17 +222,55 @@ public class PostServiceImpl implements PostService{
         // DTO 변환 및 반환
         PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
         return PostResponse.from(postDto);
+//        // 게시글 조회
+//        Post post = postRepository.findById(postId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+//
+//        // 작성자 검증
+//        if (!post.getPublicId().equals(userId)) {
+//            throw new IllegalArgumentException("해당 게시글의 수정 권한이 없습니다.");
+//        }
+//
+//        // 마감된 게시글 수정 제한
+//        if (post.getStatus() == Status.CLOSED) {
+//            throw new IllegalStateException("마감된 게시글은 수정할 수 없습니다.");
+//        }
+//
+//        // 요청 유효성 검증
+//        ValidatePostRequest.validatePostRequest(postRequest);
+//
+//        // PostRequest를 PostUpdateDto로 변환하고 엔티티 업데이트
+//        PostUpdateResponse updateDto = PostUpdateResponse.from(postRequest);
+//        post.updatePost(updateDto);
+//
+//        // 기존 연결된 기술 스택 및 포지션 삭제
+//        List<PostTechStack> techStacks = postTechStackRepository.findByPostId(postId);
+//        List<PostPosition> positions = postPositionRepository.findByPostId(postId);
+//        postTechStackRepository.deleteAll(techStacks);
+//        postPositionRepository.deleteAll(positions);
+//
+//        // 새로운 기술 스택 및 포지션 연결
+//        List<TechStackDto> techStackDtos = saveTechStacks(post, postRequest.techStackIds());
+//        List<PositionDto> positionDtos = savePositions(post, postRequest.positionIds());
+//
+//        // DTO 변환 및 반환
+//        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
+//        return PostResponse.from(postDto);
     }
 
     @Override
     @Transactional
-    public void deletePost(Long postId, Long userId) {
+    public void deletePost(
+            Long postId,
+            //Long userId
+            UUID publicId
+    ) {
         //게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 작성자 확인 (권한 검증)
-        if (post.getUserId().equals(userId)) {
+        if (post.getMemberPublicId().equals(publicId)) {
             // 게시글과 연결된 기술 스택 제거
             List<PostTechStack> postTechStacks = postTechStackRepository.findByPostId(postId);
             postTechStackRepository.deleteAll(postTechStacks);
@@ -215,10 +280,27 @@ public class PostServiceImpl implements PostService{
             postPositionRepository.deleteAll(postPositions);
 
             postRepository.delete(post);
-        } else if (!post.getUserId().equals(userId)) {
+        } else {
             throw new IllegalArgumentException("해당 게시글의 삭제 권한이 없습니다.");
         }
-
+//        //게시글 조회
+//        Post post = postRepository.findById(postId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+//
+//        // 작성자 확인 (권한 검증)
+//        if (post.getPublicId().equals(userId)) {
+//            // 게시글과 연결된 기술 스택 제거
+//            List<PostTechStack> postTechStacks = postTechStackRepository.findByPostId(postId);
+//            postTechStackRepository.deleteAll(postTechStacks);
+//
+//            // 게시글과 연결된 포지션 제거
+//            List<PostPosition> postPositions = postPositionRepository.findByPostId(postId);
+//            postPositionRepository.deleteAll(postPositions);
+//
+//            postRepository.delete(post);
+//        } else if (!post.getPublicId().equals(userId)) {
+//            throw new IllegalArgumentException("해당 게시글의 삭제 권한이 없습니다.");
+//        }
     }
 
     //merge 된 부분

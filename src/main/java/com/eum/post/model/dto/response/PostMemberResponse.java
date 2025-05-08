@@ -3,11 +3,12 @@ package com.eum.post.model.dto.response;
 import com.eum.post.model.dto.PostMemberDto;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record PostMemberResponse(
         Long id,
         Long postId,
-        Long memberId,
+        UUID memberId,
         String nickname,
         Boolean isOwner,
         LocalDateTime createdAt

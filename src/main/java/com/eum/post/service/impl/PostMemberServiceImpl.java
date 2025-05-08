@@ -29,7 +29,11 @@ public class PostMemberServiceImpl implements PostMemberService {
 
     @Override
     @Transactional
-    public List<PostMemberResponse> updateMembers(Long postId, List<String> nicknames, Long ownerId) {
+    public List<PostMemberResponse> updateMembers(
+            Long postId, List<String> nicknames,
+            //Long ownerId
+            UUID ownerId
+    ) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
 
@@ -61,7 +65,7 @@ public class PostMemberServiceImpl implements PostMemberService {
 
         // 모집자가 없으면 새로 추가 (추가적인 검증)
         if (ownerMember == null) {
-            Member owner = memberRepository.findById(ownerId)
+            Member owner = memberRepository.findByPublicId(ownerId)
                     .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + ownerId));
 
             ownerMember = PostMember.of(post, owner, true);
@@ -80,14 +84,27 @@ public class PostMemberServiceImpl implements PostMemberService {
         }
 
         // 새 멤버 목록 생성 (모집자 제외)
-        Set<Long> membersToAdd = requestedMembers.stream()
-                .map(Member::getId)
-                .filter(id -> !id.equals(ownerId)) // 소유자 제외
+//        Set<Long> membersToAdd = requestedMembers.stream()
+//                .map(Member::getId)
+//                .filter(id -> !id.equals(ownerId)) // 소유자 제외
+//                .collect(Collectors.toSet());
+//
+//        List<PostMember> newMembers = new ArrayList<>();
+//        for (Member member : requestedMembers) {
+//            if (membersToAdd.contains(member.getPublicId())) {
+//                newMembers.add(PostMember.of(post, member, false));
+//            }
+//        }
+
+        // 새 멤버 목록 생성 (모집자 제외)
+        Set<UUID> membersToAdd = requestedMembers.stream()
+                .map(Member::getPublicId)  // ID 대신 publicId 사용
+                .filter(publicId -> !publicId.equals(ownerId))  // 소유자 제외
                 .collect(Collectors.toSet());
 
         List<PostMember> newMembers = new ArrayList<>();
         for (Member member : requestedMembers) {
-            if (membersToAdd.contains(member.getId())) {
+            if (membersToAdd.contains(member.getPublicId())) {  // ID 대신 publicId 사용
                 newMembers.add(PostMember.of(post, member, false));
             }
         }
@@ -108,14 +125,17 @@ public class PostMemberServiceImpl implements PostMemberService {
     @Override
     @Transactional(readOnly = true)
     public List<PostMemberResponse> getPostMembers(Long postId) {
-        return postMemberRepository.findPostMembersWithMemberByPostId(postId).stream()
+        return postMemberRepository.findAllWithMemberByPostId(postId).stream()
                 .map(member -> PostMemberResponse.from(PostMemberDto.from(member)))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isOwner(Long postId, Long memberId) {
-        return postMemberRepository.existsByPostIdAndMemberIdAndIsOwnerTrue(postId, memberId);
+    public boolean isOwner(Long postId,
+                           //Long memberId
+                           UUID memberId
+    ) {
+        return postMemberRepository.existsByPost_IdAndMember_PublicIdAndIsOwnerTrue(postId, memberId);
     }
 }

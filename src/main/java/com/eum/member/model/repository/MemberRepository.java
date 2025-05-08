@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -16,4 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     //PostMemeberSerivceImpl에서 사용
     List<Member> findAllByNicknameIn(List<String> allNicknames);
+    Optional<Member> findByPublicId(UUID publicId);
+
+    UUID publicId(UUID publicId);
 }

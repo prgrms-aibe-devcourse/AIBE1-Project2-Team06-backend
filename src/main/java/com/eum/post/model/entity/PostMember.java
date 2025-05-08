@@ -24,7 +24,8 @@ public class PostMember {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    //@JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "public_id", referencedColumnName = "publicId", nullable = false)
     private Member member;
 
     @Column(nullable = false)

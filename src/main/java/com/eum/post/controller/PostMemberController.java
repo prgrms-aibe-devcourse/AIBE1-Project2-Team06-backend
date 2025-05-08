@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -23,7 +24,8 @@ public class PostMemberController {
     @PostMapping("/{postId}/members")
     public ResponseEntity<List<PostMemberResponse>> updateMembers(
             @PathVariable Long postId,
-            @RequestHeader("X-USER-ID") Long userId,
+            //@RequestHeader("X-USER-ID") Long userId,
+            @RequestHeader("Authorization") UUID userId,
             @RequestBody PostMemberRequest request) {
 
         // 본인이 게시글 모집자인지 확인 (권한 검사)

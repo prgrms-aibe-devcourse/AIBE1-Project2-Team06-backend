@@ -6,10 +6,13 @@ import com.eum.post.model.entity.enumerated.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public record PostResponse(
         Long id,
-        Long userId,
+        //Long userId,
+        UUID publicId,
+        String nickname,
         String title,
         String content,
         RecruitType recruitType,
@@ -38,7 +41,8 @@ public record PostResponse(
 
         return new PostResponse(
                 dto.id(),
-                dto.userId(),
+                dto.publicId(),
+                dto.nickname(),
                 dto.title(),
                 dto.content(),
                 dto.recruitType(),
