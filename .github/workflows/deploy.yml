@@ -1,0 +1,84 @@
+name: CI/CD Pipeline
+
+# main 브랜치에 푸시될 때마다 전체 파이프라인 실행
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # 1️⃣ 빌드 및 이미지 푸시
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2) JDK 17 설치 (Eclipse Temurin)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3) Gradle Wrapper 실행 권한 부여
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # 4) Gradle 빌드 (테스트 제외, 캐시·병렬 빌드)
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon --parallel --build-cache -x test
+
+      # 5) Docker Buildx 설치
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 6) Docker Hub 로그인
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" \
+            | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      # 7) Docker 이미지 빌드 & 푸시
+      - name: Build and push Docker image
+        run: |
+          docker build -t evencrunchy/aibe1-project2-team06-backend:latest .
+          docker push evencrunchy/aibe1-project2-team06-backend:latest
+
+  # 2️⃣ EC2 자동 배포 단계 (SSH)
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) SSH 액션을 이용해 EC2에 접속
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}          # EC2 퍼블릭 IP 또는 DNS
+          username: ec2-user                     # EC2 사용자 계정
+          key: ${{ secrets.EC2_SSH_KEY }}        # SSH private key (pem 파일 내용)
+          # 아래 스크립트를 EC2에서 순차 실행
+          script: |
+            # 최신 이미지 pull
+            docker pull evencrunchy/aibe1-project2-team06-backend:latest
+
+            # 기존 컨테이너 중지 및 삭제 (없어도 에러 안 남)
+            docker stop myapp || true
+            docker rm   myapp || true
+
+            # 새 컨테이너 실행 (환경변수 Secrets에서 주입)
+            docker run -d \
+              -p 8080:8080 \
+              --name myapp \
+              -e KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}" \
+              -e KAKAO_CLIENT_SECRET="${{ secrets.KAKAO_CLIENT_SECRET }}" \
+              -e KAKAO_REDIRECT_URI="${{ secrets.KAKAO_REDIRECT_URI }}" \
+              -e KAKAO_TOKEN_URI="${{ secrets.KAKAO_TOKEN_URI }}" \
+              -e KAKAO_USER_INFO_URI="${{ secrets.KAKAO_USER_INFO_URI }}" \
+              -e GEMINI_API_BASE_URL="${{ secrets.GEMINI_API_BASE_URL }}" \
+              -e GEMINI_API_URL="${{ secrets.GEMINI_API_URL }}" \
+              -e GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              evencrunchy/aibe1-project2-team06-backend:latest

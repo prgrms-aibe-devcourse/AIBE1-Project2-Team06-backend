@@ -1,0 +1,13 @@
+# Gradle 빌드 캐시 제외
+.gradle
+
+# 로컬 빌드 결과물 제외
+build
+out
+
+# 문서 파일 제외
+*.md
+
+# Git 메타데이터 제외
+.git
+.gitignore
