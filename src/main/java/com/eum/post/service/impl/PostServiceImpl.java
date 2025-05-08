@@ -63,13 +63,19 @@ public class PostServiceImpl implements PostService{
             //Long userId
             UUID publicId
     ) {
+        ValidatePostRequest.validatePostRequest(postRequest);
+
         // Member 조회
-        Member member = memberRepository.findByPublicId(publicId)
+        Member owner = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + publicId));
 
         // Post 엔티티 생성 및 저장
-        Post post = postRequest.toEntity(member);
+        Post post = postRequest.toEntity(owner);
         Post savedPost = postRepository.save(post);
+
+        // 3. 모집자(PostMember)로 등록
+        PostMember postMember = PostMember.of(savedPost, owner, true);
+        postMemberRepository.save(postMember);
 
         // techStack 연결
         List<TechStackDto> techStackDtos = saveTechStacks(savedPost, postRequest.techStackIds());

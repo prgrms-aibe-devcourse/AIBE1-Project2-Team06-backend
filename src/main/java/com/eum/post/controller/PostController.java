@@ -73,16 +73,15 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(
             @RequestBody PostRequest request,
             //@RequestHeader("X-USER-ID") Long userId
-            //@RequestHeader("Authorization") UUID userId,
-            HttpServletRequest httpRequest
+            @RequestHeader("Authorization") UUID userId
+            //HttpServletRequest httpRequest
         ) {
 
         // JWT 인터셉터가 설정한 publicId 가져오기
-        String publicIdStr = (String) httpRequest.getAttribute("publicId");
-        UUID publicId = UUID.fromString(publicIdStr);
+        //UUID publicId = getUuid(httpRequest);
 
-        //PostResponse response = postService.create(request, userId);
-        PostResponse response = postService.create(request, publicId);
+        PostResponse response = postService.create(request, userId);
+        //PostResponse response = postService.create(request, publicId);
         // 201 Created 상태코드와 함께 응답
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -91,21 +90,20 @@ public class PostController {
      * 게시글 삭제 API
      *
      * @param postId
-     * @param httpRequest
+     * @param
      * @return
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long postId,
             //@RequestHeader("X-USER-ID") Long userId
-            //@RequestHeader("Authorization") UUID userId
-            HttpServletRequest httpRequest
+            @RequestHeader("Authorization") UUID userId
+            //HttpServletRequest httpRequest
     ) {
-        String publicIdStr = (String) httpRequest.getAttribute("publicId");
-        UUID publicId = UUID.fromString(publicIdStr);
+        //UUID publicId = getUuid(httpRequest);
 
-        //postService.deletePost(postId, userId);
-        postService.deletePost(postId, publicId);
+        postService.deletePost(postId, userId);
+        //postService.deletePost(postId, publicId);
         return ResponseEntity.noContent().build(); // 204 No Content 상태코드 반환
     }
 
@@ -114,7 +112,7 @@ public class PostController {
      *
      * @param postId
      * @param request
-     * @param httpRequest
+     * @param
      * @return
      */
     @PutMapping("/{postId}")
@@ -122,14 +120,13 @@ public class PostController {
             @PathVariable Long postId,
             @RequestBody PostRequest request,
             //@RequestHeader("X-USER-ID") Long userId
-            //@RequestHeader("Authorization") UUID userId
-            HttpServletRequest httpRequest
+            @RequestHeader("Authorization") UUID userId
+            //HttpServletRequest httpRequest
     ) {
-        String publicIdStr = (String) httpRequest.getAttribute("publicId");
-        UUID publicId = UUID.fromString(publicIdStr);
+        //UUID publicId = getUuid(httpRequest);
 
-        //PostResponse response = postService.update(postId, request, userId);
-        PostResponse response = postService.update(postId, request, publicId);
+        PostResponse response = postService.update(postId, request, userId);
+        //PostResponse response = postService.update(postId, request, publicId);
         return ResponseEntity.ok(response);
     }
 
@@ -139,5 +136,11 @@ public class PostController {
             @RequestHeader("X-USER-ID") Long userId,
             @RequestBody String githubLink) {
         return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
+    }
+
+    private static UUID getUuid(HttpServletRequest httpRequest) {
+        String publicIdStr = (String) httpRequest.getAttribute("publicId");
+        UUID publicId = UUID.fromString(publicIdStr);
+        return publicId;
     }
 }

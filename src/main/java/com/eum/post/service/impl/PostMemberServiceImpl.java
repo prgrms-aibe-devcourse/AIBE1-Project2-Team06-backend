@@ -6,6 +6,7 @@ import com.eum.post.model.dto.PostMemberDto;
 import com.eum.post.model.dto.response.PostMemberResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostMember;
+import com.eum.post.model.entity.enumerated.Status;
 import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.post.service.PostMemberService;
@@ -84,19 +85,6 @@ public class PostMemberServiceImpl implements PostMemberService {
         }
 
         // 새 멤버 목록 생성 (모집자 제외)
-//        Set<Long> membersToAdd = requestedMembers.stream()
-//                .map(Member::getId)
-//                .filter(id -> !id.equals(ownerId)) // 소유자 제외
-//                .collect(Collectors.toSet());
-//
-//        List<PostMember> newMembers = new ArrayList<>();
-//        for (Member member : requestedMembers) {
-//            if (membersToAdd.contains(member.getPublicId())) {
-//                newMembers.add(PostMember.of(post, member, false));
-//            }
-//        }
-
-        // 새 멤버 목록 생성 (모집자 제외)
         Set<UUID> membersToAdd = requestedMembers.stream()
                 .map(Member::getPublicId)  // ID 대신 publicId 사용
                 .filter(publicId -> !publicId.equals(ownerId))  // 소유자 제외
@@ -112,6 +100,13 @@ public class PostMemberServiceImpl implements PostMemberService {
         if (!newMembers.isEmpty()) {
             List<PostMember> savedMembers = postMemberRepository.saveAll(newMembers);
             log.info("게시글 멤버 추가: postId={}, count={}", postId, savedMembers.size());
+
+            // 멤버가 추가되었을 때 게시글 상태를 ONGOING으로 변경
+            if (post.getStatus() == Status.RECRUITING || post.getStatus() == Status.CLOSED) {
+                post.updateStatus(Status.ONGOING);
+                postRepository.save(post);
+                log.info("게시글 상태가 ONGOING으로 변경됨: postId={}", postId);
+            }
         }
 
         // 결과 조회 및 반환
