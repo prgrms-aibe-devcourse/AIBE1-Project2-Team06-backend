@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
 
             if (jwtUtil.validateJwtToken(token)) {
                 Claims claims = jwtUtil.extractClaims(token);
-                String publicId = claims.getSubject();
+                UUID publicId = UUID.fromString(claims.getSubject());
 
                 // 요청 속성에 저장
                 request.setAttribute("publicId", publicId);
