@@ -4,6 +4,7 @@ import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
+import com.eum.member.model.dto.response.MemberProfileResponseDto;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.entity.MemberPosition;
 import com.eum.member.model.entity.MemberTechStack;
@@ -60,5 +61,30 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // JPA의 영속성 컨텍스트에 의해 자동 flush됨
+    }
+
+    @Override
+    @Transactional
+    public MemberProfileResponseDto getProfile(UUID memberPublicId) {
+        Member member = memberRepository.findByPublicId(memberPublicId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        String position = member.getMemberPositions().stream()
+                .findFirst()
+                .map(mp -> mp.getPosition().getName())
+                .orElse(null);
+
+        List<String> techStackNames = member.getMemberTechStacks().stream()
+                .map(mts -> mts.getTechStack().getName())
+                .toList();
+
+        return new MemberProfileResponseDto(
+                member.getNickname(),
+                member.getCareer(),
+                member.getShortDescription(),
+                member.getProfileImageUrl(),
+                position,
+                techStackNames
+        );
     }
 }
