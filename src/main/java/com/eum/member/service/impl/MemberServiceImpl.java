@@ -38,9 +38,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 
         // 필드 업데이트
-        member.setNickname(nickname);
-        member.setCareer(career);
-        member.setShortDescription(shortDescription);
+        member.updateProfile(nickname, career, shortDescription);
 
         // 기존 관계 제거
         member.getMemberPositions().clear();

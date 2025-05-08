@@ -31,16 +31,13 @@ public class Member {
     private String provider;
 
     // 프로필에서 설정할 정보
-    @Setter
     @Column(nullable = false, unique = true)
     private String nickname;
     @Column
     private String profileImageUrl;
     // 경력
-    @Setter
     @Column(nullable = false)
     private String career;
-    @Setter
     @Column
     private String shortDescription;
 
@@ -79,5 +76,11 @@ public class Member {
 
     public void addTechStack(MemberTechStack memberTechStack) {
         memberTechStacks.add(memberTechStack);
+    }
+
+    public void updateProfile(String nickname, String career, String shortDescription) {
+        this.nickname = nickname;
+        this.career = career;
+        this.shortDescription = shortDescription;
     }
 }
