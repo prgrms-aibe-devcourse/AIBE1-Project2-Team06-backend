@@ -1,6 +1,7 @@
 package com.eum.member.controller;
 
 import com.eum.member.model.dto.request.UpdateProfileRequestDto;
+import com.eum.member.model.dto.response.MemberProfileResponseDto;
 import com.eum.member.service.impl.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,12 @@ public class MemberController {
                 request.techStackIds()
         );
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<MemberProfileResponseDto> getProfile(HttpServletRequest request) {
+        UUID memberPublicId = (UUID) request.getAttribute("publicId");
+        MemberProfileResponseDto profile = memberService.getProfile(memberPublicId);
+        return ResponseEntity.ok(profile);
     }
 }
