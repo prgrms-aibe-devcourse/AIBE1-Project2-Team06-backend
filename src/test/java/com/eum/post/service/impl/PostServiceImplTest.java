@@ -1,6 +1,7 @@
 package com.eum.post.service.impl;
 
 import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
@@ -172,6 +173,21 @@ public class PostServiceImplTest {
         assertNotNull(response);
         assertEquals(testPost.getTitle(), response.title());
         assertEquals(testPost.getContent(), response.content());
+        verify(postRepository, times(1)).findById(postId);
+    }
+
+    @Test
+    @DisplayName("게시글 조회 - 게시글 없음 실패")
+    void findByPostIdPostNotFoundFail() {
+        // given
+        Long postId = 999L;
+        given(postRepository.findById(postId)).willReturn(Optional.empty());
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () ->
+                postService.findByPostId(postId));
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
         verify(postRepository, times(1)).findById(postId);
     }
 }
