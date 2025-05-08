@@ -24,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
@@ -31,7 +32,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class PostServiceImplTest {
@@ -86,6 +88,18 @@ public class PostServiceImplTest {
         );
 
         testPost = testPostRequest.toEntity(testUserId);
+        setPostId(testPost, 1L);
+    }
+
+    // 유틸리티 메서드
+    private void setPostId(Post post, Long id) {
+        try {
+            Field idField = Post.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(post, id);
+        } catch (Exception e) {
+            throw new RuntimeException("ID 설정 실패", e);
+        }
     }
 
     @Test
@@ -126,7 +140,7 @@ public class PostServiceImplTest {
 
     @Test
     @DisplayName("게시글 생성 - 포지션 없음 실패")
-    void create_PositionNotFound_Fail() {
+    void createPositionNotFoundFail() {
         // given
         given(postRepository.save(any(Post.class))).willReturn(testPost);
         given(techStackRepository.findById(1L)).willReturn(Optional.of(testTechStack));
@@ -140,5 +154,24 @@ public class PostServiceImplTest {
         verify(postRepository, times(1)).save(any(Post.class));
         verify(techStackRepository, times(1)).findById(1L);
         verify(positionRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("게시글 조회 - 성공")
+    void findByPostIdSuccess() {
+        // given
+        Long postId = 1L;
+        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+        given(postTechStackRepository.findByPostId(postId)).willReturn(Arrays.asList());
+        given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
+
+        // when
+        PostResponse response = postService.findByPostId(postId);
+
+        // then
+        assertNotNull(response);
+        assertEquals(testPost.getTitle(), response.title());
+        assertEquals(testPost.getContent(), response.content());
+        verify(postRepository, times(1)).findById(postId);
     }
 }
