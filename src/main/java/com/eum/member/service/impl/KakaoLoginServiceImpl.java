@@ -58,8 +58,8 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                             userInfo.getId(),
                             provider,
                             publicId.toString(),
-                            "UNDEFINED",
-                            "UNDEFINED",
+                            null,
+                            "UNDEFINED", //not null
                             null
                     );
                     //publicId 세팅

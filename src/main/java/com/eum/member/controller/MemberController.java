@@ -1,6 +1,6 @@
 package com.eum.member.controller;
 
-import com.eum.member.model.dto.request.UpdateProfileRequest;
+import com.eum.member.model.dto.request.UpdateProfileRequestDto;
 import com.eum.member.service.impl.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class MemberController {
     @PutMapping("/profile")
     public ResponseEntity<Void> updateProfile(
             HttpServletRequest httpServletRequest,
-            @RequestBody UpdateProfileRequest request
+            @RequestBody UpdateProfileRequestDto request
     ) {
         UUID memberPublicId = (UUID) httpServletRequest.getAttribute("publicId");
 
