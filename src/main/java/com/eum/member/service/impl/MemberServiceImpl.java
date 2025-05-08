@@ -63,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberProfileResponseDto getProfile(UUID memberPublicId) {
+    public MemberProfileResponseDto getProfileByPublicId(UUID memberPublicId) {
         Member member = memberRepository.findByPublicId(memberPublicId)
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 

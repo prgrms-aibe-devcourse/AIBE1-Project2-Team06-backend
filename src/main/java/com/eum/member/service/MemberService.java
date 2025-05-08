@@ -15,5 +15,5 @@ public interface MemberService {
             List<Long> techStackIds
     );
 
-    MemberProfileResponseDto getProfile(UUID memberPublicId);
+    MemberProfileResponseDto getProfileByPublicId(UUID memberPublicId);
 }

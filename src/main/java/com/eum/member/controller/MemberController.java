@@ -35,9 +35,9 @@ public class MemberController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<MemberProfileResponseDto> getProfile(HttpServletRequest request) {
+    public ResponseEntity<MemberProfileResponseDto> getProfileByPublicId(HttpServletRequest request) {
         UUID memberPublicId = (UUID) request.getAttribute("publicId");
-        MemberProfileResponseDto profile = memberService.getProfile(memberPublicId);
+        MemberProfileResponseDto profile = memberService.getProfileByPublicId(memberPublicId);
         return ResponseEntity.ok(profile);
     }
 }
