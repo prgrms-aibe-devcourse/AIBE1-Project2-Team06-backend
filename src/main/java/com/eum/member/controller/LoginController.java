@@ -3,6 +3,7 @@ package com.eum.member.controller;
 import com.eum.member.model.dto.request.LoginRequestDto;
 import com.eum.member.model.dto.response.LoginResponseDto;
 import com.eum.member.service.KakaoLoginService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -42,4 +43,6 @@ public class LoginController {
             return ResponseEntity.status(401).body("Invalid or expired token");
         }
     }
+
+
 }
