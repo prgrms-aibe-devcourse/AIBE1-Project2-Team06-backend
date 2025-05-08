@@ -8,7 +8,8 @@ import java.util.UUID;
 public record PostMemberDto(
         Long id,
         Long postId,
-        UUID memberId,
+        Long memberId,
+        UUID publicId,
         String nickname,
         Boolean isOwner,
         LocalDateTime createdAt
@@ -17,6 +18,7 @@ public record PostMemberDto(
         return new PostMemberDto(
                 postMember.getId(),
                 postMember.getPost().getId(),
+                postMember.getMember().getId(),
                 postMember.getMember().getPublicId(),
                 postMember.getMember().getNickname(),
                 postMember.getIsOwner(),

@@ -3,7 +3,6 @@ package com.eum.post.service;
 import com.eum.post.model.dto.response.PostMemberResponse;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface PostMemberService {
     /**
@@ -15,8 +14,7 @@ public interface PostMemberService {
      * @param ownerId 소유자(모집자) ID
      * @return 업데이트된 멤버 목록
      */
-    //List<PostMemberResponse> updateMembers(Long postId, List<String> nicknames, Long ownerId);
-    List<PostMemberResponse> updateMembers(Long postId, List<String> nicknames, UUID ownerId);
+    List<PostMemberResponse> updateMembers(Long postId, List<String> nicknames, Long ownerId);
 
     /**
      * 게시글 멤버 목록을 조회합니다.
@@ -33,6 +31,5 @@ public interface PostMemberService {
      * @param memberId 확인할 멤버 ID
      * @return 소유자 여부
      */
-    //boolean isOwner(Long postId, Long memberId);
-    boolean isOwner(Long postId, UUID memberId);
+    boolean isOwner(Long postId, Long memberId);
 }

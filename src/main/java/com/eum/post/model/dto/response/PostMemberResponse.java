@@ -8,7 +8,7 @@ import java.util.UUID;
 public record PostMemberResponse(
         Long id,
         Long postId,
-        UUID memberId,
+        UUID publicId,
         String nickname,
         Boolean isOwner,
         LocalDateTime createdAt
@@ -17,7 +17,7 @@ public record PostMemberResponse(
         return new PostMemberResponse(
                 dto.id(),
                 dto.postId(),
-                dto.memberId(),
+                dto.publicId(),
                 dto.nickname(),
                 dto.isOwner(),
                 dto.createdAt()

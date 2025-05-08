@@ -27,7 +27,7 @@ public class Post {
     private Long id; // 게시물 ID
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "public_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private Member member; // 모집자
 
     @Column(nullable = false , length = 255)

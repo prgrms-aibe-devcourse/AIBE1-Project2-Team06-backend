@@ -78,10 +78,13 @@ public class PostController {
         ) {
 
         // JWT 인터셉터가 설정한 publicId 가져오기
-        //UUID publicId = getUuid(httpRequest);
+//        UUID publicId = (UUID) httpRequest.getAttribute("publicId");
+//        if (publicId == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
 
-        PostResponse response = postService.create(request, userId);
         //PostResponse response = postService.create(request, publicId);
+        PostResponse response = postService.create(request, userId);
         // 201 Created 상태코드와 함께 응답
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -100,10 +103,14 @@ public class PostController {
             @RequestHeader("Authorization") UUID userId
             //HttpServletRequest httpRequest
     ) {
-        //UUID publicId = getUuid(httpRequest);
 
-        postService.deletePost(postId, userId);
+//        UUID publicId = (UUID) httpRequest.getAttribute("publicId");
+//        if (publicId == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+
         //postService.deletePost(postId, publicId);
+        postService.deletePost(postId, userId);
         return ResponseEntity.noContent().build(); // 204 No Content 상태코드 반환
     }
 
@@ -123,10 +130,14 @@ public class PostController {
             @RequestHeader("Authorization") UUID userId
             //HttpServletRequest httpRequest
     ) {
-        //UUID publicId = getUuid(httpRequest);
 
-        PostResponse response = postService.update(postId, request, userId);
+//        UUID publicId = (UUID) httpRequest.getAttribute("publicId");
+//        if (publicId == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+
         //PostResponse response = postService.update(postId, request, publicId);
+        PostResponse response = postService.update(postId, request, userId);
         return ResponseEntity.ok(response);
     }
 
@@ -136,11 +147,5 @@ public class PostController {
             @RequestHeader("X-USER-ID") Long userId,
             @RequestBody String githubLink) {
         return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
-    }
-
-    private static UUID getUuid(HttpServletRequest httpRequest) {
-        String publicIdStr = (String) httpRequest.getAttribute("publicId");
-        UUID publicId = UUID.fromString(publicIdStr);
-        return publicId;
     }
 }
