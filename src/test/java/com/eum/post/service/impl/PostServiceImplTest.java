@@ -1,5 +1,6 @@
 package com.eum.post.service.impl;
 
+import com.eum.global.exception.CustomException;
 import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
@@ -27,8 +28,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -106,5 +106,39 @@ public class PostServiceImplTest {
         verify(postRepository, times(1)).save(any(Post.class));
         verify(postTechStackRepository, times(1)).save(any());
         verify(postPositionRepository, times(1)).save(any());
+    }
+
+    @Test
+    @DisplayName("게시글 생성 - 기술스택 없음 실패")
+    void createTechStackNotFoundFail() {
+        //given
+        given(postRepository.save(any(Post.class))).willReturn(testPost);
+        given(techStackRepository.findById(1L)).willReturn(Optional.empty());
+
+        // when & then
+        assertThrows(CustomException.class, () ->
+                postService.create(testPostRequest, testUserId));
+
+        verify(postRepository, times(1)).save(any(Post.class));
+        verify(techStackRepository, times(1)).findById(1L);
+
+    }
+
+    @Test
+    @DisplayName("게시글 생성 - 포지션 없음 실패")
+    void create_PositionNotFound_Fail() {
+        // given
+        given(postRepository.save(any(Post.class))).willReturn(testPost);
+        given(techStackRepository.findById(1L)).willReturn(Optional.of(testTechStack));
+        given(positionRepository.findById(1L)).willReturn(Optional.empty());
+
+        // when & then
+        assertThrows(CustomException.class, () ->
+                postService.create(testPostRequest, testUserId)
+        );
+
+        verify(postRepository, times(1)).save(any(Post.class));
+        verify(techStackRepository, times(1)).findById(1L);
+        verify(positionRepository, times(1)).findById(1L);
     }
 }
