@@ -190,4 +190,51 @@ public class PostServiceImplTest {
         assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
         verify(postRepository, times(1)).findById(postId);
     }
+
+    @Test
+    @DisplayName("게시글 수정 - 성공")
+    void updateSuccess() {
+        Long postId = 1L;
+        PostRequest updateRequest = new PostRequest(
+                "수정된 제목",
+                "수정된 내용",
+                RecruitType.STUDY,
+                3,
+                ProgressMethod.OFFLINE,
+                Period.MONTH_5,
+                LocalDate.now().plusDays(3),
+                LinkType.GOOGLE,
+                "http://updated.com",
+                Arrays.asList(1L),
+                Arrays.asList(1L)
+        );
+
+        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+        given(postTechStackRepository.findByPostId(postId)).willReturn(Arrays.asList());
+        given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
+        given(techStackRepository.findById(1L)).willReturn(Optional.of(testTechStack));
+        given(positionRepository.findById(1L)).willReturn(Optional.of(testPosition));
+
+        PostResponse response = postService.update(postId, updateRequest, testUserId);
+
+        assertNotNull(response);
+        assertEquals("수정된 제목", response.title());
+        assertEquals("수정된 내용", response.content());
+        verify(postRepository, times(1)).findById(postId);
+    }
+
+    @Test
+    @DisplayName("게시글 수정 - 권한 없음 실패")
+    void updateNoPermissionFail() {
+        Long postId = 1L;
+        Long differentUserId = 999L;
+
+        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+
+        CustomException exception = assertThrows(CustomException.class, () ->
+                postService.update(postId, testPostRequest, differentUserId));
+
+        assertEquals(ErrorCode.POST_ACCESS_DENIED, exception.getErrorCode());
+        verify(postRepository, times(1)).findById(postId);
+    }
 }
