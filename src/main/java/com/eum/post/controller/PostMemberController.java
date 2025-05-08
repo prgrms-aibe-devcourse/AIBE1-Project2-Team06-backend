@@ -1,6 +1,5 @@
 package com.eum.post.controller;
 
-import com.eum.member.auth.JwtUtil;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.request.PostMemberRequest;
@@ -31,11 +30,15 @@ public class PostMemberController {
     public ResponseEntity<List<PostMemberResponse>> updateMembers(
         @PathVariable Long postId,
         @RequestBody PostMemberRequest request,
-        //@RequestHeader("X-USER-ID") Long userId,
-        @RequestHeader("Authorization") UUID publicId
-        //HttpServletRequest httpRequest
+        //@RequestHeader("Authorization") UUID publicId
+        HttpServletRequest httpRequest
     )
     {
+        UUID publicId = (UUID) httpRequest.getAttribute("publicId");
+        if (publicId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         // publicId로 Member 조회하여 내부 ID 얻기
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다."));

@@ -6,7 +6,6 @@ import com.eum.post.model.entity.enumerated.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 public record PostRequest(
         String title,
