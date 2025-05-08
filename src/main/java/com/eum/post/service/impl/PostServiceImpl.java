@@ -161,12 +161,12 @@ public class PostServiceImpl implements PostService{
 
         // 작성자 검증
         if (!post.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("해당 게시글의 수정 권한이 없습니다.");
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED);
         }
 
         // 마감된 게시글 수정 제한
         if (post.getStatus() == Status.CLOSED) {
-            throw new IllegalStateException("마감된 게시글은 수정할 수 없습니다.");
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,"마감된 게시글은 수정할 수 없습니다.");
         }
 
         // 요청 유효성 검증
@@ -210,7 +210,7 @@ public class PostServiceImpl implements PostService{
 
             postRepository.delete(post);
         } else if (!post.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("해당 게시글의 삭제 권한이 없습니다.");
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,"해당 게시글의 삭제 권한이 없습니다.");
         }
 
     }
