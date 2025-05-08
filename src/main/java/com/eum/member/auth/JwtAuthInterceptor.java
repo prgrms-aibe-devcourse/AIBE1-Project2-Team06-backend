@@ -27,6 +27,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
                 UUID publicId = UUID.fromString(claims.getSubject());
 
                 // 요청 속성에 저장
+                request.setAttribute("token", token);
                 request.setAttribute("publicId", publicId);
                 return true;
             }
