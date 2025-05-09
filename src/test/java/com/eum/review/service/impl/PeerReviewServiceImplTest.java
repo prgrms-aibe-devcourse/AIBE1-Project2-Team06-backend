@@ -1,0 +1,93 @@
+package com.eum.review.service.impl;
+
+import com.eum.post.model.entity.Post;
+import com.eum.post.model.repository.PostRepository;
+import com.eum.review.model.dto.request.PeerReviewCreateRequest;
+import com.eum.review.model.dto.response.PeerReviewResponse;
+import com.eum.review.model.entity.PeerReview;
+import com.eum.review.model.repository.PeerReviewRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class PeerReviewServiceImplTest {
+
+    @InjectMocks
+    private PeerReviewServiceImpl peerReviewService;
+
+    @Mock
+    private PeerReviewRepository peerReviewRepository;
+
+    @Mock
+    private PostRepository postRepository;
+
+    private Post testPost;
+    private PeerReview testPeerReview;
+    private PeerReviewCreateRequest testRequest;
+    private Long reviewerUserId;
+    private Long revieweeUserId;
+    private Long postId;
+
+    @BeforeEach
+    void setUp() {
+        reviewerUserId = 1L;
+        revieweeUserId = 2L;
+        postId = 1L;
+
+        testPost = mock(Post.class);
+        lenient().when(testPost.getId()).thenReturn(postId);
+
+        testRequest = new PeerReviewCreateRequest(
+                postId,
+                revieweeUserId,
+                5,
+                4,
+                5,
+                "좋은 팀원이였습니다."
+        );
+
+        testPeerReview = mock(PeerReview.class);
+        when(testPeerReview.getId()).thenReturn(1);
+        when(testPeerReview.getReviewerUserId()).thenReturn(reviewerUserId);
+        when(testPeerReview.getRevieweeUserId()).thenReturn(revieweeUserId);
+        lenient().when(testPeerReview.getPost()).thenReturn(testPost);
+        lenient().when(testPeerReview.getCollaborationScore()).thenReturn(5);
+        lenient().when(testPeerReview.getTechnicalScore()).thenReturn(4);
+        lenient().when(testPeerReview.getWorkAgainScore()).thenReturn(5);
+        when(testPeerReview.getAverageScore()).thenReturn(4.7);
+        when(testPeerReview.getReviewComment()).thenReturn("좋은 팀원이었습니다.");
+        lenient().when(testPeerReview.getReviewDate()).thenReturn(LocalDateTime.now());
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 - 성공")
+    void createReviewSuccess() {
+        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+        given(peerReviewRepository.save(any(PeerReview.class))).willReturn(testPeerReview);
+
+        PeerReviewResponse response = peerReviewService.createReview(testRequest, reviewerUserId);
+
+        assertNotNull(response);
+        assertEquals(testPeerReview.getId(), response.id());
+        assertEquals(reviewerUserId, response.reviewerUserId());
+        assertEquals(revieweeUserId, response.revieweeUserId());
+        assertEquals(testPeerReview.getAverageScore(), response.averageScore());
+        assertEquals("좋은 팀원이었습니다.", response.reviewComment());
+
+        verify(postRepository, times(1)).findById(postId);
+        verify(peerReviewRepository, times(1)).save(any(PeerReview.class));
+    }
+}
