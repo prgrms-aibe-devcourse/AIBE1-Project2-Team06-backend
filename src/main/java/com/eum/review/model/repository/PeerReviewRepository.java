@@ -12,7 +12,7 @@ import java.util.List;
 public interface PeerReviewRepository extends JpaRepository<PeerReview, Long> {
 
     // 특정 사용자기 받은 리뷰 조회
-    List<PeerReview> findAllByRevieweeUserId(Long revieweeMemberId);
+    List<PeerReview> findAllByRevieweeMemberId(Long revieweeMemberId);
 
     // 특정 사용자가 받은 전체 평균 점수
     @Query("SELECT AVG(p.averageScore) FROM PeerReview p WHERE p.revieweeMemberId = :userId")

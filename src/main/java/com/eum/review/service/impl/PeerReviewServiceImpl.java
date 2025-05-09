@@ -55,7 +55,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
 
         if (overallAvgScore == null) {overallAvgScore = 0.0;}
 
-        List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeUserId(userId);
+        List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         int reviewCount = reviews.size();
 
         return UserReviewScoreResponse.from(userId, overallAvgScore, reviewCount);
@@ -64,7 +64,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     @Transactional(readOnly = true)
     @Override
     public List<UserReviewCommentResponse> getUserReviewComments(Long userId) {
-        List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeUserId(userId);
+        List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         return reviews.stream()
                 .map(UserReviewCommentResponse::from)
                 .collect(Collectors.toList());
