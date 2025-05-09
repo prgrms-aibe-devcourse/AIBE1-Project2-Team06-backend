@@ -24,14 +24,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -280,5 +286,46 @@ public class PostServiceImplTest {
 
         assertNotNull(response);
         verify(portfolioService, times(1)).createPortfolio(testUserId, postId, githubLink);
+    }
+
+    @Test
+    @DisplayName("게시글 목록 조회 - 필터 없음")
+    void findPostsWithFiltersNoFilterSuccess() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Post> posts = Arrays.asList(testPost);
+        Page<Post> postPage = new PageImpl<>(posts, pageable, 1);
+
+        given(postRepository.findAll(any(Specification.class), eq(pageable))).willReturn(postPage);
+        given(postTechStackRepository.findByPostId(any())).willReturn(Arrays.asList());
+        given(postPositionRepository.findByPostId(any())).willReturn(Arrays.asList());
+
+        Page<PostResponse> responses = postService.findPostsWithFilters(
+                null, null, null, null, null, null, pageable
+        );
+
+        assertNotNull(responses);
+        assertEquals(1, responses.getTotalElements());
+        verify(postRepository, times(1)).findAll(any(Specification.class), eq(pageable));
+    }
+
+    @Test
+    @DisplayName("게시글 목록 조회 - 키워드 필터")
+    void findPostWithFiltersWithKeywordSuccess() {
+        String keyword = "테스트";
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Post> posts = Arrays.asList(testPost);
+        Page<Post> postPage = new PageImpl<>(posts, pageable, 1);
+
+        given(postRepository.findAll(any(Specification.class), eq(pageable))).willReturn(postPage);
+        given(postTechStackRepository.findByPostId(any())).willReturn(Arrays.asList());
+        given(postPositionRepository.findByPostId(any())).willReturn(Arrays.asList());
+
+        Page<PostResponse> responses = postService.findPostsWithFilters(
+                keyword, null, null, null, null, null, pageable
+        );
+
+        assertNotNull(responses);
+        assertEquals(1, responses.getTotalElements());
+        verify(postRepository, times(1)).findAll(any(Specification.class), eq(pageable));
     }
 }
