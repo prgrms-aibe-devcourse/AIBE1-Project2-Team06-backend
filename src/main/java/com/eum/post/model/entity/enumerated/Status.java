@@ -5,4 +5,13 @@ public enum Status {
     CLOSED, // 게시글 마감
     ONGOING, // 진행중
     COMPLETED; // 완료
+
+    public static Status fromString(String value) {
+        if (value == null || value.isEmpty()) return RECRUITING;
+        try {
+            return Status.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return RECRUITING;
+        }
+    }
 }

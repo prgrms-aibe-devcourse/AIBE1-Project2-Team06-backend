@@ -253,7 +253,16 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> findPostsWithFilters(String keyword, RecruitType recruitType, ProgressMethod progressMethod, CultureFit cultureFit, Long positionId, List<Long> techStackIds, Pageable pageable) {
+    public Page<PostResponse> findPostsWithFilters(
+            String keyword,
+            RecruitType recruitType,
+            ProgressMethod progressMethod,
+            CultureFit cultureFit,
+            Status status,
+            Long positionId,
+            List<Long> techStackIds,
+            Pageable pageable) {
+
         // 명세 조합
         Specification<Post> spec = Specification.where(null);
 
@@ -276,6 +285,10 @@ public class PostServiceImpl implements PostService{
         if (cultureFit != null) {
             spec = spec.and(PostSpecification.hasCultureFit(cultureFit));
         }
+
+        // 상태에 대한 필터링 - 기본적으로 RECRUITING 상태 적용
+        // status 매개변수가 null이면 Status.fromString 메소드에서 RECRUITING을 반환
+        spec = spec.and(PostSpecification.hasStatus(status));
 
         // 포지션에 대한 필터링
         if (positionId != null) {

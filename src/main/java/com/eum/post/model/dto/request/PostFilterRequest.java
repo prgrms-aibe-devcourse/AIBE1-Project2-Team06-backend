@@ -7,6 +7,7 @@ public record PostFilterRequest(
         String recruitType,
         String progressMethod,
         String cultureFit,
+        String status,
         Long positionId,
         List<Long> techStackIds
 ) {}

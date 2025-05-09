@@ -37,6 +37,7 @@ public interface PostService {
             RecruitType recruitType,
             ProgressMethod progressMethod,
             CultureFit cultureFit,
+            Status status,
             Long positionId,
             List<Long> techStackIds,
             Pageable pageable
