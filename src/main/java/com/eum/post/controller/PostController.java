@@ -142,8 +142,13 @@ public class PostController {
     @PatchMapping("/{postId}/complete")
     public ResponseEntity<PostResponse> completePost(
             @PathVariable Long postId,
-            @RequestHeader("X-USER-ID") Long userId,
-            @RequestBody GithubLinkRequest request) {
-        return ResponseEntity.ok(postService.completePost(postId, userId, request.githubLink()));
+            @RequestBody GithubLinkRequest request,
+            HttpServletRequest httpServletRequest) {
+        UUID publicId = (UUID) httpServletRequest.getAttribute("publicId");
+        if (publicId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(postService.completePost(postId, publicId, request.githubLink()));
     }
 }

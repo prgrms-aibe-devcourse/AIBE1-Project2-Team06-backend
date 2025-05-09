@@ -233,17 +233,20 @@ public class PostServiceImpl implements PostService{
 
     //merge 된 부분
     @Override
-    public PostResponse completePost(Long postId, Long userId, String githubLink) {
+    public PostResponse completePost(Long postId, UUID publicId, String githubLink) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        if (!post.getUserId().equals(userId)){
+        if (!post.getMemberPublicId().equals(publicId)){
             throw new IllegalArgumentException("프로젝트 작성자만 완료 처리할 수 있습니다.");
         }
 
         post.updateStatus(Status.COMPLETED);
 
-        portfolioService.createPortfolio(userId, postId, githubLink);
+        Member member = memberRepository.findByPublicId(publicId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        portfolioService.createPortfolio(member.getId(), postId, githubLink);
 
         List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
         List<PositionDto> positionDtos = findPositionsByPostId(postId);
