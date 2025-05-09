@@ -6,6 +6,7 @@ import com.eum.post.model.entity.Post;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
+import com.eum.review.model.dto.response.UserReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -125,6 +128,46 @@ public class PeerReviewServiceImplTest {
         assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
         verify(postRepository, times(1)).findById(postId);
         verify(peerReviewRepository, never()).save(any(PeerReview.class));
+    }
+
+    @Test
+    @DisplayName("사용자 리뷰 점수 계산 - 성공")
+    void calculateUserReviewScoreSuccess() {
+        Double avgScore = 4.7;
+        List<PeerReview> reviews = Arrays.asList(testPeerReview);
+
+        given(peerReviewRepository.calculateOverallAverageScore(revieweeUserId)).willReturn(avgScore);
+        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(reviews);
+
+        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeUserId);
+
+        assertNotNull(response);
+        assertEquals(revieweeUserId, response.userId());
+        assertEquals(avgScore, response.overallAverageScore());
+        assertEquals(1, response.reviewCount());
+
+        verify(peerReviewRepository, times(1)).calculateOverallAverageScore(revieweeUserId);
+        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
+    }
+
+    @Test
+    @DisplayName("사용자 리뷰 점수 계산 - 리뷰 없음")
+    void calculateUserReviewScore_NoReviews_Success() {
+        // given
+        given(peerReviewRepository.calculateOverallAverageScore(revieweeUserId)).willReturn(null);
+        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(Arrays.asList());
+
+        // when
+        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeUserId);
+
+        // then
+        assertNotNull(response);
+        assertEquals(revieweeUserId, response.userId());
+        assertEquals(0.0, response.overallAverageScore());
+        assertEquals(0, response.reviewCount());
+
+        verify(peerReviewRepository, times(1)).calculateOverallAverageScore(revieweeUserId);
+        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
     }
 
 }
