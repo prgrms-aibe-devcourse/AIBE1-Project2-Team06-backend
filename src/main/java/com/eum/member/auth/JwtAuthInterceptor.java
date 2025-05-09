@@ -18,6 +18,12 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         String header = request.getHeader("Authorization");
+        String method = request.getMethod();
+        String requestURI = request.getRequestURI();
+
+        if (requestURI.startsWith("/api/v1/posts") && method.equals("GET")) {
+            return true;
+        }
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.replace("Bearer ", "");
