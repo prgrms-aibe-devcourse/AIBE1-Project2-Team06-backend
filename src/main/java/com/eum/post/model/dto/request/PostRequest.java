@@ -1,5 +1,6 @@
 package com.eum.post.model.dto.request;
 
+import com.eum.member.model.entity.Member;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.*;
 
@@ -22,9 +23,11 @@ public record PostRequest(
 ) {
 
     // userId는 인증된 유저에서 따로 주입
-    public Post toEntity(Long userId) {
+    public Post toEntity(
+            Member member
+    ) {
         return Post.of(
-                userId,
+                member,
                 title,
                 content,
                 recruitType,

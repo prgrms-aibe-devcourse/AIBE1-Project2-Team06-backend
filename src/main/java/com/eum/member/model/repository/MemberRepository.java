@@ -4,6 +4,7 @@ import com.eum.member.model.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,7 +12,10 @@ import java.util.UUID;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByAuthIdAndProvider(String authId, String provider);
 
+    Optional<Member> findByNickname(String nickname);
+
+    //PostMemeberSerivceImpl에서 사용
+    List<Member> findAllByNicknameIn(List<String> allNicknames);
     Optional<Member> findByPublicId(UUID publicId);
 
-    Optional<Member> findByNickname(String nickname);
 }

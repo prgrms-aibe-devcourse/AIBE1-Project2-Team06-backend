@@ -1,5 +1,6 @@
 package com.eum.post.model.entity;
 
+import com.eum.member.model.entity.Member;
 import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.enumerated.*;
 import jakarta.persistence.*;
@@ -11,6 +12,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -22,8 +26,9 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 게시물 ID
 
-    @Column(nullable = false)
-    private Long userId; // 모집자 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Member member; // 모집자
 
     @Column(nullable = false , length = 255)
     private String title; // 게시물 제목
@@ -72,9 +77,12 @@ public class Post {
     @Column(nullable = false)
     private CultureFit cultureFit;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostMember> postMembers = new ArrayList<>();
+
     // 정적 팩토리 메서드
     public static Post of(
-            Long userId,
+            Member member,
             String title,
             String content,
             RecruitType recruitType,
@@ -87,7 +95,7 @@ public class Post {
             ) {
 
         Post post = new Post();
-        post.userId = userId;
+        post.member = member;
         post.title = title;
         post.content = content;
         post.recruitType = recruitType;
@@ -124,4 +132,14 @@ public class Post {
     public void updateCultureFit(CultureFit cultureFit){
         this.cultureFit = cultureFit;
     }
+
+    // Member의 publicId와 nickname을 가져오는 메서드
+    public UUID getMemberPublicId() {
+        return member != null ? member.getPublicId() : null;
+    }
+
+    public String getMemberNickname() {
+        return member != null ? member.getNickname() : null;
+    }
+
 }

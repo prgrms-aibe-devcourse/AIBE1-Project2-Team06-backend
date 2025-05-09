@@ -14,16 +14,20 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public interface PostService {
 
-    PostResponse create(PostRequest postRequest, Long userId);
+//    PostResponse create(PostRequest postRequest, Long userId);
+    PostResponse create(PostRequest postRequest, UUID publicId);
 
     PostResponse findByPostId(Long postId); // 개별만 조회
 
-    PostResponse update(Long postId, PostRequest postRequest, Long userId);
+    //PostResponse update(Long postId, PostRequest postRequest, Long userId);
+    PostResponse update(Long postId, PostRequest postRequest, UUID publicId);
 
-    void deletePost(Long postId, Long userId);
+    //void deletePost(Long postId, Long userId);
+    void deletePost(Long postId, UUID publicId);
 
     PostResponse completePost(Long postId, Long userId, String githubLink);
 
