@@ -265,4 +265,20 @@ public class PostServiceImplTest {
         verify(postRepository, times(1)).findById(postId);
         verify(postRepository, never()).delete(any(Post.class));
     }
+
+    @Test
+    @DisplayName("게시글 완료 - 성공")
+    void completePostSuccess() {
+        Long postId = 1L;
+        String githubLink = "https://github.com";
+
+        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+        given(postTechStackRepository.findByPostId(postId)).willReturn(Arrays.asList());
+        given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
+
+        PostResponse response = postService.completePost(postId, testUserId, githubLink);
+
+        assertNotNull(response);
+        verify(portfolioService, times(1)).createPortfolio(testUserId, postId, githubLink);
+    }
 }
