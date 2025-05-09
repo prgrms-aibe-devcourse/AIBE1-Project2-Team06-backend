@@ -85,4 +85,54 @@ public class MemberServiceImpl implements MemberService {
                 techStackNames
         );
     }
+
+    @Override
+    @Transactional
+    public MemberProfileResponseDto getProfileByNickname(String nickname) {
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        String position = member.getMemberPositions().stream()
+                .findFirst()
+                .map(mp -> mp.getPosition().getName())
+                .orElse(null);
+
+        List<String> techStackNames = member.getMemberTechStacks().stream()
+                .map(mts -> mts.getTechStack().getName())
+                .toList();
+
+        return new MemberProfileResponseDto(
+                member.getNickname(),
+                member.getCareer(),
+                member.getShortDescription(),
+                member.getProfileImageUrl(),
+                position,
+                techStackNames
+        );
+    }
+
+    @Override
+    public MemberProfileResponseDto getMyProfile(UUID publicId) {
+        Member member = memberRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        String position = member.getMemberPositions().stream()
+                .findFirst()
+                .map(mp -> mp.getPosition().getName())
+                .orElse(null);
+
+        List<String> techStackNames = member.getMemberTechStacks().stream()
+                .map(mts -> mts.getTechStack().getName())
+                .toList();
+
+        return new MemberProfileResponseDto(
+                member.getNickname(),
+                member.getCareer(),
+                member.getShortDescription(),
+                member.getProfileImageUrl(),
+                position,
+                techStackNames
+        );
+    }
+
 }

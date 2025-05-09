@@ -16,4 +16,8 @@ public interface MemberService {
     );
 
     MemberProfileResponseDto getProfileByPublicId(UUID memberPublicId);
+
+    MemberProfileResponseDto getProfileByNickname(String nickname);
+
+    MemberProfileResponseDto getMyProfile(UUID publicId);
 }

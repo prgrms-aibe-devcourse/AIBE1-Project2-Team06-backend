@@ -2,6 +2,7 @@ package com.eum.member.controller;
 
 import com.eum.member.model.dto.request.UpdateProfileRequestDto;
 import com.eum.member.model.dto.response.MemberProfileResponseDto;
+import com.eum.member.service.MemberService;
 import com.eum.member.service.impl.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
 public class MemberController {
-    private final MemberServiceImpl memberService;
+    private final MemberService memberService;
 
     @PutMapping("/profile")
     public ResponseEntity<Void> updateProfile(
@@ -34,10 +35,22 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<MemberProfileResponseDto> getProfileByPublicId(HttpServletRequest request) {
-        UUID memberPublicId = (UUID) request.getAttribute("publicId");
-        MemberProfileResponseDto profile = memberService.getProfileByPublicId(memberPublicId);
+    @GetMapping("/profile/public-id/{publicId}")
+    public ResponseEntity<MemberProfileResponseDto> getProfileByPublicId(@PathVariable UUID publicId) {
+        MemberProfileResponseDto profile = memberService.getProfileByPublicId(publicId);
+        return ResponseEntity.ok(profile);
+    }
+
+    @GetMapping("/profile/{nickname}")
+    public ResponseEntity<MemberProfileResponseDto> getProfileByPublicId(@PathVariable String nickname) {
+        MemberProfileResponseDto profile = memberService.getProfileByNickname(nickname);
+        return ResponseEntity.ok(profile);
+    }
+
+    @GetMapping("/profile/me")
+    public ResponseEntity<MemberProfileResponseDto> getMyProfile(HttpServletRequest request) {
+        UUID publicId = (UUID) request.getAttribute("publicId");
+        MemberProfileResponseDto profile = memberService.getMyProfile(publicId);
         return ResponseEntity.ok(profile);
     }
 }
