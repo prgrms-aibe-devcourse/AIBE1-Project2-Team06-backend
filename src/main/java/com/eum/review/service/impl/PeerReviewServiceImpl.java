@@ -28,7 +28,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     @Transactional
     @Override
     public PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerUserId) {
-        if (reviewerUserId.equals(request.revieweeUserId())){
+        if (reviewerUserId.equals(request.revieweeMemberId())){
             throw new CustomException(ErrorCode.SELF_REVIEW_NOT_ALLOWED);
         }
 
