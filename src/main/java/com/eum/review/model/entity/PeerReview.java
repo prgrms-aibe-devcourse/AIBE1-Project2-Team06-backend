@@ -23,10 +23,10 @@ public class PeerReview {
     private Integer id;
 
     @Column(nullable = false)
-    private Long reviewerUserId;
+    private Long reviewerMemberId;
 
     @Column(nullable = false)
-    private Long revieweeUserId;
+    private Long revieweeMemberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
@@ -52,8 +52,8 @@ public class PeerReview {
 
 
     public static PeerReview of(
-            Long reviewerUserId,
-            Long revieweeUserId,
+            Long reviewerMemberId,
+            Long revieweeMemberId,
             Post post,
             Integer collaborationScore,
             Integer technicalScore,
@@ -61,8 +61,8 @@ public class PeerReview {
             String reviewComment
     ) {
         PeerReview peerReview = new PeerReview();
-        peerReview.reviewerUserId = reviewerUserId;
-        peerReview.revieweeUserId = revieweeUserId;
+        peerReview.reviewerMemberId = reviewerMemberId;
+        peerReview.revieweeMemberId = revieweeMemberId;
         peerReview.post = post;
         peerReview.collaborationScore = collaborationScore;
         peerReview.technicalScore = technicalScore;
