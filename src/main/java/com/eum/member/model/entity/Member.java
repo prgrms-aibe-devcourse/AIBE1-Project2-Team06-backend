@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,22 +32,23 @@ public class Member {
     private String provider;
 
     // 프로필에서 설정할 정보
-    @Setter
     @Column(nullable = false, unique = true)
     private String nickname;
     @Column
     private String profileImageUrl;
     // 경력
-    @Setter
     @Column(nullable = false)
     private String career;
-    @Setter
     @Column
     private String shortDescription;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberPosition> memberPositions = new ArrayList<>();
@@ -79,5 +81,11 @@ public class Member {
 
     public void addTechStack(MemberTechStack memberTechStack) {
         memberTechStacks.add(memberTechStack);
+    }
+
+    public void updateProfile(String nickname, String career, String shortDescription) {
+        this.nickname = nickname;
+        this.career = career;
+        this.shortDescription = shortDescription;
     }
 }

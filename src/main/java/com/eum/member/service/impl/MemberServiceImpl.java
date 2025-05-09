@@ -4,6 +4,7 @@ import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
+import com.eum.member.model.dto.response.MemberProfileResponseDto;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.entity.MemberPosition;
 import com.eum.member.model.entity.MemberTechStack;
@@ -37,9 +38,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new RuntimeException("Member not found"));
 
         // 필드 업데이트
-        member.setNickname(nickname);
-        member.setCareer(career);
-        member.setShortDescription(shortDescription);
+        member.updateProfile(nickname, career, shortDescription);
 
         // 기존 관계 제거
         member.getMemberPositions().clear();
@@ -61,4 +60,79 @@ public class MemberServiceImpl implements MemberService {
 
         // JPA의 영속성 컨텍스트에 의해 자동 flush됨
     }
+
+    @Override
+    @Transactional
+    public MemberProfileResponseDto getProfileByPublicId(UUID memberPublicId) {
+        Member member = memberRepository.findByPublicId(memberPublicId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        String position = member.getMemberPositions().stream()
+                .findFirst()
+                .map(mp -> mp.getPosition().getName())
+                .orElse(null);
+
+        List<String> techStackNames = member.getMemberTechStacks().stream()
+                .map(mts -> mts.getTechStack().getName())
+                .toList();
+
+        return new MemberProfileResponseDto(
+                member.getNickname(),
+                member.getCareer(),
+                member.getShortDescription(),
+                member.getProfileImageUrl(),
+                position,
+                techStackNames
+        );
+    }
+
+    @Override
+    @Transactional
+    public MemberProfileResponseDto getProfileByNickname(String nickname) {
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        String position = member.getMemberPositions().stream()
+                .findFirst()
+                .map(mp -> mp.getPosition().getName())
+                .orElse(null);
+
+        List<String> techStackNames = member.getMemberTechStacks().stream()
+                .map(mts -> mts.getTechStack().getName())
+                .toList();
+
+        return new MemberProfileResponseDto(
+                member.getNickname(),
+                member.getCareer(),
+                member.getShortDescription(),
+                member.getProfileImageUrl(),
+                position,
+                techStackNames
+        );
+    }
+
+    @Override
+    public MemberProfileResponseDto getMyProfile(UUID publicId) {
+        Member member = memberRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        String position = member.getMemberPositions().stream()
+                .findFirst()
+                .map(mp -> mp.getPosition().getName())
+                .orElse(null);
+
+        List<String> techStackNames = member.getMemberTechStacks().stream()
+                .map(mts -> mts.getTechStack().getName())
+                .toList();
+
+        return new MemberProfileResponseDto(
+                member.getNickname(),
+                member.getCareer(),
+                member.getShortDescription(),
+                member.getProfileImageUrl(),
+                position,
+                techStackNames
+        );
+    }
+
 }
