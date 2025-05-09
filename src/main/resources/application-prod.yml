@@ -18,19 +18,3 @@ spring:
       encoding: UTF-8
       data-locations: classpath:data.sql  # 기본 경로 유지
 
-kakao:
-  client-id: ${KAKAO_CLIENT_ID}
-  client-secret: ${KAKAO_CLIENT_SECRET}
-  redirect-uri: ${KAKAO_REDIRECT_URI}
-  token-uri: ${KAKAO_TOKEN_URI}
-  user-info-uri: ${KAKAO_USER_INFO_URI}
-
-gemini:
-  api:
-    base-url: ${GEMINI_API_BASE_URL}
-    url: ${GEMINI_API_URL}
-    key: ${GEMINI_API_KEY}
-
-jwt:
-  secret: ${JWT_SECRET}
-  expiration: 3600000
