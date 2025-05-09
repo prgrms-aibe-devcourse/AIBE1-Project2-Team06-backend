@@ -180,7 +180,7 @@ public class PostServiceImpl implements PostService{
 
         // 마감된 게시글 수정 제한
         if (post.getStatus() == Status.CLOSED) {
-            throw new IllegalStateException("마감된 게시글은 수정할 수 없습니다.");
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,"마감된 게시글은 수정할 수 없습니다.");
         }
 
         // 요청 유효성 검증
