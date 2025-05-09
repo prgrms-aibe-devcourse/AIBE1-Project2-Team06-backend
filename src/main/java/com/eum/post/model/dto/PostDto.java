@@ -6,10 +6,12 @@ import com.eum.post.model.entity.enumerated.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public record PostDto(
         Long id,
-        Long userId,
+        UUID publicId,
+        String nickname,
         String title,
         String content,
         RecruitType recruitType,
@@ -30,7 +32,8 @@ public record PostDto(
     public static PostDto from(Post post, List<TechStackDto> techStacks, List<PositionDto> positions) {
         return new PostDto(
                 post.getId(),
-                post.getUserId(),
+                post.getMemberPublicId(),
+                post.getMemberNickname(),
                 post.getTitle(),
                 post.getContent(),
                 post.getRecruitType(),

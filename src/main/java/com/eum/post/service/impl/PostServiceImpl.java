@@ -6,6 +6,8 @@ import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
+import com.eum.member.model.entity.Member;
+import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.PositionDto;
 import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.TechStackDto;
@@ -13,19 +15,18 @@ import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
+import com.eum.post.model.entity.PostMember;
 import com.eum.post.model.entity.PostPosition;
 import com.eum.post.model.entity.PostTechStack;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.model.entity.enumerated.Status;
-import com.eum.post.model.repository.PostPositionRepository;
-import com.eum.post.model.repository.PostRepository;
-import com.eum.post.model.repository.PostSpecification;
-import com.eum.post.model.repository.PostTechStackRepository;
+import com.eum.post.model.repository.*;
 import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,32 +51,40 @@ public class PostServiceImpl implements PostService{
     private final PostPositionRepository postPositionRepository;
     private final PositionRepository positionRepository;
     private final TechStackRepository techStackRepository;
+    private final PostMemberRepository postMemberRepository;
+    private final MemberRepository memberRepository;
 
     private final PortfolioService portfolioService;
 
     @Override
-    public PostResponse create(PostRequest postRequest, Long userId) {
+    @Transactional
+    public PostResponse create(
+            PostRequest postRequest,
+            UUID publicId
+    ) {
         ValidatePostRequest.validatePostRequest(postRequest);
 
-        try{
-            // Post 엔티티 생성 및 저장
-            Post post = postRequest.toEntity(userId);
-            Post savedPost = postRepository.save(post);
+        // Member 조회
+        Member owner = memberRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + publicId));
 
-            // techStack 연결
-            List<TechStackDto> techStackDtos = saveTechStacks(savedPost, postRequest.techStackIds());
+        // Post 엔티티 생성 및 저장
+        Post post = postRequest.toEntity(owner);
+        Post savedPost = postRepository.save(post);
 
-            // position 연결
-            List<PositionDto> positionDtos = savePositions(savedPost, postRequest.positionIds());
+        // 3. 모집자(PostMember)로 등록
+        PostMember postMember = PostMember.of(savedPost, owner, true);
+        postMemberRepository.save(postMember);
 
-            // 4. DTO 변환 및 반환
-            PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
-            return PostResponse.from(postDto);
-        } catch (Exception e) {
-            // 예외 발생 시 트랜잭션이 롤백됨
-            log.error("게시글 생성 중 오류 발생: {}", e.getMessage(), e);
-            throw e;
-        }
+        // techStack 연결
+        List<TechStackDto> techStackDtos = saveTechStacks(savedPost, postRequest.techStackIds());
+
+        // position 연결
+        List<PositionDto> positionDtos = savePositions(savedPost, postRequest.positionIds());
+
+        // 4. DTO 변환 및 반환
+        PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
+        return PostResponse.from(postDto);
     }
 
     // 기술 스택 저장 메소드
@@ -154,14 +164,18 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public PostResponse update(Long postId, PostRequest postRequest, Long userId) {
+    public PostResponse update(
+            Long postId,
+            PostRequest postRequest,
+            UUID publicId
+    ) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 작성자 검증
-        if (!post.getUserId().equals(userId)) {
-            throw new CustomException(ErrorCode.POST_ACCESS_DENIED);
+        if (!post.getMemberPublicId().equals(publicId)) {
+            throw new IllegalArgumentException("해당 게시글의 수정 권한이 없습니다.");
         }
 
         // 마감된 게시글 수정 제한
@@ -193,13 +207,16 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public void deletePost(Long postId, Long userId) {
+    public void deletePost(
+            Long postId,
+            UUID publicId
+    ) {
         //게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 작성자 확인 (권한 검증)
-        if (post.getUserId().equals(userId)) {
+        if (post.getMemberPublicId().equals(publicId)) {
             // 게시글과 연결된 기술 스택 제거
             List<PostTechStack> postTechStacks = postTechStackRepository.findByPostId(postId);
             postTechStackRepository.deleteAll(postTechStacks);
@@ -209,10 +226,9 @@ public class PostServiceImpl implements PostService{
             postPositionRepository.deleteAll(postPositions);
 
             postRepository.delete(post);
-        } else if (!post.getUserId().equals(userId)) {
-            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,"해당 게시글의 삭제 권한이 없습니다.");
+        } else {
+            throw new IllegalArgumentException("해당 게시글의 삭제 권한이 없습니다.");
         }
-
     }
 
     //merge 된 부분
