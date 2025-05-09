@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,7 +142,7 @@ public class PortfolioServiceImplTest {
 
     @Test
     @DisplayName("포트폴리오 생성 - 실패 (게시글 없음)")
-    void createPortfolio_PostNotFound_Fail() {
+    void createPortfolioPostNotFoundFail() {
         // given
         given(postRepository.findById(postId)).willReturn(Optional.empty());
 
@@ -155,5 +156,16 @@ public class PortfolioServiceImplTest {
         verify(postRepository, times(1)).findById(postId);
         verify(peerReviewRepository, never()).calculateOverallAverageScore(anyLong());
         verify(portfolioRepository, never()).save(any(Portfolio.class));
+    }
+
+    @Test
+    @DisplayName("사용자 포트폴리오 목록 조회")
+    void getUserPortfoliosSuccess() {
+        // when
+        List<PortfolioDto> result = portfolioService.getUserPortfolios(userId);
+
+        // then
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 }
