@@ -22,6 +22,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "게시글을 찾을 수 없습니다"),
     INVALID_POST_STATUS(HttpStatus.BAD_REQUEST, "P002", "유효하지 않은 게시글 상태입니다"),
     POST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "P003", "해당 게시글에 대한 권한이 없습니다"),
+    POST_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "P004", "완료된 프로젝트에 대해서만 리뷰를 작성할 수 있습니다."),
 
     // AI 서비스 관련 오류
     AI_SERVICE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "A001", "AI 서비스 호출 중 오류가 발생했습니다"),

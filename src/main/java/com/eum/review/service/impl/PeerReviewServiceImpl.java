@@ -36,7 +36,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getStatus().equals(Status.COMPLETED)) {
-            throw new IllegalArgumentException("완료된 프로젝트에 대해서만 리뷰를 작성할 수 있습니다.");
+            throw new CustomException(ErrorCode.POST_NOT_COMPLETE);
         }
 
         // TODO: 리뷰 작성자와 대상자가 프로젝트의 팀원인지 검증하는 로직 추가 필요
