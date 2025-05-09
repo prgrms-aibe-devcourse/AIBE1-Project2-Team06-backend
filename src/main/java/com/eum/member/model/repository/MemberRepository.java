@@ -12,6 +12,8 @@ import java.util.UUID;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByAuthIdAndProvider(String authId, String provider);
 
+    Optional<Member> findByNickname(String nickname);
+
     //PostMemeberSerivceImpl에서 사용
     List<Member> findAllByNicknameIn(List<String> allNicknames);
     Optional<Member> findByPublicId(UUID publicId);
