@@ -3,6 +3,7 @@ package com.eum.member.controller;
 import com.eum.member.model.dto.request.LoginRequestDto;
 import com.eum.member.model.dto.response.LoginResponseDto;
 import com.eum.member.service.KakaoLoginService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -32,9 +33,8 @@ public class LoginController {
 
     // JWT 유효성 검사 엔드포인트
     @PostMapping("/validate-token")
-    public ResponseEntity<String> validateToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        // Bearer 접두사를 제거
-        String jwtToken = token.replace("Bearer ", "");
+    public ResponseEntity<String> validateToken(HttpServletRequest httpServletRequest) {
+        String jwtToken = (String) httpServletRequest.getAttribute("token");
 
         if (kakaoLoginService.validateJwtToken(jwtToken)) {
             return ResponseEntity.ok("Token is valid");
@@ -42,4 +42,6 @@ public class LoginController {
             return ResponseEntity.status(401).body("Invalid or expired token");
         }
     }
+
+
 }

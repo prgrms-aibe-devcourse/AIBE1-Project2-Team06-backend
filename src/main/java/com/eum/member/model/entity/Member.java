@@ -6,8 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +22,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
+    @Column(nullable = false, unique = true, updatable = false)
     private UUID publicId; // 외부 통신에 쓰이는 id -> jwt 만들기
 
     // 카카오에서 받은 user 식별자
@@ -33,9 +36,7 @@ public class Member {
     private String nickname;
     @Column
     private String profileImageUrl;
-    // 직무
-    @Column(nullable = false)
-    private String position;
+    // 경력
     @Column(nullable = false)
     private String career;
     @Column
@@ -45,25 +46,46 @@ public class Member {
     @Column(nullable = false, updatable = false)
     LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Column(nullable = false)
+    LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberPosition> memberPositions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberTechStack> memberTechStacks = new ArrayList<>();
+
     public static Member of (
             String authId,
             String provider,
-            String nickname,
             String profileImageUrl,
-            String position,
             String career,
             String shortDescription
     ) {
         Member member = new Member();
+        member.publicId = UUID.randomUUID();
         member.authId = authId;
         member.provider = provider;
-        member.nickname = nickname;
+        member.nickname = member.publicId.toString();
         member.profileImageUrl = profileImageUrl;
-        member.position = position;
         member.career = career;
         member.shortDescription = shortDescription;
 
         return member;
     }
 
+    public void addPosition(MemberPosition memberPosition) {
+        memberPositions.add(memberPosition);
+    }
+
+    public void addTechStack(MemberTechStack memberTechStack) {
+        memberTechStacks.add(memberTechStack);
+    }
+
+    public void updateProfile(String nickname, String career, String shortDescription) {
+        this.nickname = nickname;
+        this.career = career;
+        this.shortDescription = shortDescription;
+    }
 }

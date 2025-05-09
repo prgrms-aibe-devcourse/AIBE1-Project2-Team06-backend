@@ -14,12 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -52,19 +50,14 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
         Member member = memberRepository.findMemberByAuthIdAndProvider(userInfo.getId(), provider)
                 .orElseGet(() -> {
-                    UUID publicId = UUID.randomUUID();
 
                     Member newMember = Member.of(
                             userInfo.getId(),
                             provider,
-                            publicId.toString(),
-                            "UNDEFINED",
-                            "UNDEFINED",
-                            "UNDEFINED",
+                            null,
+                            "UNDEFINED", //not null
                             null
                     );
-                    //publicId 세팅
-                    newMember.setPublicId(publicId);
                     return memberRepository.save(newMember);
                 });
         String token = jwtUtil.generateToken(member.getPublicId().toString());
