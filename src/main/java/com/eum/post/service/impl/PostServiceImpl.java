@@ -26,7 +26,6 @@ import com.eum.post.model.repository.*;
 import com.eum.post.service.PortfolioService;
 import com.eum.post.service.PostService;
 import com.eum.post.validation.ValidatePostRequest;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -66,7 +65,7 @@ public class PostServiceImpl implements PostService{
 
         // Member 조회
         Member owner = memberRepository.findByPublicId(publicId)
-                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + publicId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND,"멤버를 찾을 수 없습니다. ID: " + publicId));
 
         // Post 엔티티 생성 및 저장
         Post post = postRequest.toEntity(owner);
@@ -175,7 +174,7 @@ public class PostServiceImpl implements PostService{
 
         // 작성자 검증
         if (!post.getMemberPublicId().equals(publicId)) {
-            throw new IllegalArgumentException("해당 게시글의 수정 권한이 없습니다.");
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,"해당 게시글의 수정 권한이 없습니다.");
         }
 
         // 마감된 게시글 수정 제한
@@ -227,7 +226,7 @@ public class PostServiceImpl implements PostService{
 
             postRepository.delete(post);
         } else {
-            throw new IllegalArgumentException("해당 게시글의 삭제 권한이 없습니다.");
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,"해당 게시글의 삭제 권한이 없습니다.");
         }
     }
 
