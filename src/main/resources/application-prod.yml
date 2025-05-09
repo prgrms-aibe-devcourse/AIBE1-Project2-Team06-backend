@@ -14,7 +14,7 @@ spring:
     password: ${DB_PASSWORD}
   sql:
     init:
-      mode: always  # 항상 SQL 실행
+      mode: never  # 항상 SQL 실행
       encoding: UTF-8
       data-locations: classpath:data.sql  # 기본 경로 유지
 
