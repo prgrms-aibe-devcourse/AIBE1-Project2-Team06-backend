@@ -26,6 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtAuthInterceptor)
                 .addPathPatterns("/api/v1/members/profile")
                 .addPathPatterns("/api/v1/validate-token")
-                .addPathPatterns("/api/v1/members/profile/me"); // 필요한 경로 지정
+                .addPathPatterns("/api/v1/members/profile/me") // 필요한 경로 지정
+                .addPathPatterns("/api/v1/posts/**"); // 필요한 경로 지정
     }
 }
