@@ -1,5 +1,7 @@
 package com.eum.post.service.impl;
 
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.Post;
@@ -135,5 +137,23 @@ public class PortfolioServiceImplTest {
         verify(postRepository, times(1)).findById(postId);
         verify(peerReviewRepository, times(1)).calculateOverallAverageScore(userId);
         verify(portfolioRepository, times(1)).save(any(Portfolio.class));
+    }
+
+    @Test
+    @DisplayName("포트폴리오 생성 - 실패 (게시글 없음)")
+    void createPortfolio_PostNotFound_Fail() {
+        // given
+        given(postRepository.findById(postId)).willReturn(Optional.empty());
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            portfolioService.createPortfolio(userId, postId, link);
+        });
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
+
+        verify(postRepository, times(1)).findById(postId);
+        verify(peerReviewRepository, never()).calculateOverallAverageScore(anyLong());
+        verify(portfolioRepository, never()).save(any(Portfolio.class));
     }
 }
