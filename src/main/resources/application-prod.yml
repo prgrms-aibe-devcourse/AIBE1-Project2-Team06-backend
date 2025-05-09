@@ -4,7 +4,7 @@ spring:
       on-profile: prod
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     defer-datasource-initialization: true
     show-sql: false
   datasource:
