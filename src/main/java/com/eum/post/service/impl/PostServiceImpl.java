@@ -237,7 +237,7 @@ public class PostServiceImpl implements PostService{
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getMemberPublicId().equals(publicId)){
-            throw new IllegalArgumentException("프로젝트 작성자만 완료 처리할 수 있습니다.");
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,"프로젝트 작성자만 완료 처리할 수 있습니다.");
         }
 
         post.updateStatus(Status.COMPLETED);
