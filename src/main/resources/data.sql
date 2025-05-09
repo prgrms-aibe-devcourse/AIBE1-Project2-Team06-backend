@@ -1,12 +1,12 @@
-INSERT INTO position (id, name) VALUES (1, '프런트엔드');
-INSERT INTO position (id, name) VALUES (2, '백엔드');
-INSERT INTO position (id, name) VALUES (3, '디자이너');
-INSERT INTO position (id, name) VALUES (4, 'IOS');
-INSERT INTO position (id, name) VALUES (5, '안드로이드');
-INSERT INTO position (id, name) VALUES (6, '데브옵스');
-INSERT INTO position (id, name) VALUES (7, 'PM');
-INSERT INTO position (id, name) VALUES (8, '기획자');
-INSERT INTO position (id, name) VALUES (9, '마케터');
+INSERT INTO positions (id, name) VALUES (1, '프런트엔드');
+INSERT INTO positions (id, name) VALUES (2, '백엔드');
+INSERT INTO positions (id, name) VALUES (3, '디자이너');
+INSERT INTO positions (id, name) VALUES (4, 'IOS');
+INSERT INTO positions (id, name) VALUES (5, '안드로이드');
+INSERT INTO positions (id, name) VALUES (6, '데브옵스');
+INSERT INTO positions (id, name) VALUES (7, 'PM');
+INSERT INTO positions (id, name) VALUES (8, '기획자');
+INSERT INTO positions (id, name) VALUES (9, '마케터');
 
 INSERT INTO tech_stack (name) VALUES ('JavaScript');
 INSERT INTO tech_stack (name) VALUES ('TypeScript');
