@@ -21,7 +21,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
+    @Column(nullable = false, unique = true, updatable = false)
     private UUID publicId; // 외부 통신에 쓰이는 id -> jwt 만들기
 
     // 카카오에서 받은 user 식별자
@@ -54,15 +54,15 @@ public class Member {
     public static Member of (
             String authId,
             String provider,
-            String nickname,
             String profileImageUrl,
             String career,
             String shortDescription
     ) {
         Member member = new Member();
+        member.publicId = UUID.randomUUID();
         member.authId = authId;
         member.provider = provider;
-        member.nickname = nickname;
+        member.nickname = member.publicId.toString();
         member.profileImageUrl = profileImageUrl;
         member.career = career;
         member.shortDescription = shortDescription;
