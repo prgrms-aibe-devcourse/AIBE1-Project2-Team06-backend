@@ -23,16 +23,18 @@ public class CultureFitRecommendationServiceImpl implements CultureFitRecommenda
     private final GeminiClient geminiClient;
 
     public Mono<CultureFit> recommendCultureFit(Long postId, CultureFitRequest cultureFitRequest) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        return Mono.defer(() ->{
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        return geminiClient.requestCultureFit(cultureFitRequest)
-                .publishOn(Schedulers.boundedElastic())
-                .flatMap(cultureFit -> {
-                    post.updateCultureFit(cultureFit);
-                    postRepository.save(post);
-                    return Mono.just(cultureFit);
-                });
+            return geminiClient.requestCultureFit(cultureFitRequest)
+                    .publishOn(Schedulers.boundedElastic())
+                    .flatMap(cultureFit -> {
+                        post.updateCultureFit(cultureFit);
+                        postRepository.save(post);
+                        return Mono.just(cultureFit);
+                    });
+        });
     }
 
 }
