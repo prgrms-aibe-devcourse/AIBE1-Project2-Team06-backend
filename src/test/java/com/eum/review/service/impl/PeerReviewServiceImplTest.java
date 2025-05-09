@@ -6,6 +6,7 @@ import com.eum.post.model.entity.Post;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
+import com.eum.review.model.dto.response.UserReviewCommentResponse;
 import com.eum.review.model.dto.response.UserReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
@@ -152,7 +153,7 @@ public class PeerReviewServiceImplTest {
 
     @Test
     @DisplayName("사용자 리뷰 점수 계산 - 리뷰 없음")
-    void calculateUserReviewScore_NoReviews_Success() {
+    void calculateUserReviewScoreNoReviewsSuccess() {
         // given
         given(peerReviewRepository.calculateOverallAverageScore(revieweeUserId)).willReturn(null);
         given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(Arrays.asList());
@@ -167,6 +168,36 @@ public class PeerReviewServiceImplTest {
         assertEquals(0, response.reviewCount());
 
         verify(peerReviewRepository, times(1)).calculateOverallAverageScore(revieweeUserId);
+        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
+    }
+
+    @Test
+    @DisplayName("사용자 리뷰 코멘트 조회 - 성공")
+    void getUserReviewCommentsSuccess() {
+        List<PeerReview> reviews  = Arrays.asList(testPeerReview);
+        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(reviews);
+
+        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeUserId);
+
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        assertEquals("좋은 팀원이었습니다.", responses.get(0).reviewComment());
+        assertEquals(testPost, responses.get(0).post());
+        assertNotNull(responses.get(0).reviewDate());
+
+        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
+    }
+
+    @Test
+    @DisplayName("사용자 리뷰 코민트 조회 - 리뷰 없음")
+    void getUserReviewCommentsNoReviewsSuccess() {
+        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(Arrays.asList());
+
+        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeUserId);
+
+        assertNotNull(responses);
+        assertTrue(responses.isEmpty());
+
         verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
     }
 
