@@ -1,5 +1,7 @@
 package com.eum.review.service.impl;
 
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
@@ -17,8 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
@@ -60,15 +61,15 @@ public class PeerReviewServiceImplTest {
         );
 
         testPeerReview = mock(PeerReview.class);
-        when(testPeerReview.getId()).thenReturn(1);
-        when(testPeerReview.getReviewerUserId()).thenReturn(reviewerUserId);
-        when(testPeerReview.getRevieweeUserId()).thenReturn(revieweeUserId);
+        lenient().when(testPeerReview.getId()).thenReturn(1);
+        lenient().when(testPeerReview.getReviewerUserId()).thenReturn(reviewerUserId);
+        lenient().when(testPeerReview.getRevieweeUserId()).thenReturn(revieweeUserId);
         lenient().when(testPeerReview.getPost()).thenReturn(testPost);
         lenient().when(testPeerReview.getCollaborationScore()).thenReturn(5);
         lenient().when(testPeerReview.getTechnicalScore()).thenReturn(4);
         lenient().when(testPeerReview.getWorkAgainScore()).thenReturn(5);
-        when(testPeerReview.getAverageScore()).thenReturn(4.7);
-        when(testPeerReview.getReviewComment()).thenReturn("좋은 팀원이었습니다.");
+        lenient().when(testPeerReview.getAverageScore()).thenReturn(4.7);
+        lenient().when(testPeerReview.getReviewComment()).thenReturn("좋은 팀원이었습니다.");
         lenient().when(testPeerReview.getReviewDate()).thenReturn(LocalDateTime.now());
     }
 
@@ -90,4 +91,40 @@ public class PeerReviewServiceImplTest {
         verify(postRepository, times(1)).findById(postId);
         verify(peerReviewRepository, times(1)).save(any(PeerReview.class));
     }
+
+    @Test
+    @DisplayName("리뷰 생성 - 자기 자신 리뷰 실패")
+    void createReviewSelfReviewFail() {
+        Long sameUserId = 1L;
+        PeerReviewCreateRequest selfReviewRequest = new PeerReviewCreateRequest(
+                postId,
+                sameUserId,
+                5, 4, 5,
+                "자기 자신 리뷰"
+        );
+
+        CustomException exception = assertThrows(CustomException.class, () ->
+                peerReviewService.createReview(selfReviewRequest, sameUserId));
+
+        assertEquals(ErrorCode.SELF_REVIEW_NOT_ALLOWED, exception.getErrorCode());
+        verify(postRepository, never()).findById(anyLong());
+        verify(peerReviewRepository, never()).save(any(PeerReview.class));
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 - 게시글 없음 실패")
+    void createReview_PostNotFound_Fail() {
+        // given
+        given(postRepository.findById(postId)).willReturn(Optional.empty());
+
+        // when & then
+        CustomException exception = assertThrows(CustomException.class, () ->
+                peerReviewService.createReview(testRequest, reviewerUserId)
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
+        verify(postRepository, times(1)).findById(postId);
+        verify(peerReviewRepository, never()).save(any(PeerReview.class));
+    }
+
 }
