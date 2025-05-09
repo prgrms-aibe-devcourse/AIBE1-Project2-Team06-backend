@@ -72,7 +72,7 @@ public class PostServiceImplTest {
     private Position testPosition;
     private TechStack testTechStack;
     //private Long testUserId;
-    private UUID testUserId;
+    private UUID testUserId; //UUID로 변경
 
     @BeforeEach
     void setUp() {
@@ -100,12 +100,12 @@ public class PostServiceImplTest {
         // Member 객체 Mock 생성
         Member testMember = mock(Member.class);
         when(testMember.getPublicId()).thenReturn(testUserId);
+
         // 테스트 Post 엔티티 생성
         testPost = testPostRequest.toEntity(testMember);
-        setPostId(testPost, 1L);
 
-//        testPost = testPostRequest.toEntity(testUserId);
-//        setPostId(testPost, 1L);
+        //testPost = testPostRequest.toEntity(testUserId); 기존 코드
+        setPostId(testPost, 1L);
     }
 
     // 유틸리티 메서드
@@ -245,6 +245,7 @@ public class PostServiceImplTest {
     void updateNoPermissionFail() {
         Long postId = 1L;
         //Long differentUserId = 999L;
+        //UUID로 변경
         UUID differentUserId = UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");  // 다른 UUID 사용
 
 
@@ -276,6 +277,7 @@ public class PostServiceImplTest {
     void deletePostNoPermissionFail() {
         Long postId = 1L;
         //Long differentUserId = 999L;
+        //UUID로 변경
         UUID differentUserId = UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");  // 다른 UUID 사용
 
 
