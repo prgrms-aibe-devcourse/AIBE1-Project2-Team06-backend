@@ -31,10 +31,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PostServiceImplTest {
@@ -236,5 +234,35 @@ public class PostServiceImplTest {
 
         assertEquals(ErrorCode.POST_ACCESS_DENIED, exception.getErrorCode());
         verify(postRepository, times(1)).findById(postId);
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 성공")
+    void deletePostSuccess() {
+        Long postId = 1L;
+        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+        given(postTechStackRepository.findByPostId(postId)).willReturn(Arrays.asList());
+        given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
+
+        postService.deletePost(postId, testUserId);
+
+        verify(postRepository, times(1)).findById(postId);
+        verify(postRepository, times(1)).delete(testPost);
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 권한 없음 실패")
+    void deletePostNoPermissionFail() {
+        Long postId = 1L;
+        Long differentUserId = 999L;
+
+        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+
+        CustomException exception = assertThrows(CustomException.class, () ->
+                postService.deletePost(postId, differentUserId));
+
+        assertEquals(ErrorCode.POST_ACCESS_DENIED, exception.getErrorCode());
+        verify(postRepository, times(1)).findById(postId);
+        verify(postRepository, never()).delete(any(Post.class));
     }
 }
