@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "peer_review",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"reviewer_user_id", "reviewee_user_id", "post_id"})
+            @UniqueConstraint(columnNames = {"reviewer_member_id", "reviewee_member_id", "post_id"})
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PeerReview {
