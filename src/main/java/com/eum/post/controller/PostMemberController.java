@@ -30,14 +30,10 @@ public class PostMemberController {
     public ResponseEntity<List<PostMemberResponse>> updateMembers(
         @PathVariable Long postId,
         @RequestBody PostMemberRequest request,
-        //@RequestHeader("Authorization") UUID publicId
         HttpServletRequest httpRequest
     )
     {
         UUID publicId = (UUID) httpRequest.getAttribute("publicId");
-        if (publicId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         // publicId로 Member 조회하여 내부 ID 얻기
         Member member = memberRepository.findByPublicId(publicId)

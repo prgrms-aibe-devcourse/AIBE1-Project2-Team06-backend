@@ -1,6 +1,5 @@
 package com.eum.post.service;
 
-import com.eum.ai.model.dto.request.CultureFitRequest;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
@@ -9,24 +8,18 @@ import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.model.entity.enumerated.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public interface PostService {
 
-//    PostResponse create(PostRequest postRequest, Long userId);
     PostResponse create(PostRequest postRequest, UUID publicId);
 
     PostResponse findByPostId(Long postId); // 개별만 조회
 
-    //PostResponse update(Long postId, PostRequest postRequest, Long userId);
     PostResponse update(Long postId, PostRequest postRequest, UUID publicId);
 
-    //void deletePost(Long postId, Long userId);
     void deletePost(Long postId, UUID publicId);
 
     PostResponse completePost(Long postId, Long userId, String githubLink);
