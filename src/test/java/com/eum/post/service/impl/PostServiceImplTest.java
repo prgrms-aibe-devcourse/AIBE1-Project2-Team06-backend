@@ -6,7 +6,6 @@ import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
-import com.eum.member.model.entity.Member;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.Post;
@@ -18,7 +17,6 @@ import com.eum.post.model.repository.PostPositionRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.post.model.repository.PostTechStackRepository;
 import com.eum.post.service.PortfolioService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,14 +68,12 @@ public class PostServiceImplTest {
     private PostRequest testPostRequest;
     private Position testPosition;
     private TechStack testTechStack;
-    //private Long testUserId;
-    private UUID testUserId; //UUID로 변경
+    private Long testUserId;
 
     @BeforeEach
     void setUp() {
         // 테스트 데이터 초기화
-        //testUserId = 1L;
-        testUserId = UUID.fromString("5f8c7b9a-6e4d-4f8c-a1b2-3c4d5e6f7a8b");
+        testUserId = 1L;
 
         testPosition = Position.of("백엔드");
         testTechStack = TechStack.of("Java");
@@ -97,14 +92,7 @@ public class PostServiceImplTest {
                 Arrays.asList(1L)
         );
 
-        // Member 객체 Mock 생성
-        Member testMember = mock(Member.class);
-        when(testMember.getPublicId()).thenReturn(testUserId);
-
-        // 테스트 Post 엔티티 생성
-        testPost = testPostRequest.toEntity(testMember);
-
-        //testPost = testPostRequest.toEntity(testUserId); 기존 코드
+        testPost = testPostRequest.toEntity(testUserId);
         setPostId(testPost, 1L);
     }
 
@@ -122,7 +110,6 @@ public class PostServiceImplTest {
     @Test
     @DisplayName("게시글 생성 - 성공")
     void createPostSuccess() {
-
         // given
         given(postRepository.save(any(Post.class))).willReturn(testPost);
         given(techStackRepository.findById(1L)).willReturn(Optional.of(testTechStack));
@@ -244,10 +231,7 @@ public class PostServiceImplTest {
     @DisplayName("게시글 수정 - 권한 없음 실패")
     void updateNoPermissionFail() {
         Long postId = 1L;
-        //Long differentUserId = 999L;
-        //UUID로 변경
-        UUID differentUserId = UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");  // 다른 UUID 사용
-
+        Long differentUserId = 999L;
 
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
 
@@ -276,10 +260,7 @@ public class PostServiceImplTest {
     @DisplayName("게시글 삭제 - 권한 없음 실패")
     void deletePostNoPermissionFail() {
         Long postId = 1L;
-        //Long differentUserId = 999L;
-        //UUID로 변경
-        UUID differentUserId = UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");  // 다른 UUID 사용
-
+        Long differentUserId = 999L;
 
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
 
@@ -319,7 +300,7 @@ public class PostServiceImplTest {
         given(postPositionRepository.findByPostId(any())).willReturn(Arrays.asList());
 
         Page<PostResponse> responses = postService.findPostsWithFilters(
-                null, null, null, null, null, null, null, pageable
+                null, null, null, null, null, null, pageable
         );
 
         assertNotNull(responses);
@@ -340,7 +321,7 @@ public class PostServiceImplTest {
         given(postPositionRepository.findByPostId(any())).willReturn(Arrays.asList());
 
         Page<PostResponse> responses = postService.findPostsWithFilters(
-                keyword, null, null, null, null, null, null, pageable
+                keyword, null, null, null, null, null, pageable
         );
 
         assertNotNull(responses);
