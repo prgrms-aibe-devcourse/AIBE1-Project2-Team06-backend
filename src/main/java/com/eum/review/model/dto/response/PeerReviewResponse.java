@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 
 public record PeerReviewResponse(
         Integer id,
-        Long reviewerUserId,
-        Long revieweeUserId,
+        Long reviewerMemberId,
+        Long revieweeMemberId,
         Post post,
         Integer collaborationScore,
         Integer technicalScore,
@@ -20,8 +20,8 @@ public record PeerReviewResponse(
     public static PeerReviewResponse from(PeerReview peerReview){
         return new PeerReviewResponse(
                 peerReview.getId(),
-                peerReview.getReviewerUserId(),
-                peerReview.getRevieweeUserId(),
+                peerReview.getReviewerMemberId(),
+                peerReview.getRevieweeMemberId(),
                 peerReview.getPost(),
                 peerReview.getCollaborationScore(),
                 peerReview.getTechnicalScore(),
