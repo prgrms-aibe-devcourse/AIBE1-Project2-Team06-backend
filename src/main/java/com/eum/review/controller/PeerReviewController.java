@@ -30,24 +30,37 @@ public class PeerReviewController {
             @RequestBody PeerReviewCreateRequest request,
             HttpServletRequest httpServletRequest) {
 
-        UUID publicId = (UUID) httpServletRequest.getAttribute("publicId");
+        UUID reviewerpublicId = (UUID) httpServletRequest.getAttribute("publicId");
 
-        Member member = memberRepository.findByPublicId(publicId)
+        Member reviewer = memberRepository.findByPublicId(reviewerpublicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        PeerReviewResponse response = peerReviewService.createReview(request, member.getId());
+        Member reviewee = memberRepository.findByPublicId(request.revieweePublicId())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, "리뷰 대상자를 찾을 수 없습니다."));
+
+        PeerReviewResponse response = peerReviewService.createReview(
+                request,
+                reviewer.getId(),
+                reviewee.getId()
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/user/{userId}/score")
-    public ResponseEntity<UserReviewScoreResponse> getUserReviewScore(@PathVariable Long userId) {
-        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(userId);
+    @GetMapping("/user/{publicId}/score")
+    public ResponseEntity<UserReviewScoreResponse> getUserReviewScore(@PathVariable UUID publicId) {
+        Member member = memberRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(member.getId());
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user/{userId}/comments")
-    public ResponseEntity<List<UserReviewCommentResponse>> getUserReviewComments(@PathVariable Long userId) {
-        List<UserReviewCommentResponse> comments = peerReviewService.getUserReviewComments(userId);
+    @GetMapping("/user/{publicId}/comments")
+    public ResponseEntity<List<UserReviewCommentResponse>> getUserReviewComments(@PathVariable UUID publicId) {
+        Member member = memberRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<UserReviewCommentResponse> comments = peerReviewService.getUserReviewComments(member.getId());
         return ResponseEntity.ok(comments);
     }
 }
