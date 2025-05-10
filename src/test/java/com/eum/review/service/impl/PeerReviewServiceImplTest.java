@@ -4,6 +4,7 @@ import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.Status;
+import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
@@ -39,6 +40,9 @@ public class PeerReviewServiceImplTest {
 
     @Mock
     private PostRepository postRepository;
+
+    @Mock
+    private PostMemberRepository postMemberRepository;
 
     private Post testPost;
     private PeerReview testPeerReview;
@@ -84,6 +88,9 @@ public class PeerReviewServiceImplTest {
     @DisplayName("리뷰 생성 - 성공")
     void createReviewSuccess() {
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+
+        given(postMemberRepository.existsByPostIdAndMemberId(postId, revieweeMemberId)).willReturn(true);
+        given(postMemberRepository.existsByPostIdAndMemberId(postId, reviewerMemberId)).willReturn(true);
         given(peerReviewRepository.save(any(PeerReview.class))).willReturn(testPeerReview);
 
         PeerReviewResponse response = peerReviewService.createReview(testRequest, reviewerMemberId);
@@ -96,6 +103,8 @@ public class PeerReviewServiceImplTest {
         assertEquals("좋은 팀원이었습니다.", response.reviewComment());
 
         verify(postRepository, times(1)).findById(postId);
+        verify(postMemberRepository, times(1)).existsByPostIdAndMemberId(postId, reviewerMemberId);
+        verify(postMemberRepository, times(1)).existsByPostIdAndMemberId(postId, revieweeMemberId);
         verify(peerReviewRepository, times(1)).save(any(PeerReview.class));
     }
 
