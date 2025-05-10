@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,6 +50,7 @@ public class PeerReviewServiceImplTest {
     private PeerReviewCreateRequest testRequest;
     private Long reviewerMemberId;
     private Long revieweeMemberId;
+    private UUID revieweePublicId;
     private Long postId;
 
     @BeforeEach
@@ -64,7 +66,7 @@ public class PeerReviewServiceImplTest {
 
         testRequest = new PeerReviewCreateRequest(
                 postId,
-                revieweeMemberId,
+                revieweePublicId,
                 5,
                 4,
                 5,
@@ -93,7 +95,7 @@ public class PeerReviewServiceImplTest {
         given(postMemberRepository.existsByPostIdAndMemberId(postId, reviewerMemberId)).willReturn(true);
         given(peerReviewRepository.save(any(PeerReview.class))).willReturn(testPeerReview);
 
-        PeerReviewResponse response = peerReviewService.createReview(testRequest, reviewerMemberId);
+        PeerReviewResponse response = peerReviewService.createReview(testRequest, reviewerMemberId, revieweeMemberId);
 
         assertNotNull(response);
         assertEquals(testPeerReview.getId(), response.id());
@@ -112,15 +114,17 @@ public class PeerReviewServiceImplTest {
     @DisplayName("리뷰 생성 - 자기 자신 리뷰 실패")
     void createReviewSelfReviewFail() {
         Long sameUserId = 1L;
+        UUID samePublicId = UUID.randomUUID();
+
         PeerReviewCreateRequest selfReviewRequest = new PeerReviewCreateRequest(
                 postId,
-                sameUserId,
+                samePublicId,
                 5, 4, 5,
                 "자기 자신 리뷰"
         );
 
         CustomException exception = assertThrows(CustomException.class, () ->
-                peerReviewService.createReview(selfReviewRequest, sameUserId));
+                peerReviewService.createReview(selfReviewRequest, sameUserId, sameUserId));
 
         assertEquals(ErrorCode.SELF_REVIEW_NOT_ALLOWED, exception.getErrorCode());
         verify(postRepository, never()).findById(anyLong());
@@ -135,7 +139,7 @@ public class PeerReviewServiceImplTest {
 
         // when & then
         CustomException exception = assertThrows(CustomException.class, () ->
-                peerReviewService.createReview(testRequest, reviewerMemberId)
+                peerReviewService.createReview(testRequest, reviewerMemberId, revieweeMemberId)
         );
 
         assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
