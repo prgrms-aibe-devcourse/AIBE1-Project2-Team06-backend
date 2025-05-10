@@ -5,7 +5,6 @@ import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
-import com.eum.post.model.entity.enumerated.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,7 +21,7 @@ public interface PostService {
 
     void deletePost(Long postId, UUID publicId);
 
-    PostResponse completePost(Long postId, Long userId, String githubLink);
+    PostResponse completePost(Long postId, UUID publicId, String githubLink) ;
 
     // 필터링 기능 추가
     Page<PostResponse> findPostsWithFilters(

@@ -1,6 +1,7 @@
 package com.eum.post.controller;
 
 import com.eum.post.model.dto.request.PostFilterRequest;
+import com.eum.post.model.dto.request.GithubLinkRequest;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
@@ -129,8 +130,13 @@ public class PostController {
     @PatchMapping("/{postId}/complete")
     public ResponseEntity<PostResponse> completePost(
             @PathVariable Long postId,
-            @RequestHeader("X-USER-ID") Long userId,
-            @RequestBody String githubLink) {
-        return ResponseEntity.ok(postService.completePost(postId, userId, githubLink));
+            @RequestBody GithubLinkRequest request,
+            HttpServletRequest httpServletRequest) {
+        UUID publicId = (UUID) httpServletRequest.getAttribute("publicId");
+        if (publicId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(postService.completePost(postId, publicId, request.githubLink()));
     }
 }

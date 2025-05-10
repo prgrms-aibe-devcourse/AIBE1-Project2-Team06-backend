@@ -5,8 +5,8 @@ import com.eum.review.model.entity.PeerReview;
 
 public record PeerReviewDto(
         Integer id,
-        Long reviewerUserId,
-        Long revieweeUserId,
+        Long reviewerMemberId,
+        Long revieweeMemberId,
         Post post,
         Integer collaborationScore,
         Integer technicalScore,
@@ -17,8 +17,8 @@ public record PeerReviewDto(
     public static PeerReviewDto from(PeerReview peerReview) {
         return new PeerReviewDto(
                 peerReview.getId(),
-                peerReview.getReviewerUserId(),
-                peerReview.getRevieweeUserId(),
+                peerReview.getReviewerMemberId(),
+                peerReview.getRevieweeMemberId(),
                 peerReview.getPost(),
                 peerReview.getCollaborationScore(),
                 peerReview.getTechnicalScore(),

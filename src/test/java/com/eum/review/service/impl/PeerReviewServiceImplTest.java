@@ -3,6 +3,8 @@ package com.eum.review.service.impl;
 import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.entity.Post;
+import com.eum.post.model.entity.enumerated.Status;
+import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
@@ -39,25 +41,30 @@ public class PeerReviewServiceImplTest {
     @Mock
     private PostRepository postRepository;
 
+    @Mock
+    private PostMemberRepository postMemberRepository;
+
     private Post testPost;
     private PeerReview testPeerReview;
     private PeerReviewCreateRequest testRequest;
-    private Long reviewerUserId;
-    private Long revieweeUserId;
+    private Long reviewerMemberId;
+    private Long revieweeMemberId;
     private Long postId;
 
     @BeforeEach
     void setUp() {
-        reviewerUserId = 1L;
-        revieweeUserId = 2L;
+        reviewerMemberId = 1L;
+        revieweeMemberId = 2L;
         postId = 1L;
 
         testPost = mock(Post.class);
         lenient().when(testPost.getId()).thenReturn(postId);
 
+        lenient().when(testPost.getStatus()).thenReturn(Status.COMPLETED);
+
         testRequest = new PeerReviewCreateRequest(
                 postId,
-                revieweeUserId,
+                revieweeMemberId,
                 5,
                 4,
                 5,
@@ -66,8 +73,8 @@ public class PeerReviewServiceImplTest {
 
         testPeerReview = mock(PeerReview.class);
         lenient().when(testPeerReview.getId()).thenReturn(1);
-        lenient().when(testPeerReview.getReviewerUserId()).thenReturn(reviewerUserId);
-        lenient().when(testPeerReview.getRevieweeUserId()).thenReturn(revieweeUserId);
+        lenient().when(testPeerReview.getReviewerMemberId()).thenReturn(reviewerMemberId);
+        lenient().when(testPeerReview.getRevieweeMemberId()).thenReturn(revieweeMemberId);
         lenient().when(testPeerReview.getPost()).thenReturn(testPost);
         lenient().when(testPeerReview.getCollaborationScore()).thenReturn(5);
         lenient().when(testPeerReview.getTechnicalScore()).thenReturn(4);
@@ -81,18 +88,23 @@ public class PeerReviewServiceImplTest {
     @DisplayName("리뷰 생성 - 성공")
     void createReviewSuccess() {
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+
+        given(postMemberRepository.existsByPostIdAndMemberId(postId, revieweeMemberId)).willReturn(true);
+        given(postMemberRepository.existsByPostIdAndMemberId(postId, reviewerMemberId)).willReturn(true);
         given(peerReviewRepository.save(any(PeerReview.class))).willReturn(testPeerReview);
 
-        PeerReviewResponse response = peerReviewService.createReview(testRequest, reviewerUserId);
+        PeerReviewResponse response = peerReviewService.createReview(testRequest, reviewerMemberId);
 
         assertNotNull(response);
         assertEquals(testPeerReview.getId(), response.id());
-        assertEquals(reviewerUserId, response.reviewerUserId());
-        assertEquals(revieweeUserId, response.revieweeUserId());
+        assertEquals(reviewerMemberId, response.reviewerMemberId());
+        assertEquals(revieweeMemberId, response.revieweeMemberId());
         assertEquals(testPeerReview.getAverageScore(), response.averageScore());
         assertEquals("좋은 팀원이었습니다.", response.reviewComment());
 
         verify(postRepository, times(1)).findById(postId);
+        verify(postMemberRepository, times(1)).existsByPostIdAndMemberId(postId, reviewerMemberId);
+        verify(postMemberRepository, times(1)).existsByPostIdAndMemberId(postId, revieweeMemberId);
         verify(peerReviewRepository, times(1)).save(any(PeerReview.class));
     }
 
@@ -123,7 +135,7 @@ public class PeerReviewServiceImplTest {
 
         // when & then
         CustomException exception = assertThrows(CustomException.class, () ->
-                peerReviewService.createReview(testRequest, reviewerUserId)
+                peerReviewService.createReview(testRequest, reviewerMemberId)
         );
 
         assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
@@ -137,47 +149,47 @@ public class PeerReviewServiceImplTest {
         Double avgScore = 4.7;
         List<PeerReview> reviews = Arrays.asList(testPeerReview);
 
-        given(peerReviewRepository.calculateOverallAverageScore(revieweeUserId)).willReturn(avgScore);
-        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(reviews);
+        given(peerReviewRepository.calculateOverallAverageScore(revieweeMemberId)).willReturn(avgScore);
+        given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(reviews);
 
-        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeUserId);
+        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeMemberId);
 
         assertNotNull(response);
-        assertEquals(revieweeUserId, response.userId());
+        assertEquals(revieweeMemberId, response.userId());
         assertEquals(avgScore, response.overallAverageScore());
         assertEquals(1, response.reviewCount());
 
-        verify(peerReviewRepository, times(1)).calculateOverallAverageScore(revieweeUserId);
-        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
+        verify(peerReviewRepository, times(1)).calculateOverallAverageScore(revieweeMemberId);
+        verify(peerReviewRepository, times(1)).findAllByRevieweeMemberId(revieweeMemberId);
     }
 
     @Test
     @DisplayName("사용자 리뷰 점수 계산 - 리뷰 없음")
     void calculateUserReviewScoreNoReviewsSuccess() {
         // given
-        given(peerReviewRepository.calculateOverallAverageScore(revieweeUserId)).willReturn(null);
-        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(Arrays.asList());
+        given(peerReviewRepository.calculateOverallAverageScore(revieweeMemberId)).willReturn(null);
+        given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(Arrays.asList());
 
         // when
-        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeUserId);
+        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeMemberId);
 
         // then
         assertNotNull(response);
-        assertEquals(revieweeUserId, response.userId());
+        assertEquals(revieweeMemberId, response.userId());
         assertEquals(0.0, response.overallAverageScore());
         assertEquals(0, response.reviewCount());
 
-        verify(peerReviewRepository, times(1)).calculateOverallAverageScore(revieweeUserId);
-        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
+        verify(peerReviewRepository, times(1)).calculateOverallAverageScore(revieweeMemberId);
+        verify(peerReviewRepository, times(1)).findAllByRevieweeMemberId(revieweeMemberId);
     }
 
     @Test
     @DisplayName("사용자 리뷰 코멘트 조회 - 성공")
     void getUserReviewCommentsSuccess() {
         List<PeerReview> reviews  = Arrays.asList(testPeerReview);
-        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(reviews);
+        given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(reviews);
 
-        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeUserId);
+        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeMemberId);
 
         assertNotNull(responses);
         assertEquals(1, responses.size());
@@ -185,20 +197,20 @@ public class PeerReviewServiceImplTest {
         assertEquals(testPost, responses.get(0).post());
         assertNotNull(responses.get(0).reviewDate());
 
-        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
+        verify(peerReviewRepository, times(1)).findAllByRevieweeMemberId(revieweeMemberId);
     }
 
     @Test
     @DisplayName("사용자 리뷰 코민트 조회 - 리뷰 없음")
     void getUserReviewCommentsNoReviewsSuccess() {
-        given(peerReviewRepository.findAllByRevieweeUserId(revieweeUserId)).willReturn(Arrays.asList());
+        given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(Arrays.asList());
 
-        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeUserId);
+        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeMemberId);
 
         assertNotNull(responses);
         assertTrue(responses.isEmpty());
 
-        verify(peerReviewRepository, times(1)).findAllByRevieweeUserId(revieweeUserId);
+        verify(peerReviewRepository, times(1)).findAllByRevieweeMemberId(revieweeMemberId);
     }
 
 }

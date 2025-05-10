@@ -5,16 +5,16 @@ import com.eum.review.model.entity.PeerReview;
 
 public record PeerReviewCreateRequest(
         Long postId,
-        Long revieweeUserId,
+        Long revieweeMemberId,
         Integer collaborationScore,
         Integer technicalScore,
         Integer workAgainScore,
         String reviewComment
 ) {
-    public PeerReview toEntity(Long reviewerUserId, Post post){
+    public PeerReview toEntity(Long reviewerMemberId, Post post){
         return PeerReview.of(
-                reviewerUserId,
-                revieweeUserId,
+                reviewerMemberId,
+                revieweeMemberId,
                 post,
                 collaborationScore,
                 technicalScore,
