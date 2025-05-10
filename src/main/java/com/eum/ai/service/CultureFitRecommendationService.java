@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface CultureFitRecommendationService {
     Mono<CultureFit> recommendCultureFit(Long postId, CultureFitRequest cultureFitRequest);
+    Mono<CultureFit> previewCultureFit(CultureFitRequest cultureFitRequest);
 }
