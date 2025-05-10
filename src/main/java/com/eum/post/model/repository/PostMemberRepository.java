@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public interface PostMemberRepository extends JpaRepository<PostMember, Long> {
@@ -16,4 +15,5 @@ public interface PostMemberRepository extends JpaRepository<PostMember, Long> {
     @Query("SELECT pm FROM PostMember pm JOIN FETCH pm.member WHERE pm.post.id = :postId")
     List<PostMember> findAllWithMemberByPostId(@Param("postId") Long postId);
 
+    boolean existsByPostIdAndMemberId(Long postId, Long memberId);
 }

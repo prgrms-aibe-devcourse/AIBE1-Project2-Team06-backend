@@ -6,13 +6,17 @@ import com.eum.global.model.entity.Position;
 import com.eum.global.model.entity.TechStack;
 import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
+import com.eum.member.model.entity.Member;
+import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
+import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.LinkType;
 import com.eum.post.model.entity.enumerated.Period;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
+import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostPositionRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.post.model.repository.PostTechStackRepository;
@@ -30,11 +34,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,16 +68,24 @@ public class PostServiceImplTest {
     @Mock
     private PortfolioService portfolioService;
 
+    @Mock
+    private MemberRepository memberRepository;
+
+    @Mock
+    private PostMemberRepository postMemberRepository;
+
     private Post testPost;
     private PostRequest testPostRequest;
     private Position testPosition;
     private TechStack testTechStack;
     private Long testUserId;
+    private UUID testPublicId;
 
     @BeforeEach
     void setUp() {
         // 테스트 데이터 초기화
         testUserId = 1L;
+        testPublicId = UUID.randomUUID();
 
         testPosition = Position.of("백엔드");
         testTechStack = TechStack.of("Java");
@@ -92,19 +104,25 @@ public class PostServiceImplTest {
                 Arrays.asList(1L)
         );
 
-        testPost = testPostRequest.toEntity(testUserId);
-        setPostId(testPost, 1L);
-    }
+        // Member 객체 모킹 추가
+        Member mockMember = mock(Member.class);
+        lenient().when(mockMember.getId()).thenReturn(testUserId);
+        lenient().when(mockMember.getPublicId()).thenReturn(testPublicId);
+        lenient().when(memberRepository.findByPublicId(testPublicId)).thenReturn(Optional.of(mockMember));
 
-    // 유틸리티 메서드
-    private void setPostId(Post post, Long id) {
-        try {
-            Field idField = Post.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(post, id);
-        } catch (Exception e) {
-            throw new RuntimeException("ID 설정 실패", e);
-        }
+        // Post 객체도 Mock으로 변경하여 필요한 메서드 스텁
+        testPost = mock(Post.class);
+        lenient().when(testPost.getId()).thenReturn(1L);
+        lenient().when(testPost.getTitle()).thenReturn("테스트 게시글");
+        lenient().when(testPost.getContent()).thenReturn("테스트 내용");
+        lenient().when(testPost.getRecruitType()).thenReturn(RecruitType.PROJECT);
+        lenient().when(testPost.getRecruitMember()).thenReturn(5);
+        lenient().when(testPost.getProgressMethod()).thenReturn(ProgressMethod.ONLINE);
+        lenient().when(testPost.getPeriod()).thenReturn(Period.MONTH_3);
+        lenient().when(testPost.getDeadline()).thenReturn(LocalDate.now().plusDays(10));
+        lenient().when(testPost.getLinkType()).thenReturn(LinkType.KAKAO);
+        lenient().when(testPost.getLink()).thenReturn("https://test.com");
+        lenient().when(testPost.getMemberPublicId()).thenReturn(testPublicId);
     }
 
     @Test
@@ -116,7 +134,7 @@ public class PostServiceImplTest {
         given(positionRepository.findById(1L)).willReturn(Optional.of(testPosition));
 
         //when
-        PostResponse response = postService.create(testPostRequest, testUserId);
+        PostResponse response = postService.create(testPostRequest, testPublicId);
 
         // then
         assertNotNull(response);
@@ -136,7 +154,7 @@ public class PostServiceImplTest {
 
         // when & then
         assertThrows(CustomException.class, () ->
-                postService.create(testPostRequest, testUserId));
+                postService.create(testPostRequest, testPublicId));
 
         verify(postRepository, times(1)).save(any(Post.class));
         verify(techStackRepository, times(1)).findById(1L);
@@ -153,7 +171,7 @@ public class PostServiceImplTest {
 
         // when & then
         assertThrows(CustomException.class, () ->
-                postService.create(testPostRequest, testUserId)
+                postService.create(testPostRequest, testPublicId)
         );
 
         verify(postRepository, times(1)).save(any(Post.class));
@@ -213,30 +231,52 @@ public class PostServiceImplTest {
                 Arrays.asList(1L)
         );
 
+        // 업데이트 된 Post를 모킹
+        Post updatedPost = mock(Post.class);
+        lenient().when(updatedPost.getId()).thenReturn(1L);
+        lenient().when(updatedPost.getTitle()).thenReturn("수정된 제목");
+        lenient().when(updatedPost.getContent()).thenReturn("수정된 내용");
+        lenient().when(updatedPost.getRecruitType()).thenReturn(RecruitType.STUDY);
+        lenient().when(updatedPost.getRecruitMember()).thenReturn(3);
+        lenient().when(updatedPost.getProgressMethod()).thenReturn(ProgressMethod.OFFLINE);
+        lenient().when(updatedPost.getPeriod()).thenReturn(Period.MONTH_5);
+        lenient().when(updatedPost.getLinkType()).thenReturn(LinkType.GOOGLE);
+        lenient().when(updatedPost.getLink()).thenReturn("http://updated.com");
+
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
+        given(testPost.getMemberPublicId()).willReturn(testPublicId);
         given(postTechStackRepository.findByPostId(postId)).willReturn(Arrays.asList());
         given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
         given(techStackRepository.findById(1L)).willReturn(Optional.of(testTechStack));
         given(positionRepository.findById(1L)).willReturn(Optional.of(testPosition));
 
-        PostResponse response = postService.update(postId, updateRequest, testUserId);
+        // updatePost 메서드가 호출된 후, 업데이트된 값을 반환하도록 설정
+        doAnswer(invocation -> {
+            // testPost를 updatedPost로 대체하는 효과
+            when(testPost.getTitle()).thenReturn("수정된 제목");
+            when(testPost.getContent()).thenReturn("수정된 내용");
+            return null;
+        }).when(testPost).updatePost(any(PostUpdateResponse.class));
+
+        PostResponse response = postService.update(postId, updateRequest, testPublicId);
 
         assertNotNull(response);
         assertEquals("수정된 제목", response.title());
         assertEquals("수정된 내용", response.content());
         verify(postRepository, times(1)).findById(postId);
+        verify(testPost, times(1)).updatePost(any(PostUpdateResponse.class));
     }
 
     @Test
     @DisplayName("게시글 수정 - 권한 없음 실패")
     void updateNoPermissionFail() {
         Long postId = 1L;
-        Long differentUserId = 999L;
+        UUID differentPublicId = UUID.randomUUID();
 
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
 
         CustomException exception = assertThrows(CustomException.class, () ->
-                postService.update(postId, testPostRequest, differentUserId));
+                postService.update(postId, testPostRequest, differentPublicId));
 
         assertEquals(ErrorCode.POST_ACCESS_DENIED, exception.getErrorCode());
         verify(postRepository, times(1)).findById(postId);
@@ -250,7 +290,7 @@ public class PostServiceImplTest {
         given(postTechStackRepository.findByPostId(postId)).willReturn(Arrays.asList());
         given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
 
-        postService.deletePost(postId, testUserId);
+        postService.deletePost(postId, testPublicId);
 
         verify(postRepository, times(1)).findById(postId);
         verify(postRepository, times(1)).delete(testPost);
@@ -260,12 +300,12 @@ public class PostServiceImplTest {
     @DisplayName("게시글 삭제 - 권한 없음 실패")
     void deletePostNoPermissionFail() {
         Long postId = 1L;
-        Long differentUserId = 999L;
+        UUID differentPublicId = UUID.randomUUID();
 
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
 
         CustomException exception = assertThrows(CustomException.class, () ->
-                postService.deletePost(postId, differentUserId));
+                postService.deletePost(postId, differentPublicId));
 
         assertEquals(ErrorCode.POST_ACCESS_DENIED, exception.getErrorCode());
         verify(postRepository, times(1)).findById(postId);
@@ -278,11 +318,17 @@ public class PostServiceImplTest {
         Long postId = 1L;
         String githubLink = "https://github.com";
 
-        given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
-        given(postTechStackRepository.findByPostId(postId)).willReturn(Arrays.asList());
-        given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
+        when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
 
-        PostResponse response = postService.completePost(postId, testUserId, githubLink);
+        // Member 객체 모킹 추가 (이미 setUp에서 했다면 필요 없을 수 있음)
+        Member mockMember = mock(Member.class);
+        when(mockMember.getId()).thenReturn(testUserId);
+        when(memberRepository.findByPublicId(testPublicId)).thenReturn(Optional.of(mockMember));
+
+        when(postTechStackRepository.findByPostId(postId)).thenReturn(Arrays.asList());
+        when(postPositionRepository.findByPostId(postId)).thenReturn(Arrays.asList());
+
+        PostResponse response = postService.completePost(postId, testPublicId, githubLink);
 
         assertNotNull(response);
         verify(portfolioService, times(1)).createPortfolio(testUserId, postId, githubLink);
