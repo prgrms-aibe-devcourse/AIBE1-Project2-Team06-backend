@@ -29,9 +29,9 @@ public class PeerReviewServiceImpl implements PeerReviewService {
 
     @Transactional
     @Override
-    public PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerUserId) {
+    public PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerMemberId, Long revieweeMemberId) {
         // 1. 자기 자신에 대한 리뷰가 아닌지 확인
-        if (reviewerUserId.equals(request.revieweeMemberId())){
+        if (reviewerMemberId.equals(revieweeMemberId)){
             throw new CustomException(ErrorCode.SELF_REVIEW_NOT_ALLOWED);
         }
 
@@ -45,16 +45,16 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         }
 
         // 4. 리뷰어가 팀의 멤버인지 확인
-        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), reviewerUserId)){
+        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), reviewerMemberId)){
             throw new CustomException(ErrorCode.POST_ACCESS_DENIED, "리뷰어는 해당 팀의 멤버여야 합니다.");
         }
 
         // 5. 리뷰 대상이 팀의 멤버인지 확인
-        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), request.revieweeMemberId())) {
+        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), revieweeMemberId)) {
             throw new CustomException(ErrorCode.REVIEW_TARGET_NOT_TEAM_MEMBER);
         }
 
-        PeerReview peerReview = request.toEntity(reviewerUserId, post);
+        PeerReview peerReview = request.toEntity(reviewerMemberId, revieweeMemberId,post);
         PeerReview savedReview = peerReviewRepository.save(peerReview);
 
         return PeerReviewResponse.from(savedReview);
