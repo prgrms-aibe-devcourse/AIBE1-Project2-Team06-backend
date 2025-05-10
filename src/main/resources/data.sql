@@ -455,3 +455,90 @@ INSERT INTO post_tech_stack (post_id, tech_stack_id) VALUES
 (32, 1),  -- 데이터 시각화 프로젝트: JavaScript
 (32, 3),  -- 데이터 시각화 프로젝트: React
 (32, 13); -- 데이터 시각화 프로젝트: Python
+
+-- 1. 몇 개의 프로젝트 상태를 COMPLETED로 변경 (완료된 프로젝트)
+UPDATE post SET status = 'COMPLETED', culture_fit = 'COMMUNICATIVE' WHERE id IN (1, 5, 9);
+UPDATE post SET status = 'COMPLETED', culture_fit = 'AUTONOMOUS' WHERE id IN (3, 8, 12);
+UPDATE post SET status = 'COMPLETED', culture_fit = 'PLANNER' WHERE id IN (4, 10, 15);
+UPDATE post SET status = 'COMPLETED', culture_fit = 'PRACTICAL' WHERE id IN (7, 11, 20);
+
+-- 2. 완료된 프로젝트에 GitHub 링크 추가 (Portfolio 엔티티용)
+INSERT INTO portfolio (user_id, post_id, post_title, post_link, average_score, created_at) VALUES
+                                                                                               (1, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/kimsy/react-project', 4.7, NOW()),
+                                                                                               (3, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/songcw/react-contribution', 4.5, NOW()),
+                                                                                               (5, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/jangjm/react-project-devops', 4.8, NOW()),
+                                                                                               (2, 3, '스프링 백엔드 개발자 모집', 'https://github.com/seojw/spring-backend', 4.6, NOW()),
+                                                                                               (1, 3, '스프링 백엔드 개발자 모집', 'https://github.com/kimsy/spring-contribution', 4.3, NOW()),
+                                                                                               (5, 3, '스프링 백엔드 개발자 모집', 'https://github.com/jangjm/spring-devops-config', 4.9, NOW()),
+                                                                                               (3, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/songcw/ios-app-main', 4.5, NOW()),
+                                                                                               (2, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/seojw/ios-app-backend', 4.4, NOW()),
+                                                                                               (4, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/eunnh/ios-app-planning', 4.6, NOW()),
+                                                                                               (5, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/jangjm/devops-project', 4.9, NOW()),
+                                                                                               (2, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/seojw/devops-backend', 4.7, NOW()),
+                                                                                               (10, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/goyn/devops-fullstack', 4.5, NOW());
+
+-- 3. 피어 리뷰 데이터 추가
+-- 프로젝트 1에 대한 피어 리뷰
+INSERT INTO peer_review (reviewer_member_id, reviewee_member_id, post_id, collaboration_score, technical_score, work_again_score, average_score, review_comment, review_date) VALUES
+-- 멤버 3이 멤버 1을 리뷰
+(3, 1, 1, 5, 4, 5, 4.7, '프로젝트 리더로서 팀을 잘 이끌어주었습니다. 소통이 원활했고 기술적인 문제 해결 능력도 뛰어났습니다.', NOW()),
+-- 멤버 5가 멤버 1을 리뷰
+(5, 1, 1, 5, 5, 5, 5.0, '프로젝트 일정 관리와 코드 품질 관리가 훌륭했습니다. 다음에도 함께 일하고 싶은 개발자입니다.', NOW()),
+-- 멤버 1이 멤버 3을 리뷰
+(1, 3, 1, 4, 5, 5, 4.7, '기술적 역량이 뛰어나고 새로운 아이디어 제안이 많았습니다. 코드 품질도 매우 좋았습니다.', NOW()),
+-- 멤버 5가 멤버 3을 리뷰
+(5, 3, 1, 4, 5, 4, 4.3, '혁신적인 접근 방식으로 문제를 해결하는 능력이 인상적이었습니다.', NOW()),
+-- 멤버 1이 멤버 5을 리뷰
+(1, 5, 1, 5, 5, 5, 5.0, 'DevOps 관련 지식이 풍부하여 배포 과정이 매우 순조로웠습니다. 협업 태도도 훌륭했습니다.', NOW()),
+-- 멤버 3이 멤버 5을 리뷰
+(3, 5, 1, 5, 5, 4, 4.7, '인프라 구축 및 유지 관리 능력이 뛰어나고, 문제 발생 시 빠른 대응이 인상적이었습니다.', NOW()),
+
+-- 프로젝트 3에 대한 피어 리뷰
+-- 멤버 1이 멤버 2를 리뷰
+(1, 2, 3, 5, 5, 5, 5.0, '백엔드 아키텍처 설계가 탁월했고, 명확한 API 문서화가 프로젝트 진행에 큰 도움이 되었습니다.', NOW()),
+-- 멤버 5가 멤버 2를 리뷰
+(5, 2, 3, 4, 5, 5, 4.7, '효율적인 데이터베이스 설계와 안정적인 서버 구축 능력이 인상적이었습니다.', NOW()),
+-- 멤버 2가 멤버 1을 리뷰
+(2, 1, 3, 4, 4, 5, 4.3, '프론트엔드와 백엔드 간 인터페이스 이해도가 높아 협업이 원활했습니다.', NOW()),
+-- 멤버 5가 멤버 1을 리뷰
+(5, 1, 3, 5, 4, 4, 4.3, '적극적인 참여 태도와 효과적인 커뮤니케이션 능력이 돋보였습니다.', NOW()),
+-- 멤버 2가 멤버 5을 리뷰
+(2, 5, 3, 5, 5, 5, 5.0, 'CI/CD 파이프라인 구축으로 개발 생산성이 크게 향상되었습니다. 최신 기술 트렌드에 대한 지식도 풍부했습니다.', NOW()),
+-- 멤버 1이 멤버 5을 리뷰
+(1, 5, 3, 5, 5, 4, 4.7, '클라우드 인프라 최적화와 보안 설정에 대한 전문성이 인상적이었습니다.', NOW()),
+
+-- 프로젝트 5에 대한 피어 리뷰
+-- 멤버 2가 멤버 3을 리뷰
+(2, 3, 5, 5, 5, 4, 4.7, 'iOS 앱 개발에 대한 전문성이 돋보였고, UI/UX에 대한 세심한 접근이 인상적이었습니다.', NOW()),
+-- 멤버 4가 멤버 3을 리뷰
+(4, 3, 5, 4, 5, 4, 4.3, '사용자 중심의 개발 방식과 효율적인 코드 구현 능력이 뛰어났습니다.', NOW()),
+-- 멤버 3이 멤버 2을 리뷰
+(3, 2, 5, 5, 4, 5, 4.7, '안정적인 백엔드 API가 앱 개발에 큰 도움이 되었습니다. 문제 해결 속도도 빨랐습니다.', NOW()),
+-- 멤버 4가 멤버 2을 리뷰
+(4, 2, 5, 4, 5, 4, 4.3, '데이터 모델링과 서버 성능 최적화에 대한 전문성이 인상적이었습니다.', NOW()),
+-- 멤버 3이 멤버 4을 리뷰
+(3, 4, 5, 4, 4, 5, 4.3, '앱의 기획 방향 설정과 사용자 요구사항 분석이 매우 체계적이었습니다.', NOW()),
+-- 멤버 2가 멤버 4을 리뷰
+(2, 4, 5, 5, 4, 4, 4.3, '명확한 요구사항 정의와 효율적인 테스트 케이스 작성이 프로젝트 품질 향상에 크게 기여했습니다.', NOW()),
+
+-- 프로젝트 7에 대한 피어 리뷰
+-- 멤버 2가 멤버 5을 리뷰
+(2, 5, 7, 5, 5, 5, 5.0, '클라우드 아키텍처 설계와 컨테이너화 전략이 뛰어났습니다. 기술적 지식이 매우 풍부했습니다.', NOW()),
+-- 멤버 10가 멤버 5을 리뷰
+(10, 5, 7, 5, 5, 5, 5.0, '복잡한 인프라 문제를 효율적으로 해결하는 능력이 인상적이었습니다. 최신 DevOps 도구 활용 능력도 뛰어났습니다.', NOW()),
+-- 멤버 5가 멤버 2을 리뷰
+(5, 2, 7, 4, 5, 5, 4.7, '마이크로서비스 아키텍처에 대한 이해도가 높고, 확장 가능한 백엔드 구현 능력이 돋보였습니다.', NOW()),
+-- 멤버 10가 멤버 2을 리뷰
+(10, 2, 7, 5, 4, 5, 4.7, '효율적인 API 설계와 안정적인 서비스 구현으로 프로젝트 성공에 크게 기여했습니다.', NOW()),
+-- 멤버 5가 멤버 10을 리뷰
+(5, 10, 7, 5, 5, 4, 4.7, '풀스택 개발 능력이 뛰어나고, 프론트엔드와 백엔드를 아우르는 종합적인 시각이 프로젝트에 큰 도움이 되었습니다.', NOW()),
+-- 멤버 2가 멤버 10을 리뷰
+(2, 10, 7, 4, 5, 5, 4.7, '기술적 문제 해결 능력과 효율적인 코드 작성 능력이 인상적이었습니다. 협업 태도도 매우 좋았습니다.', NOW());
+
+-- 4. 몇 개의 프로젝트 컬처핏 타입 업데이트
+UPDATE post SET culture_fit = 'AUTONOMOUS' WHERE id IN (2, 13, 26);
+UPDATE post SET culture_fit = 'PLANNER' WHERE id IN (6, 16, 21);
+UPDATE post SET culture_fit = 'COMMUNICATIVE' WHERE id IN (17, 22, 27);
+UPDATE post SET culture_fit = 'PRACTICAL' WHERE id IN (14, 23, 28);
+UPDATE post SET culture_fit = 'HARMONY' WHERE id IN (18, 24, 29);
+UPDATE post SET culture_fit = 'DIRECTIVE' WHERE id IN (19, 25, 30);
