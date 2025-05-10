@@ -8,7 +8,7 @@ import com.eum.review.model.dto.response.UserReviewScoreResponse;
 import java.util.List;
 
 public interface PeerReviewService {
-    PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerUserId);
+    PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerUserId, Long revieweeUserId);
     UserReviewScoreResponse calculateUserReviewScore(Long userId);
     List<UserReviewCommentResponse> getUserReviewComments(Long userId);
 }
