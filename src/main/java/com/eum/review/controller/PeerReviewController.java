@@ -31,9 +31,6 @@ public class PeerReviewController {
             HttpServletRequest httpServletRequest) {
 
         UUID publicId = (UUID) httpServletRequest.getAttribute("publicId");
-        if (publicId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
