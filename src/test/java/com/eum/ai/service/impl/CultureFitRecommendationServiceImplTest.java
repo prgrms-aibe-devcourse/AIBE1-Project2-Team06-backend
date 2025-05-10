@@ -79,6 +79,18 @@ public class CultureFitRecommendationServiceImplTest {
         verifyNoInteractions(geminiClient);
     }
 
+    @Test
+    void previewCultureFitTest() {
+        // given
+        when(geminiClient.requestCultureFit(testRequest)).thenReturn(Mono.just(CultureFit.AUTONOMOUS));
 
+        // when & then
+        StepVerifier.create(cultureFitService.previewCultureFit(testRequest))
+                .expectNext(CultureFit.AUTONOMOUS)
+                .verifyComplete();
+
+        verify(geminiClient).requestCultureFit(testRequest);
+        verifyNoInteractions(postRepository);
+    }
 
 }
