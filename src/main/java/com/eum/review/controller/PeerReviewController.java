@@ -46,7 +46,7 @@ public class PeerReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/user/{publicId}/score")
+    @GetMapping("/member/{publicId}/score")
     public ResponseEntity<UserReviewScoreResponse> getUserReviewScore(@PathVariable UUID publicId) {
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -55,7 +55,7 @@ public class PeerReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user/{publicId}/comments")
+    @GetMapping("/member/{publicId}/comments")
     public ResponseEntity<List<UserReviewCommentResponse>> getUserReviewComments(@PathVariable UUID publicId) {
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
