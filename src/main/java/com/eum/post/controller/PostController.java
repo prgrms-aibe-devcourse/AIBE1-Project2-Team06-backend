@@ -1,5 +1,6 @@
 package com.eum.post.controller;
 
+import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.request.PostFilterRequest;
 import com.eum.post.model.dto.request.GithubLinkRequest;
 import com.eum.post.model.dto.request.PostRequest;
@@ -36,8 +37,8 @@ public class PostController {
      */
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
-        PostResponse response = postService.findByPostId(postId);
-        return ResponseEntity.ok(response);
+        PostDto dto = postService.findByPostId(postId);
+        return ResponseEntity.ok(PostResponse.from(dto));
     }
 
     /**
@@ -56,17 +57,19 @@ public class PostController {
         CultureFit cultureFitEnum = CultureFit.fromString(filter.cultureFit());
         Status statusEnum = Status.fromString(filter.status());
 
-        // 서비스 호출
-        Page<PostResponse> responses = postService.findPostsWithFilters(
-                filter.keyword(),
-                recruitTypeEnum,
-                progressMethodEnum,
-                cultureFitEnum,
-                statusEnum,
-                filter.positionId(),
-                filter.techStackIds(),
-                pageable);
-        return ResponseEntity.ok(responses);
+        // 서비스 호출 및 응답 변환
+        return ResponseEntity.ok(
+                postService.findPostsWithFilters(
+                                filter.keyword(),
+                                recruitTypeEnum,
+                                progressMethodEnum,
+                                cultureFitEnum,
+                                statusEnum,
+                                filter.positionId(),
+                                filter.techStackIds(),
+                                pageable)
+                        .map(PostResponse::from)
+        );
     }
 
     /**
@@ -82,9 +85,11 @@ public class PostController {
         // JWT 인터셉터가 설정한 publicId 가져오기
         UUID publicId = (UUID) httpRequest.getAttribute("publicId");
 
-        PostResponse response = postService.create(request, publicId);
-        // 201 Created 상태코드와 함께 응답
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                PostResponse.from(
+                        postService.create(request, publicId)
+                )
+        );
     }
 
     /**
@@ -123,8 +128,11 @@ public class PostController {
 
         UUID publicId = (UUID) httpRequest.getAttribute("publicId");
 
-        PostResponse response = postService.update(postId, request, publicId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                PostResponse.from(
+                        postService.update(postId, request, publicId)
+                )
+        );
     }
 
     @PatchMapping("/{postId}/complete")
@@ -137,6 +145,11 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return ResponseEntity.ok(postService.completePost(postId, publicId, request.githubLink()));
+        //return ResponseEntity.ok(postService.completePost(postId, publicId, request.githubLink()));
+        return ResponseEntity.ok(
+                PostResponse.from(
+                        postService.completePost(postId, publicId, request.githubLink())
+                )
+        );
     }
 }

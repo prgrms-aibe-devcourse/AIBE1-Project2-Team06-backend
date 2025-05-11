@@ -1,5 +1,6 @@
 package com.eum.post.service;
 
+import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
@@ -14,18 +15,19 @@ import java.util.UUID;
 
 public interface PostService {
 
-    PostResponse create(PostRequest postRequest, UUID publicId);
+    PostDto create(PostRequest postRequest, UUID publicId);
 
-    PostResponse findByPostId(Long postId); // 개별만 조회
+    PostDto findByPostId(Long postId); // 개별만 조회
 
-    PostResponse update(Long postId, PostRequest postRequest, UUID publicId);
+    PostDto update(Long postId, PostRequest postRequest, UUID publicId);
 
     void deletePost(Long postId, UUID publicId);
 
-    PostResponse completePost(Long postId, UUID publicId, String githubLink) ;
+    //PostResponse completePost(Long postId, UUID publicId, String githubLink) ;
+    PostDto completePost(Long postId, UUID publicId, String githubLink) ;
 
     // 필터링 기능 추가
-    Page<PostResponse> findPostsWithFilters(
+    Page<PostDto> findPostsWithFilters(
             String keyword,
             RecruitType recruitType,
             ProgressMethod progressMethod,

@@ -57,7 +57,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public PostResponse create(
+    public PostDto create(
             PostRequest postRequest,
             UUID publicId
     ) {
@@ -81,9 +81,7 @@ public class PostServiceImpl implements PostService{
         // position 연결
         List<PositionDto> positionDtos = savePositions(savedPost, postRequest.positionIds());
 
-        // 4. DTO 변환 및 반환
-        PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     // 기술 스택 저장 메소드
@@ -145,7 +143,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponse findByPostId(Long postId) {
+    public PostDto findByPostId(Long postId) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -156,14 +154,12 @@ public class PostServiceImpl implements PostService{
         // 관련 포지션 조회
         List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
 
-        // DTO 변환 및 반환
-        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     @Override
     @Transactional
-    public PostResponse update(
+    public PostDto update(
             Long postId,
             PostRequest postRequest,
             UUID publicId
@@ -199,9 +195,7 @@ public class PostServiceImpl implements PostService{
         List<TechStackDto> techStackDtos = saveTechStacks(post, postRequest.techStackIds());
         List<PositionDto> positionDtos = savePositions(post, postRequest.positionIds());
 
-        // DTO 변환 및 반환
-        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     @Override
@@ -232,7 +226,7 @@ public class PostServiceImpl implements PostService{
 
     //merge 된 부분
     @Override
-    public PostResponse completePost(Long postId, UUID publicId, String githubLink) {
+    public PostDto completePost(Long postId, UUID publicId, String githubLink) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -250,13 +244,12 @@ public class PostServiceImpl implements PostService{
         List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
         List<PositionDto> positionDtos = findPositionsByPostId(postId);
 
-        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> findPostsWithFilters(
+    public Page<PostDto> findPostsWithFilters(
             String keyword,
             RecruitType recruitType,
             ProgressMethod progressMethod,
@@ -312,9 +305,7 @@ public class PostServiceImpl implements PostService{
             List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
             List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
 
-            // DTO 변환
-            PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-            return PostResponse.from(postDto);
+            return PostDto.from(post, techStackDtos, positionDtos);
         });
     }
 }
