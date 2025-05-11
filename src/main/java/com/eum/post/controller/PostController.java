@@ -49,7 +49,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPosts(
             PostFilterRequest filter,
-            @PageableDefault(page = 0, size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 8, sort = {"createdAt","id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 
         // Enum 변환
         RecruitType recruitTypeEnum = RecruitType.fromString(filter.recruitType());
