@@ -10,8 +10,8 @@ import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
-import com.eum.review.model.dto.response.UserReviewCommentResponse;
-import com.eum.review.model.dto.response.UserReviewScoreResponse;
+import com.eum.review.model.dto.response.MemberReviewCommentResponse;
+import com.eum.review.model.dto.response.MemberReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import com.eum.review.service.PeerReviewService;
@@ -83,7 +83,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserReviewScoreResponse calculateUserReviewScore(Long userId) {
+    public MemberReviewScoreResponse calculateUserReviewScore(Long userId) {
         Double overallAvgScore = peerReviewRepository.calculateOverallAverageScore(userId);
 
         if (overallAvgScore == null) {overallAvgScore = 0.0;}
@@ -94,15 +94,15 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return UserReviewScoreResponse.from(member.getPublicId(), overallAvgScore, reviewCount);
+        return MemberReviewScoreResponse.from(member.getPublicId(), overallAvgScore, reviewCount);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<UserReviewCommentResponse> getUserReviewComments(Long userId) {
+    public List<MemberReviewCommentResponse> getUserReviewComments(Long userId) {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         return reviews.stream()
-                .map(UserReviewCommentResponse::from)
+                .map(MemberReviewCommentResponse::from)
                 .collect(Collectors.toList());
     }
 }

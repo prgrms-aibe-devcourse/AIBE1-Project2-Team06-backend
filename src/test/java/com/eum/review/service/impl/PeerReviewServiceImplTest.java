@@ -8,8 +8,8 @@ import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
-import com.eum.review.model.dto.response.UserReviewCommentResponse;
-import com.eum.review.model.dto.response.UserReviewScoreResponse;
+import com.eum.review.model.dto.response.MemberReviewCommentResponse;
+import com.eum.review.model.dto.response.MemberReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -156,7 +156,7 @@ public class PeerReviewServiceImplTest {
         given(peerReviewRepository.calculateOverallAverageScore(revieweeMemberId)).willReturn(avgScore);
         given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(reviews);
 
-        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeMemberId);
+        MemberReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeMemberId);
 
         assertNotNull(response);
         assertEquals(revieweeMemberId, response.userId());
@@ -175,7 +175,7 @@ public class PeerReviewServiceImplTest {
         given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(Arrays.asList());
 
         // when
-        UserReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeMemberId);
+        MemberReviewScoreResponse response = peerReviewService.calculateUserReviewScore(revieweeMemberId);
 
         // then
         assertNotNull(response);
@@ -193,7 +193,7 @@ public class PeerReviewServiceImplTest {
         List<PeerReview> reviews  = Arrays.asList(testPeerReview);
         given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(reviews);
 
-        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeMemberId);
+        List<MemberReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeMemberId);
 
         assertNotNull(responses);
         assertEquals(1, responses.size());
@@ -209,7 +209,7 @@ public class PeerReviewServiceImplTest {
     void getUserReviewCommentsNoReviewsSuccess() {
         given(peerReviewRepository.findAllByRevieweeMemberId(revieweeMemberId)).willReturn(Arrays.asList());
 
-        List<UserReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeMemberId);
+        List<MemberReviewCommentResponse> responses = peerReviewService.getUserReviewComments(revieweeMemberId);
 
         assertNotNull(responses);
         assertTrue(responses.isEmpty());
