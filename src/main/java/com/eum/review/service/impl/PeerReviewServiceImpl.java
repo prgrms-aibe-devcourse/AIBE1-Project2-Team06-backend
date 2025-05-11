@@ -2,6 +2,8 @@ package com.eum.review.service.impl;
 
 import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
+import com.eum.member.model.entity.Member;
+import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.Status;
 import com.eum.post.model.repository.PostMemberRepository;
@@ -26,6 +28,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     private final PeerReviewRepository peerReviewRepository;
     private final PostRepository postRepository;
     private final PostMemberRepository postMemberRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     @Override
@@ -57,7 +60,25 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         PeerReview peerReview = request.toEntity(reviewerMemberId, revieweeMemberId,post);
         PeerReview savedReview = peerReviewRepository.save(peerReview);
 
-        return PeerReviewResponse.from(savedReview);
+        Member reviewer = memberRepository.findById(reviewerMemberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Member reviewee = memberRepository.findById(revieweeMemberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return PeerReviewResponse.of(
+                savedReview.getId(),
+                reviewer.getPublicId(),
+                reviewee.getPublicId(),
+                post.getId(),
+                post.getTitle(),
+                savedReview.getCollaborationScore(),
+                savedReview.getTechnicalScore(),
+                savedReview.getWorkAgainScore(),
+                savedReview.getAverageScore(),
+                savedReview.getReviewComment(),
+                savedReview.getReviewDate()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -70,7 +91,10 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         int reviewCount = reviews.size();
 
-        return UserReviewScoreResponse.from(userId, overallAvgScore, reviewCount);
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return UserReviewScoreResponse.from(member.getPublicId(), overallAvgScore, reviewCount);
     }
 
     @Transactional(readOnly = true)
