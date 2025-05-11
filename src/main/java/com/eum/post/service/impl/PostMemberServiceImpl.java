@@ -30,7 +30,7 @@ public class PostMemberServiceImpl implements PostMemberService {
 
     @Override
     @Transactional
-    public List<PostMemberResponse> updateMembers(
+    public List<PostMemberDto> updateMembers(
             Long postId,
             List<String> nicknames,
             Long ownerId
@@ -54,15 +54,15 @@ public class PostMemberServiceImpl implements PostMemberService {
         // 결과 조회 및 반환
         List<PostMember> resultMembers = postMemberRepository.findAllWithMemberByPostId(postId);
         return resultMembers.stream()
-                .map(member -> PostMemberResponse.from(PostMemberDto.from(member)))
+                .map(PostMemberDto::from)  // 직접 PostMemberDto로 변환
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostMemberResponse> getPostMembers(Long postId) {
+    public List<PostMemberDto> getPostMembers(Long postId) {
         return postMemberRepository.findAllWithMemberByPostId(postId).stream()
-                .map(member -> PostMemberResponse.from(PostMemberDto.from(member)))
+                .map(PostMemberDto::from)  // 직접 PostMemberDto로 변환
                 .collect(Collectors.toList());
     }
 
