@@ -1,164 +1,272 @@
-INSERT INTO positions (id, name) VALUES (1, '프런트엔드');
-INSERT INTO positions (id, name) VALUES (2, '백엔드');
-INSERT INTO positions (id, name) VALUES (3, '디자이너');
-INSERT INTO positions (id, name) VALUES (4, 'IOS');
-INSERT INTO positions (id, name) VALUES (5, '안드로이드');
-INSERT INTO positions (id, name) VALUES (6, '데브옵스');
-INSERT INTO positions (id, name) VALUES (7, 'PM');
-INSERT INTO positions (id, name) VALUES (8, '기획자');
-INSERT INTO positions (id, name) VALUES (9, '마케터');
+INSERT INTO positions (id, name)
+VALUES (1, '프런트엔드');
+INSERT INTO positions (id, name)
+VALUES (2, '백엔드');
+INSERT INTO positions (id, name)
+VALUES (3, '디자이너');
+INSERT INTO positions (id, name)
+VALUES (4, 'IOS');
+INSERT INTO positions (id, name)
+VALUES (5, '안드로이드');
+INSERT INTO positions (id, name)
+VALUES (6, '데브옵스');
+INSERT INTO positions (id, name)
+VALUES (7, 'PM');
+INSERT INTO positions (id, name)
+VALUES (8, '기획자');
+INSERT INTO positions (id, name)
+VALUES (9, '마케터');
 
-INSERT INTO tech_stack (name) VALUES ('JavaScript');
-INSERT INTO tech_stack (name) VALUES ('TypeScript');
-INSERT INTO tech_stack (name) VALUES ('React');
-INSERT INTO tech_stack (name) VALUES ('Vue');
-INSERT INTO tech_stack (name) VALUES ('Nodejs');
-INSERT INTO tech_stack (name) VALUES ('Spring');
-INSERT INTO tech_stack (name) VALUES ('Java');
-INSERT INTO tech_stack (name) VALUES ('Nextjs');
-INSERT INTO tech_stack (name) VALUES ('Nestjs');
-INSERT INTO tech_stack (name) VALUES ('Express');
-INSERT INTO tech_stack (name) VALUES ('Go');
-INSERT INTO tech_stack (name) VALUES ('C');
-INSERT INTO tech_stack (name) VALUES ('Python');
-INSERT INTO tech_stack (name) VALUES ('Django');
-INSERT INTO tech_stack (name) VALUES ('Swift');
-INSERT INTO tech_stack (name) VALUES ('Kotlin');
-INSERT INTO tech_stack (name) VALUES ('MySQL');
-INSERT INTO tech_stack (name) VALUES ('MongoDB');
-INSERT INTO tech_stack (name) VALUES ('php');
-INSERT INTO tech_stack (name) VALUES ('GraphQL');
-INSERT INTO tech_stack (name) VALUES ('Firebase');
-INSERT INTO tech_stack (name) VALUES ('ReactNative');
-INSERT INTO tech_stack (name) VALUES ('Unity');
-INSERT INTO tech_stack (name) VALUES ('Flutter');
-INSERT INTO tech_stack (name) VALUES ('AWS');
-INSERT INTO tech_stack (name) VALUES ('Kubernetes');
-INSERT INTO tech_stack (name) VALUES ('Docker');
-INSERT INTO tech_stack (name) VALUES ('Git');
-INSERT INTO tech_stack (name) VALUES ('Figma');
-INSERT INTO tech_stack (name) VALUES ('Zeplin');
-INSERT INTO tech_stack (name) VALUES ('Jest');
-INSERT INTO tech_stack (name) VALUES ('Svelte');
+INSERT INTO tech_stack (name)
+VALUES ('JavaScript');
+INSERT INTO tech_stack (name)
+VALUES ('TypeScript');
+INSERT INTO tech_stack (name)
+VALUES ('React');
+INSERT INTO tech_stack (name)
+VALUES ('Vue');
+INSERT INTO tech_stack (name)
+VALUES ('Nodejs');
+INSERT INTO tech_stack (name)
+VALUES ('Spring');
+INSERT INTO tech_stack (name)
+VALUES ('Java');
+INSERT INTO tech_stack (name)
+VALUES ('Nextjs');
+INSERT INTO tech_stack (name)
+VALUES ('Nestjs');
+INSERT INTO tech_stack (name)
+VALUES ('Express');
+INSERT INTO tech_stack (name)
+VALUES ('Go');
+INSERT INTO tech_stack (name)
+VALUES ('C');
+INSERT INTO tech_stack (name)
+VALUES ('Python');
+INSERT INTO tech_stack (name)
+VALUES ('Django');
+INSERT INTO tech_stack (name)
+VALUES ('Swift');
+INSERT INTO tech_stack (name)
+VALUES ('Kotlin');
+INSERT INTO tech_stack (name)
+VALUES ('MySQL');
+INSERT INTO tech_stack (name)
+VALUES ('MongoDB');
+INSERT INTO tech_stack (name)
+VALUES ('php');
+INSERT INTO tech_stack (name)
+VALUES ('GraphQL');
+INSERT INTO tech_stack (name)
+VALUES ('Firebase');
+INSERT INTO tech_stack (name)
+VALUES ('ReactNative');
+INSERT INTO tech_stack (name)
+VALUES ('Unity');
+INSERT INTO tech_stack (name)
+VALUES ('Flutter');
+INSERT INTO tech_stack (name)
+VALUES ('AWS');
+INSERT INTO tech_stack (name)
+VALUES ('Kubernetes');
+INSERT INTO tech_stack (name)
+VALUES ('Docker');
+INSERT INTO tech_stack (name)
+VALUES ('Git');
+INSERT INTO tech_stack (name)
+VALUES ('Figma');
+INSERT INTO tech_stack (name)
+VALUES ('Zeplin');
+INSERT INTO tech_stack (name)
+VALUES ('Jest');
+INSERT INTO tech_stack (name)
+VALUES ('Svelte');
 
--- Member관련 Mock Data
-INSERT INTO member (
-    public_id, auth_id, provider, nickname, profile_image_url,
-    career, short_description, created_at, updated_at
-) VALUES
-      (UUID(), 'kakao_1001', 'kakao', '김시용', 'https://picsum.photos/id/1/200', '1 year', '프론트엔드 주니어', NOW(), NOW()),
-      (UUID(), 'kakao_1002', 'kakao', '서주원', 'https://picsum.photos/id/2/200', '3 years', '백엔드 개발자', NOW(), NOW()),
-      (UUID(), 'kakao_1003', 'kakao', '송창욱', 'https://picsum.photos/id/3/200', '2 years', 'IOS 앱 개발자', NOW(), NOW()),
-      (UUID(), 'kakao_1004', 'kakao', '은나현', 'https://picsum.photos/id/4/200', '4 years', '기획 전문가', NOW(), NOW()),
-      (UUID(), 'kakao_1005', 'kakao', '장정명', 'https://picsum.photos/id/5/200', '5 years', 'DevOps 엔지니어', NOW(), NOW()),
-      (UUID(), 'kakao_1006', 'kakao', '유지민', 'https://picsum.photos/id/6/200', '1 year', '마케팅 주니어', NOW(), NOW()),
-      (UUID(), 'kakao_1007', 'kakao', '김민정', 'https://picsum.photos/id/7/200', '6 years', 'PM / 기획 겸직', NOW(), NOW()),
-      (UUID(), 'kakao_1008', 'kakao', '장원영', 'https://picsum.photos/id/8/200', '3 years', 'React Native 개발자', NOW(), NOW()),
-      (UUID(), 'kakao_1009', 'kakao', '이지은', 'https://picsum.photos/id/9/200', '2 years', 'Unity 기반 게임 개발자', NOW(), NOW()),
-      (UUID(), 'kakao_1010', 'kakao', '고윤정', 'https://picsum.photos/id/10/200', '4 years', '풀스택 개발자', NOW(), NOW());
+-- Member 관련 Mock Data (UUIDv4 적용)
+INSERT INTO member (public_id, auth_id, provider, nickname, profile_image_url,
+                    career, short_description, created_at, updated_at)
+VALUES ('68d4435a-3bc0-4bc5-924e-04fab2d2696e', 'kakao_1001', 'kakao', '김시용', 'https://picsum.photos/id/1/200',
+        '1 year', '프론트엔드 주니어', NOW(), NOW()),
+       ('f42fda6d-7e52-4080-aa52-0d0b822da649', 'kakao_1002', 'kakao', '서주원', 'https://picsum.photos/id/2/200',
+        '3 years', '백엔드 개발자', NOW(), NOW()),
+       ('1f54ebe7-13ca-4d8a-8241-0a2da18a8c42', 'kakao_1003', 'kakao', '송창욱', 'https://picsum.photos/id/3/200',
+        '2 years', 'IOS 앱 개발자', NOW(), NOW()),
+       ('878983b7-caeb-490f-8c3c-ba8d6a98a49c', 'kakao_1004', 'kakao', '은나현', 'https://picsum.photos/id/4/200',
+        '4 years', '기획 전문가', NOW(), NOW()),
+       ('4fde00e9-ff45-4450-9202-a3ab4ec47d6a', 'kakao_1005', 'kakao', '장정명', 'https://picsum.photos/id/5/200',
+        '5 years', 'DevOps 엔지니어', NOW(), NOW()),
+       ('f6fb4f2a-7365-42e5-98f0-f900553f6199', 'kakao_1006', 'kakao', '유지민', 'https://picsum.photos/id/6/200',
+        '1 year', '마케팅 주니어', NOW(), NOW()),
+       ('04073ffb-c154-404c-80fd-3ce43e1f574c', 'kakao_1007', 'kakao', '김민정', 'https://picsum.photos/id/7/200',
+        '6 years', 'PM / 기획 겸직', NOW(), NOW()),
+       ('b86b96bd-d0d8-4de1-b6d7-e5077817fc90', 'kakao_1008', 'kakao', '장원영', 'https://picsum.photos/id/8/200',
+        '3 years', 'React Native 개발자', NOW(), NOW()),
+       ('9957bfbf-baa2-42ba-8071-e2e59b7fc173', 'kakao_1009', 'kakao', '이지은', 'https://picsum.photos/id/9/200',
+        '2 years', 'Unity 기반 게임 개발자', NOW(), NOW()),
+       ('ef0a7967-47f8-4438-a111-550a6e75124f', 'kakao_1010', 'kakao', '고윤정', 'https://picsum.photos/id/10/200',
+        '4 years', '풀스택 개발자', NOW(), NOW());
 
-INSERT INTO member_position (member_id, position_id) VALUES
- (1, 1),  -- 프런트엔드
- (2, 2),  -- 백엔드
- (3, 4),  -- IOS
- (4, 8),  -- 기획자
- (5, 6),  -- 데브옵스
- (6, 9),  -- 마케터
- (7, 7),  -- PM
- (8, 1),  -- 프런트엔드 (React Native)
- (9, 5),  -- 안드로이드 (Unity 기반 게임)
- (10, 2); -- 백엔드
+INSERT INTO member_position (member_id, position_id)
+VALUES (1, 1), -- 프런트엔드
+       (2, 2), -- 백엔드
+       (3, 4), -- IOS
+       (4, 8), -- 기획자
+       (5, 6), -- 데브옵스
+       (6, 9), -- 마케터
+       (7, 7), -- PM
+       (8, 1), -- 프런트엔드 (React Native)
+       (9, 5), -- 안드로이드 (Unity 기반 게임)
+       (10, 2); -- 백엔드
 
-INSERT INTO member_tech_stack (member_id, tech_stack_id) VALUES
- (1, 1), (1, 3), (1, 8),          -- JavaScript, React, Next.js
- (2, 6), (2, 7), (2, 17),         -- Spring, Java, MySQL
- (3, 15), (3, 17), (3, 25),       -- Swift, MySQL, AWS
- (4, 29), (4, 30),                -- Figma, Zeplin
- (5, 25), (5, 26), (5, 27),       -- AWS, Kubernetes, Docker
- (6, 28), (6, 24),                -- Git, Flutter
- (7, 20), (7, 29),                -- GraphQL, Figma
- (8, 21), (8, 3), (8, 8),         -- ReactNative, React, Nextjs
- (9, 22), (9, 11), (9, 28),       -- Unity, Go, Git
- (10, 2), (10, 5), (10, 6), (10, 17); -- TypeScript, Nodejs, Spring, MySQL
+INSERT INTO member_tech_stack (member_id, tech_stack_id)
+VALUES (1, 1),
+       (1, 3),
+       (1, 8),  -- JavaScript, React, Next.js
+       (2, 6),
+       (2, 7),
+       (2, 17), -- Spring, Java, MySQL
+       (3, 15),
+       (3, 17),
+       (3, 25), -- Swift, MySQL, AWS
+       (4, 29),
+       (4, 30), -- Figma, Zeplin
+       (5, 25),
+       (5, 26),
+       (5, 27), -- AWS, Kubernetes, Docker
+       (6, 28),
+       (6, 24), -- Git, Flutter
+       (7, 20),
+       (7, 29), -- GraphQL, Figma
+       (8, 21),
+       (8, 3),
+       (8, 8),  -- ReactNative, React, Nextjs
+       (9, 22),
+       (9, 11),
+       (9, 28), -- Unity, Go, Git
+       (10, 2),
+       (10, 5),
+       (10, 6),
+       (10, 17);
+-- TypeScript, Nodejs, Spring, MySQL
 
 -- 1. Post 데이터 생성 (첫 번째 세트: 10개 게시글)
-INSERT INTO post (user_id, title, content, recruit_type, recruit_member, progress_method, period, deadline, link_type, link, status, created_at, updated_at, culture_fit) VALUES
+INSERT INTO post (user_id, title, content, recruit_type, recruit_member, progress_method, period, deadline, link_type,
+                  link, status, created_at, updated_at, culture_fit)
+VALUES
 -- user_id 1번 (김시용)의 게시글
-(1, '리액트 기반 웹 프로젝트 팀원 모집합니다', '안녕하세요! 리액트를 활용한 웹 서비스를 개발할 팀원을 모집합니다. 함께 성장할 분들을 찾고 있어요.', 'PROJECT', 4, 'ONLINE', 'MONTH_3', '2025-08-15', 'KAKAO', 'https://open.kakao.com/example1', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
-(1, '타입스크립트 스터디 모집', '타입스크립트 기초부터 고급 기능까지 함께 공부해요. 주 2회 온라인 미팅 진행 예정입니다.', 'STUDY', 5, 'ONLINE', 'MONTH_1', '2025-06-20', 'KAKAO', 'https://open.kakao.com/example2', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
+(1, '리액트 기반 웹 프로젝트 팀원 모집합니다', '안녕하세요! 리액트를 활용한 웹 서비스를 개발할 팀원을 모집합니다. 함께 성장할 분들을 찾고 있어요.', 'PROJECT', 4, 'ONLINE',
+ 'MONTH_3', '2025-08-15', 'KAKAO', 'https://open.kakao.com/example1', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
+(1, '타입스크립트 스터디 모집', '타입스크립트 기초부터 고급 기능까지 함께 공부해요. 주 2회 온라인 미팅 진행 예정입니다.', 'STUDY', 5, 'ONLINE', 'MONTH_1',
+ '2025-06-20', 'KAKAO', 'https://open.kakao.com/example2', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
 
 -- user_id 2번 (서주원)의 게시글
-(2, '스프링 백엔드 개발자 모집', '스프링부트와 JPA를 활용한 백엔드 프로젝트를 시작합니다. 관심 있는 분들 함께해요!', 'PROJECT', 3, 'ONLINE', 'MONTH_6', '2025-07-30', 'GOOGLE', 'https://meet.google.com/example1', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
-(2, '자바 스터디 그룹 참여자 모집', '자바 기본기부터 심화 내용까지 차근차근 공부할 스터디원을 모집합니다.', 'STUDY', 6, 'OFFLINE', 'MONTH_2', '2025-06-10', 'KAKAO', 'https://open.kakao.com/example3', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
+(2, '스프링 백엔드 개발자 모집', '스프링부트와 JPA를 활용한 백엔드 프로젝트를 시작합니다. 관심 있는 분들 함께해요!', 'PROJECT', 3, 'ONLINE', 'MONTH_6',
+ '2025-07-30', 'GOOGLE', 'https://meet.google.com/example1', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
+(2, '자바 스터디 그룹 참여자 모집', '자바 기본기부터 심화 내용까지 차근차근 공부할 스터디원을 모집합니다.', 'STUDY', 6, 'OFFLINE', 'MONTH_2', '2025-06-10',
+ 'KAKAO', 'https://open.kakao.com/example3', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
 
 -- user_id 3번 (송창욱)의 게시글
-(3, 'iOS 앱 개발 프로젝트 함께하실 분', 'Swift와 SwiftUI를 활용한 iOS 앱 개발 프로젝트입니다. 디자이너와 백엔드 개발자분도 환영해요!', 'PROJECT', 4, 'ALL', 'MONTH_6', '2025-09-01', 'GOOGLE', 'https://meet.google.com/example2', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
+(3, 'iOS 앱 개발 프로젝트 함께하실 분', 'Swift와 SwiftUI를 활용한 iOS 앱 개발 프로젝트입니다. 디자이너와 백엔드 개발자분도 환영해요!', 'PROJECT', 4, 'ALL',
+ 'MONTH_6', '2025-09-01', 'GOOGLE', 'https://meet.google.com/example2', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
 
 -- user_id 4번 (은나현)의 게시글
-(4, '서비스 기획 스터디 모집합니다', '서비스 기획과 관련된 다양한 주제로 스터디를 진행할 예정입니다. 기획에 관심있는 분들 환영해요!', 'STUDY', 5, 'ALL', 'MONTH_1', '2025-07-01', 'KAKAO', 'https://open.kakao.com/example4', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
+(4, '서비스 기획 스터디 모집합니다', '서비스 기획과 관련된 다양한 주제로 스터디를 진행할 예정입니다. 기획에 관심있는 분들 환영해요!', 'STUDY', 5, 'ALL', 'MONTH_1',
+ '2025-07-01', 'KAKAO', 'https://open.kakao.com/example4', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
 
 -- user_id 5번 (장정명)의 게시글
-(5, 'DevOps 관련 프로젝트 팀원 구합니다', 'Docker와 Kubernetes를 활용한 클라우드 환경 구축 프로젝트입니다. 함께 성장할 분들을 찾습니다.', 'PROJECT', 3, 'ONLINE', 'MONTH_3', '2025-08-20', 'GOOGLE', 'https://meet.google.com/example3', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
+(5, 'DevOps 관련 프로젝트 팀원 구합니다', 'Docker와 Kubernetes를 활용한 클라우드 환경 구축 프로젝트입니다. 함께 성장할 분들을 찾습니다.', 'PROJECT', 3, 'ONLINE',
+ 'MONTH_3', '2025-08-20', 'GOOGLE', 'https://meet.google.com/example3', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
 
 -- user_id 6번 (유지민)의 게시글
-(6, '마케팅 전략 수립 스터디', '디지털 마케팅 전략 수립에 관한 스터디입니다. 실무 사례를 분석하고 토론할 예정입니다.', 'STUDY', 4, 'OFFLINE', 'MONTH_2', '2025-07-15', 'KAKAO', 'https://open.kakao.com/example5', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
+(6, '마케팅 전략 수립 스터디', '디지털 마케팅 전략 수립에 관한 스터디입니다. 실무 사례를 분석하고 토론할 예정입니다.', 'STUDY', 4, 'OFFLINE', 'MONTH_2', '2025-07-15',
+ 'KAKAO', 'https://open.kakao.com/example5', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
 
 -- user_id 7번 (김민정)의 게시글
-(7, '프로덕트 매니저 역량 강화 스터디', 'PM으로서 필요한 역량을 함께 키워나갈 스터디원을 모집합니다. 현업 PM들의 경험 공유도 있을 예정입니다.', 'STUDY', 8, 'ALL', 'MONTH_3', '2025-08-05', 'GOOGLE', 'https://meet.google.com/example4', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
+(7, '프로덕트 매니저 역량 강화 스터디', 'PM으로서 필요한 역량을 함께 키워나갈 스터디원을 모집합니다. 현업 PM들의 경험 공유도 있을 예정입니다.', 'STUDY', 8, 'ALL', 'MONTH_3',
+ '2025-08-05', 'GOOGLE', 'https://meet.google.com/example4', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
 
 -- user_id 8번 (장원영)의 게시글
-(8, 'React Native 앱 개발 프로젝트', 'React Native를 활용한 크로스 플랫폼 앱 개발 프로젝트입니다. 디자이너와 백엔드 개발자도 모집합니다.', 'PROJECT', 5, 'ONLINE', 'MONTH_6', '2025-09-15', 'KAKAO', 'https://open.kakao.com/example6', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
+(8, 'React Native 앱 개발 프로젝트', 'React Native를 활용한 크로스 플랫폼 앱 개발 프로젝트입니다. 디자이너와 백엔드 개발자도 모집합니다.', 'PROJECT', 5, 'ONLINE',
+ 'MONTH_6', '2025-09-15', 'KAKAO', 'https://open.kakao.com/example6', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
 
 -- user_id 9번 (이지은)의 게시글
-(9, 'Unity 게임 개발 프로젝트 팀원 모집', 'Unity를 활용한 모바일 게임 개발 프로젝트입니다. 3D 모델링과 기획에 관심 있는 분들도 환영합니다!', 'PROJECT', 6, 'ALL', 'MONTH_6', '2025-10-01', 'GOOGLE', 'https://meet.google.com/example5', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
+(9, 'Unity 게임 개발 프로젝트 팀원 모집', 'Unity를 활용한 모바일 게임 개발 프로젝트입니다. 3D 모델링과 기획에 관심 있는 분들도 환영합니다!', 'PROJECT', 6, 'ALL',
+ 'MONTH_6', '2025-10-01', 'GOOGLE', 'https://meet.google.com/example5', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
 
 -- user_id 10번 (고윤정)의 게시글
-(10, '풀스택 개발 스터디 모집', 'React와 Node.js를 활용한 풀스택 개발을 함께 공부할 스터디원을 모집합니다. 실습 위주로 진행할 예정입니다.', 'STUDY', 6, 'ONLINE', 'MONTH_3', '2025-07-25', 'KAKAO', 'https://open.kakao.com/example7', 'RECRUITING', NOW(), NOW(), 'PLANNER');
+(10, '풀스택 개발 스터디 모집', 'React와 Node.js를 활용한 풀스택 개발을 함께 공부할 스터디원을 모집합니다. 실습 위주로 진행할 예정입니다.', 'STUDY', 6, 'ONLINE',
+ 'MONTH_3', '2025-07-25', 'KAKAO', 'https://open.kakao.com/example7', 'RECRUITING', NOW(), NOW(), 'PLANNER');
 
 -- 2. 추가 게시글 20개 생성 (두 번째 세트)
-INSERT INTO post (user_id, title, content, recruit_type, recruit_member, progress_method, period, deadline, link_type, link, status, created_at, updated_at, culture_fit) VALUES
+INSERT INTO post (user_id, title, content, recruit_type, recruit_member, progress_method, period, deadline, link_type,
+                  link, status, created_at, updated_at, culture_fit)
+VALUES
 -- 유저 1번 (김시용)의 추가 게시글
-(1, '차세대 웹 기술 스터디 모집', 'WebAssembly, PWA 등 최신 웹 기술을 공부할 스터디원을 모집합니다. 주 1회 온라인 모임 예정입니다.', 'STUDY', 6, 'ONLINE', 'MONTH_2', '2025-07-10', 'KAKAO', 'https://open.kakao.com/example8', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
-(1, '개인 포트폴리오 사이트 제작 함께할 분', '각자의 포트폴리오 사이트를 함께 제작하며 피드백을 주고받을 팀원을 찾습니다. HTML, CSS, JS 기본기가 있으신 분 환영합니다.', 'PROJECT', 3, 'ONLINE', 'MONTH_1', '2025-06-30', 'GOOGLE', 'https://meet.google.com/example6', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
+(1, '차세대 웹 기술 스터디 모집', 'WebAssembly, PWA 등 최신 웹 기술을 공부할 스터디원을 모집합니다. 주 1회 온라인 모임 예정입니다.', 'STUDY', 6, 'ONLINE',
+ 'MONTH_2', '2025-07-10', 'KAKAO', 'https://open.kakao.com/example8', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
+(1, '개인 포트폴리오 사이트 제작 함께할 분', '각자의 포트폴리오 사이트를 함께 제작하며 피드백을 주고받을 팀원을 찾습니다. HTML, CSS, JS 기본기가 있으신 분 환영합니다.', 'PROJECT', 3,
+ 'ONLINE', 'MONTH_1', '2025-06-30', 'GOOGLE', 'https://meet.google.com/example6', 'RECRUITING', NOW(), NOW(),
+ 'COMMUNICATIVE'),
 
 -- 유저 2번 (서주원)의 추가 게시글
-(2, '클라우드 아키텍처 설계 스터디', 'AWS와 Azure를 활용한 클라우드 아키텍처 설계 패턴을 공부하는 스터디입니다. 실무 사례 중심으로 진행됩니다.', 'STUDY', 5, 'ONLINE', 'MONTH_3', '2025-08-01', 'KAKAO', 'https://open.kakao.com/example9', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
-(2, 'JPA/Hibernate 심화 스터디', 'JPA와 Hibernate의 고급 기능과 성능 최적화 기법을 함께 공부해요. ORM 기초 지식이 있으신 분들 환영합니다.', 'STUDY', 4, 'ALL', 'MONTH_2', '2025-07-20', 'GOOGLE', 'https://meet.google.com/example7', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
+(2, '클라우드 아키텍처 설계 스터디', 'AWS와 Azure를 활용한 클라우드 아키텍처 설계 패턴을 공부하는 스터디입니다. 실무 사례 중심으로 진행됩니다.', 'STUDY', 5, 'ONLINE',
+ 'MONTH_3', '2025-08-01', 'KAKAO', 'https://open.kakao.com/example9', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
+(2, 'JPA/Hibernate 심화 스터디', 'JPA와 Hibernate의 고급 기능과 성능 최적화 기법을 함께 공부해요. ORM 기초 지식이 있으신 분들 환영합니다.', 'STUDY', 4, 'ALL',
+ 'MONTH_2', '2025-07-20', 'GOOGLE', 'https://meet.google.com/example7', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
 
 -- 유저 3번 (송창욱)의 추가 게시글
-(3, '신규 금융 앱 개발 프로젝트', '핀테크 관련 iOS 앱을 개발할 팀원을 모집합니다. UI/UX 디자이너와 백엔드 개발자도 환영합니다.', 'PROJECT', 5, 'ALL', 'MONTH_4', '2025-09-10', 'KAKAO', 'https://open.kakao.com/example10', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
-(3, 'Swift 언어 기초 스터디', 'Swift 프로그래밍 언어를 처음부터 체계적으로 공부하는 스터디입니다. 프로그래밍 경험이 있으면 좋지만, 초보자도 환영합니다.', 'STUDY', 8, 'ONLINE', 'MONTH_2', '2025-07-15', 'GOOGLE', 'https://meet.google.com/example8', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
+(3, '신규 금융 앱 개발 프로젝트', '핀테크 관련 iOS 앱을 개발할 팀원을 모집합니다. UI/UX 디자이너와 백엔드 개발자도 환영합니다.', 'PROJECT', 5, 'ALL', 'MONTH_4',
+ '2025-09-10', 'KAKAO', 'https://open.kakao.com/example10', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
+(3, 'Swift 언어 기초 스터디', 'Swift 프로그래밍 언어를 처음부터 체계적으로 공부하는 스터디입니다. 프로그래밍 경험이 있으면 좋지만, 초보자도 환영합니다.', 'STUDY', 8, 'ONLINE',
+ 'MONTH_2', '2025-07-15', 'GOOGLE', 'https://meet.google.com/example8', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
 
 -- 유저 4번 (은나현)의 추가 게시글
-(4, 'UX 리서치 방법론 스터디', '사용자 경험 리서치 방법론을 공부하고 실습하는 스터디입니다. 실제 프로젝트에 적용할 수 있는 실용적인 내용으로 진행됩니다.', 'STUDY', 6, 'OFFLINE', 'MONTH_2', '2025-07-25', 'KAKAO', 'https://open.kakao.com/example11', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
-(4, '디지털 프로덕트 기획 워크숍', '디지털 프로덕트 기획 과정 전반을 함께 실습하는 워크숍입니다. 현업 기획자들의 노하우 공유도 있을 예정입니다.', 'PROJECT', 10, 'ALL', 'MONTH_1', '2025-06-30', 'GOOGLE', 'https://meet.google.com/example9', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
+(4, 'UX 리서치 방법론 스터디', '사용자 경험 리서치 방법론을 공부하고 실습하는 스터디입니다. 실제 프로젝트에 적용할 수 있는 실용적인 내용으로 진행됩니다.', 'STUDY', 6, 'OFFLINE',
+ 'MONTH_2', '2025-07-25', 'KAKAO', 'https://open.kakao.com/example11', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
+(4, '디지털 프로덕트 기획 워크숍', '디지털 프로덕트 기획 과정 전반을 함께 실습하는 워크숍입니다. 현업 기획자들의 노하우 공유도 있을 예정입니다.', 'PROJECT', 10, 'ALL', 'MONTH_1',
+ '2025-06-30', 'GOOGLE', 'https://meet.google.com/example9', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
 
 -- 유저 5번 (장정명)의 추가 게시글
-(5, '마이크로서비스 아키텍처 구현 프로젝트', 'Spring Cloud와 Docker를 활용한 마이크로서비스 아키텍처 구현 프로젝트입니다. CI/CD 파이프라인도 함께 구축할 예정입니다.', 'PROJECT', 4, 'ONLINE', 'MONTH_4', '2025-09-05', 'KAKAO', 'https://open.kakao.com/example12', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
-(5, 'Kubernetes 실전 활용 스터디', 'Kubernetes를 실제 프로덕션 환경에서 활용하는 방법을 공부하는 스터디입니다. 기본 개념은 알고 계신 분들을 대상으로 합니다.', 'STUDY', 5, 'ONLINE', 'MONTH_2', '2025-07-30', 'GOOGLE', 'https://meet.google.com/example10', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
+(5, '마이크로서비스 아키텍처 구현 프로젝트', 'Spring Cloud와 Docker를 활용한 마이크로서비스 아키텍처 구현 프로젝트입니다. CI/CD 파이프라인도 함께 구축할 예정입니다.', 'PROJECT',
+ 4, 'ONLINE', 'MONTH_4', '2025-09-05', 'KAKAO', 'https://open.kakao.com/example12', 'RECRUITING', NOW(), NOW(),
+ 'DIRECTIVE'),
+(5, 'Kubernetes 실전 활용 스터디', 'Kubernetes를 실제 프로덕션 환경에서 활용하는 방법을 공부하는 스터디입니다. 기본 개념은 알고 계신 분들을 대상으로 합니다.', 'STUDY', 5,
+ 'ONLINE', 'MONTH_2', '2025-07-30', 'GOOGLE', 'https://meet.google.com/example10', 'RECRUITING', NOW(), NOW(),
+ 'PLANNER'),
 
 -- 유저 6번 (유지민)의 추가 게시글
-(6, '소셜미디어 마케팅 실전 프로젝트', '실제 브랜드를 대상으로 소셜미디어 마케팅 전략을 수립하고 실행해보는 프로젝트입니다. 포트폴리오 구축에 도움이 될 것입니다.', 'PROJECT', 6, 'ALL', 'MONTH_3', '2025-08-15', 'KAKAO', 'https://open.kakao.com/example13', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
-(6, '그로스 해킹 전략 연구 스터디', '데이터 기반의 그로스 해킹 전략을 연구하는 스터디입니다. 실제 사례 분석과 전략 수립 실습이 포함됩니다.', 'STUDY', 4, 'ONLINE', 'MONTH_2', '2025-07-20', 'GOOGLE', 'https://meet.google.com/example11', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
+(6, '소셜미디어 마케팅 실전 프로젝트', '실제 브랜드를 대상으로 소셜미디어 마케팅 전략을 수립하고 실행해보는 프로젝트입니다. 포트폴리오 구축에 도움이 될 것입니다.', 'PROJECT', 6, 'ALL',
+ 'MONTH_3', '2025-08-15', 'KAKAO', 'https://open.kakao.com/example13', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
+(6, '그로스 해킹 전략 연구 스터디', '데이터 기반의 그로스 해킹 전략을 연구하는 스터디입니다. 실제 사례 분석과 전략 수립 실습이 포함됩니다.', 'STUDY', 4, 'ONLINE', 'MONTH_2',
+ '2025-07-20', 'GOOGLE', 'https://meet.google.com/example11', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
 
 -- 유저 7번 (김민정)의 추가 게시글
-(7, '애자일 프로젝트 관리 워크숍', '애자일 방법론을 활용한 프로젝트 관리 실습 워크숍입니다. 스크럼, 칸반 등 다양한 방법론을 실제 적용해봅니다.', 'PROJECT', 8, 'OFFLINE', 'MONTH_1', '2025-07-10', 'KAKAO', 'https://open.kakao.com/example14', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
-(7, '프로덕트 로드맵 구축 스터디', '효과적인 프로덕트 로드맵 구축 방법을 연구하는 스터디입니다. 현업 PM들과 함께 실제 사례를 분석합니다.', 'STUDY', 5, 'ALL', 'MONTH_2', '2025-08-01', 'GOOGLE', 'https://meet.google.com/example12', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
+(7, '애자일 프로젝트 관리 워크숍', '애자일 방법론을 활용한 프로젝트 관리 실습 워크숍입니다. 스크럼, 칸반 등 다양한 방법론을 실제 적용해봅니다.', 'PROJECT', 8, 'OFFLINE',
+ 'MONTH_1', '2025-07-10', 'KAKAO', 'https://open.kakao.com/example14', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
+(7, '프로덕트 로드맵 구축 스터디', '효과적인 프로덕트 로드맵 구축 방법을 연구하는 스터디입니다. 현업 PM들과 함께 실제 사례를 분석합니다.', 'STUDY', 5, 'ALL', 'MONTH_2',
+ '2025-08-01', 'GOOGLE', 'https://meet.google.com/example12', 'RECRUITING', NOW(), NOW(), 'HARMONY'),
 
 -- 유저 8번 (장원영)의 추가 게시글
-(8, '크로스 플랫폼 게임 개발 프로젝트', 'React Native와 Unity를 활용한 크로스 플랫폼 게임 개발 프로젝트입니다. 기획자와 디자이너도 환영합니다.', 'PROJECT', 6, 'ONLINE', 'MONTH_5', '2025-09-20', 'KAKAO', 'https://open.kakao.com/example15', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
-(8, '모바일 앱 UI/UX 개선 스터디', '모바일 앱의 UI/UX를 분석하고 개선하는 방법을 연구하는 스터디입니다. 실제 앱을 리디자인하는 실습이 포함됩니다.', 'STUDY', 4, 'ALL', 'MONTH_2', '2025-07-25', 'GOOGLE', 'https://meet.google.com/example13', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
+(8, '크로스 플랫폼 게임 개발 프로젝트', 'React Native와 Unity를 활용한 크로스 플랫폼 게임 개발 프로젝트입니다. 기획자와 디자이너도 환영합니다.', 'PROJECT', 6, 'ONLINE',
+ 'MONTH_5', '2025-09-20', 'KAKAO', 'https://open.kakao.com/example15', 'RECRUITING', NOW(), NOW(), 'PRACTICAL'),
+(8, '모바일 앱 UI/UX 개선 스터디', '모바일 앱의 UI/UX를 분석하고 개선하는 방법을 연구하는 스터디입니다. 실제 앱을 리디자인하는 실습이 포함됩니다.', 'STUDY', 4, 'ALL',
+ 'MONTH_2', '2025-07-25', 'GOOGLE', 'https://meet.google.com/example13', 'RECRUITING', NOW(), NOW(), 'COMMUNICATIVE'),
 
 -- 유저 9번 (이지은)의 추가 게시글
-(9, 'AR/VR 게임 개발 프로젝트', 'Unity를 활용한 AR/VR 게임 개발 프로젝트입니다. 3D 모델링과 게임 기획에 관심 있는 분들도 환영합니다.', 'PROJECT', 5, 'ALL', 'MONTH_6', '2025-10-15', 'KAKAO', 'https://open.kakao.com/example16', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
-(9, '게임 기획 포트폴리오 만들기', '게임 기획 문서와 프로토타입을 만들어 포트폴리오를 구축하는 스터디입니다. 게임 기획에 관심 있는 분들을 위한 모임입니다.', 'STUDY', 6, 'ONLINE', 'MONTH_3', '2025-08-10', 'GOOGLE', 'https://meet.google.com/example14', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
+(9, 'AR/VR 게임 개발 프로젝트', 'Unity를 활용한 AR/VR 게임 개발 프로젝트입니다. 3D 모델링과 게임 기획에 관심 있는 분들도 환영합니다.', 'PROJECT', 5, 'ALL',
+ 'MONTH_6', '2025-10-15', 'KAKAO', 'https://open.kakao.com/example16', 'RECRUITING', NOW(), NOW(), 'AUTONOMOUS'),
+(9, '게임 기획 포트폴리오 만들기', '게임 기획 문서와 프로토타입을 만들어 포트폴리오를 구축하는 스터디입니다. 게임 기획에 관심 있는 분들을 위한 모임입니다.', 'STUDY', 6, 'ONLINE',
+ 'MONTH_3', '2025-08-10', 'GOOGLE', 'https://meet.google.com/example14', 'RECRUITING', NOW(), NOW(), 'PLANNER'),
 
 -- 유저 10번 (고윤정)의 추가 게시글
-(10, 'GraphQL API 개발 프로젝트', 'GraphQL을 활용한 API 서버 개발 프로젝트입니다. React와 Node.js를 함께 사용할 예정입니다.', 'PROJECT', 4, 'ONLINE', 'MONTH_3', '2025-08-30', 'KAKAO', 'https://open.kakao.com/example17', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
-(10, '데이터 시각화 프로젝트', 'D3.js를 활용한 데이터 시각화 프로젝트입니다. 프론트엔드 개발자와 데이터 분석가를 모집합니다.', 'PROJECT', 5, 'ALL', 'MONTH_2', '2025-07-20', 'GOOGLE', 'https://meet.google.com/example15', 'RECRUITING', NOW(), NOW(), 'PRACTICAL');
+(10, 'GraphQL API 개발 프로젝트', 'GraphQL을 활용한 API 서버 개발 프로젝트입니다. React와 Node.js를 함께 사용할 예정입니다.', 'PROJECT', 4, 'ONLINE',
+ 'MONTH_3', '2025-08-30', 'KAKAO', 'https://open.kakao.com/example17', 'RECRUITING', NOW(), NOW(), 'DIRECTIVE'),
+(10, '데이터 시각화 프로젝트', 'D3.js를 활용한 데이터 시각화 프로젝트입니다. 프론트엔드 개발자와 데이터 분석가를 모집합니다.', 'PROJECT', 5, 'ALL', 'MONTH_2',
+ '2025-07-20', 'GOOGLE', 'https://meet.google.com/example15', 'RECRUITING', NOW(), NOW(), 'PRACTICAL');
 
 -- 3. Post_Member: 게시글 작성자를 해당 게시글의 멤버로 추가 (is_owner = true)
-INSERT INTO post_member (post_id, member_id, is_owner, created_at) VALUES
+INSERT INTO post_member (post_id, member_id, is_owner, created_at)
+VALUES
 -- 1-10번 게시글의 작성자
 (1, 1, true, NOW()),   -- 게시글 1의 작성자 (김시용)
 (2, 1, true, NOW()),   -- 게시글 2의 작성자 (김시용)
@@ -193,46 +301,48 @@ INSERT INTO post_member (post_id, member_id, is_owner, created_at) VALUES
 (29, 9, true, NOW()),  -- 게시글 29의 작성자 (이지은)
 (30, 9, true, NOW()),  -- 게시글 30의 작성자 (이지은)
 (31, 10, true, NOW()), -- 게시글 31의 작성자 (고윤정)
-(32, 10, true, NOW()); -- 게시글 32의 작성자 (고윤정)
+(32, 10, true, NOW());
+-- 게시글 32의 작성자 (고윤정)
 
 -- 4. PostMember - 다른 멤버들이 게시글에 참여 (is_owner = false)
-INSERT INTO post_member (post_id, member_id, is_owner, created_at) VALUES
+INSERT INTO post_member (post_id, member_id, is_owner, created_at)
+VALUES
 -- 게시글 1~5에 참여한 멤버들
-(1, 3, false, NOW()),  -- 송창욱이 김시용의 리액트 프로젝트에 참여
-(1, 5, false, NOW()),  -- 장정명이 김시용의 리액트 프로젝트에 참여
-(2, 4, false, NOW()),  -- 은나현이 김시용의 타입스크립트 스터디에 참여
-(2, 7, false, NOW()),  -- 김민정이 김시용의 타입스크립트 스터디에 참여
-(3, 1, false, NOW()),  -- 김시용이 서주원의 스프링 프로젝트에 참여
-(3, 5, false, NOW()),  -- 장정명이 서주원의 스프링 프로젝트에 참여
-(4, 7, false, NOW()),  -- 김민정이 서주원의 자바 스터디에 참여
-(4, 10, false, NOW()), -- 고윤정이 서주원의 자바 스터디에 참여
-(5, 2, false, NOW()),  -- 서주원이 송창욱의 iOS 프로젝트에 참여
-(5, 4, false, NOW()),  -- 은나현이 송창욱의 iOS 프로젝트에 참여
+(1, 3, false, NOW()),   -- 송창욱이 김시용의 리액트 프로젝트에 참여
+(1, 5, false, NOW()),   -- 장정명이 김시용의 리액트 프로젝트에 참여
+(2, 4, false, NOW()),   -- 은나현이 김시용의 타입스크립트 스터디에 참여
+(2, 7, false, NOW()),   -- 김민정이 김시용의 타입스크립트 스터디에 참여
+(3, 1, false, NOW()),   -- 김시용이 서주원의 스프링 프로젝트에 참여
+(3, 5, false, NOW()),   -- 장정명이 서주원의 스프링 프로젝트에 참여
+(4, 7, false, NOW()),   -- 김민정이 서주원의 자바 스터디에 참여
+(4, 10, false, NOW()),  -- 고윤정이 서주원의 자바 스터디에 참여
+(5, 2, false, NOW()),   -- 서주원이 송창욱의 iOS 프로젝트에 참여
+(5, 4, false, NOW()),   -- 은나현이 송창욱의 iOS 프로젝트에 참여
 
 -- 게시글 6~10에 참여한 멤버들
-(6, 7, false, NOW()),  -- 김민정이 은나현의 기획 스터디에 참여
-(6, 9, false, NOW()),  -- 이지은이 은나현의 기획 스터디에 참여
-(7, 2, false, NOW()),  -- 서주원이 장정명의 DevOps 프로젝트에 참여
-(7, 10, false, NOW()), -- 고윤정이 장정명의 DevOps 프로젝트에 참여
-(8, 4, false, NOW()),  -- 은나현이 유지민의 마케팅 스터디에 참여
-(8, 7, false, NOW()),  -- 김민정이 유지민의 마케팅 스터디에 참여
-(9, 4, false, NOW()),  -- 은나현이 김민정의 PM 스터디에 참여
-(9, 8, false, NOW()),  -- 장원영이 김민정의 PM 스터디에 참여
-(10, 1, false, NOW()), -- 김시용이 장원영의 React Native 프로젝트에 참여
-(10, 3, false, NOW()), -- 송창욱이 장원영의 React Native 프로젝트에 참여
+(6, 7, false, NOW()),   -- 김민정이 은나현의 기획 스터디에 참여
+(6, 9, false, NOW()),   -- 이지은이 은나현의 기획 스터디에 참여
+(7, 2, false, NOW()),   -- 서주원이 장정명의 DevOps 프로젝트에 참여
+(7, 10, false, NOW()),  -- 고윤정이 장정명의 DevOps 프로젝트에 참여
+(8, 4, false, NOW()),   -- 은나현이 유지민의 마케팅 스터디에 참여
+(8, 7, false, NOW()),   -- 김민정이 유지민의 마케팅 스터디에 참여
+(9, 4, false, NOW()),   -- 은나현이 김민정의 PM 스터디에 참여
+(9, 8, false, NOW()),   -- 장원영이 김민정의 PM 스터디에 참여
+(10, 1, false, NOW()),  -- 김시용이 장원영의 React Native 프로젝트에 참여
+(10, 3, false, NOW()),  -- 송창욱이 장원영의 React Native 프로젝트에 참여
 
 -- 게시글 11~15에 참여한 멤버들
-(11, 3, false, NOW()), -- 송창욱이 이지은의 Unity 프로젝트에 참여
-(11, 8, false, NOW()), -- 장원영이 이지은의 Unity 프로젝트에 참여
-(12, 1, false, NOW()), -- 김시용이 고윤정의 풀스택 스터디에 참여
-(12, 2, false, NOW()), -- 서주원이 고윤정의 풀스택 스터디에 참여
-(13, 3, false, NOW()), -- 송창욱이 김시용의 웹 기술 스터디에 참여
-(13, 5, false, NOW()), -- 장정명이 김시용의 웹 기술 스터디에 참여
+(11, 3, false, NOW()),  -- 송창욱이 이지은의 Unity 프로젝트에 참여
+(11, 8, false, NOW()),  -- 장원영이 이지은의 Unity 프로젝트에 참여
+(12, 1, false, NOW()),  -- 김시용이 고윤정의 풀스택 스터디에 참여
+(12, 2, false, NOW()),  -- 서주원이 고윤정의 풀스택 스터디에 참여
+(13, 3, false, NOW()),  -- 송창욱이 김시용의 웹 기술 스터디에 참여
+(13, 5, false, NOW()),  -- 장정명이 김시용의 웹 기술 스터디에 참여
 (13, 10, false, NOW()), -- 고윤정이 김시용의 웹 기술 스터디에 참여
-(14, 4, false, NOW()), -- 은나현이 김시용의 포트폴리오 프로젝트에 참여
-(15, 1, false, NOW()), -- 김시용이 서주원의 클라우드 스터디에 참여
-(15, 5, false, NOW()), -- 장정명이 서주원의 클라우드 스터디에 참여
-(15, 6, false, NOW()), -- 유지민이 서주원의 클라우드 스터디에 참여
+(14, 4, false, NOW()),  -- 은나현이 김시용의 포트폴리오 프로젝트에 참여
+(15, 1, false, NOW()),  -- 김시용이 서주원의 클라우드 스터디에 참여
+(15, 5, false, NOW()),  -- 장정명이 서주원의 클라우드 스터디에 참여
+(15, 6, false, NOW()),  -- 유지민이 서주원의 클라우드 스터디에 참여
 
 -- 게시글 16~20에 참여한 멤버들
 (16, 7, false, NOW()),  -- 김민정이 서주원의 JPA 스터디에 참여
@@ -276,10 +386,12 @@ INSERT INTO post_member (post_id, member_id, is_owner, created_at) VALUES
 (31, 2, false, NOW()),  -- 서주원이 고윤정의 GraphQL 프로젝트에 참여
 (31, 7, false, NOW()),  -- 김민정이 고윤정의 GraphQL 프로젝트에 참여
 (32, 1, false, NOW()),  -- 김시용이 고윤정의 데이터 시각화 프로젝트에 참여
-(32, 4, false, NOW());  -- 은나현이 고윤정의 데이터 시각화 프로젝트에 참여
+(32, 4, false, NOW());
+-- 은나현이 고윤정의 데이터 시각화 프로젝트에 참여
 
 -- 5. PostPosition 데이터 생성 (모든 게시글의 필요한 포지션)
-INSERT INTO post_position (post_id, position_id) VALUES
+INSERT INTO post_position (post_id, position_id)
+VALUES
 -- 게시글 1~5에 필요한 포지션
 (1, 1),  -- 리액트 프로젝트: 프런트엔드
 (1, 2),  -- 리액트 프로젝트: 백엔드
@@ -353,40 +465,42 @@ INSERT INTO post_position (post_id, position_id) VALUES
 (31, 1), -- GraphQL 프로젝트: 프런트엔드
 (31, 2), -- GraphQL 프로젝트: 백엔드
 (32, 1), -- 데이터 시각화 프로젝트: 프런트엔드
-(32, 2); -- 데이터 시각화 프로젝트: 백엔드
+(32, 2);
+-- 데이터 시각화 프로젝트: 백엔드
 
 -- 6. PostTechStack 데이터 생성 (모든 게시글에 필요한 기술 스택)
-INSERT INTO post_tech_stack (post_id, tech_stack_id) VALUES
+INSERT INTO post_tech_stack (post_id, tech_stack_id)
+VALUES
 -- 게시글 1~5에 필요한 기술 스택
-(1, 1),  -- 리액트 프로젝트: JavaScript
-(1, 2),  -- 리액트 프로젝트: TypeScript
-(1, 3),  -- 리액트 프로젝트: React
-(1, 8),  -- 리액트 프로젝트: Nextjs
-(1, 5),  -- 리액트 프로젝트: Nodejs
-(1, 17), -- 리액트 프로젝트: MySQL
-(2, 2),  -- 타입스크립트 스터디: TypeScript
-(2, 3),  -- 타입스크립트 스터디: React
-(2, 4),  -- 타입스크립트 스터디: Vue
-(2, 5),  -- 타입스크립트 스터디: Nodejs
-(3, 6),  -- 스프링 백엔드 프로젝트: Spring
-(3, 7),  -- 스프링 백엔드 프로젝트: Java
-(3, 17), -- 스프링 백엔드 프로젝트: MySQL
-(3, 27), -- 스프링 백엔드 프로젝트: Docker
-(4, 7),  -- 자바 스터디: Java
-(4, 6),  -- 자바 스터디: Spring
-(5, 15), -- iOS 앱 프로젝트: Swift
-(5, 21), -- iOS 앱 프로젝트: Firebase
+(1, 1),   -- 리액트 프로젝트: JavaScript
+(1, 2),   -- 리액트 프로젝트: TypeScript
+(1, 3),   -- 리액트 프로젝트: React
+(1, 8),   -- 리액트 프로젝트: Nextjs
+(1, 5),   -- 리액트 프로젝트: Nodejs
+(1, 17),  -- 리액트 프로젝트: MySQL
+(2, 2),   -- 타입스크립트 스터디: TypeScript
+(2, 3),   -- 타입스크립트 스터디: React
+(2, 4),   -- 타입스크립트 스터디: Vue
+(2, 5),   -- 타입스크립트 스터디: Nodejs
+(3, 6),   -- 스프링 백엔드 프로젝트: Spring
+(3, 7),   -- 스프링 백엔드 프로젝트: Java
+(3, 17),  -- 스프링 백엔드 프로젝트: MySQL
+(3, 27),  -- 스프링 백엔드 프로젝트: Docker
+(4, 7),   -- 자바 스터디: Java
+(4, 6),   -- 자바 스터디: Spring
+(5, 15),  -- iOS 앱 프로젝트: Swift
+(5, 21),  -- iOS 앱 프로젝트: Firebase
 
 -- 게시글 6~10에 필요한 기술 스택
-(6, 29), -- 서비스 기획 스터디: Figma
-(7, 25), -- DevOps 프로젝트: AWS
-(7, 26), -- DevOps 프로젝트: Kubernetes
-(7, 27), -- DevOps 프로젝트: Docker
-(7, 28), -- DevOps 프로젝트: Git
-(8, 29), -- 마케팅 스터디: Figma (마케팅 관련 툴)
-(9, 29), -- PM 스터디: Figma
-(10, 1), -- React Native 프로젝트: JavaScript
-(10, 2), -- React Native 프로젝트: TypeScript
+(6, 29),  -- 서비스 기획 스터디: Figma
+(7, 25),  -- DevOps 프로젝트: AWS
+(7, 26),  -- DevOps 프로젝트: Kubernetes
+(7, 27),  -- DevOps 프로젝트: Docker
+(7, 28),  -- DevOps 프로젝트: Git
+(8, 29),  -- 마케팅 스터디: Figma (마케팅 관련 툴)
+(9, 29),  -- PM 스터디: Figma
+(10, 1),  -- React Native 프로젝트: JavaScript
+(10, 2),  -- React Native 프로젝트: TypeScript
 (10, 22), -- React Native 프로젝트: ReactNative
 (10, 21), -- React Native 프로젝트: Firebase
 
@@ -454,32 +568,47 @@ INSERT INTO post_tech_stack (post_id, tech_stack_id) VALUES
 (31, 20), -- GraphQL 프로젝트: GraphQL
 (32, 1),  -- 데이터 시각화 프로젝트: JavaScript
 (32, 3),  -- 데이터 시각화 프로젝트: React
-(32, 13); -- 데이터 시각화 프로젝트: Python
+(32, 13);
+-- 데이터 시각화 프로젝트: Python
 
 -- 1. 몇 개의 프로젝트 상태를 COMPLETED로 변경 (완료된 프로젝트)
-UPDATE post SET status = 'COMPLETED', culture_fit = 'COMMUNICATIVE' WHERE id IN (1, 5, 9);
-UPDATE post SET status = 'COMPLETED', culture_fit = 'AUTONOMOUS' WHERE id IN (3, 8, 12);
-UPDATE post SET status = 'COMPLETED', culture_fit = 'PLANNER' WHERE id IN (4, 10, 15);
-UPDATE post SET status = 'COMPLETED', culture_fit = 'PRACTICAL' WHERE id IN (7, 11, 20);
+UPDATE post
+SET status      = 'COMPLETED',
+    culture_fit = 'COMMUNICATIVE'
+WHERE id IN (1, 5, 9);
+UPDATE post
+SET status      = 'COMPLETED',
+    culture_fit = 'AUTONOMOUS'
+WHERE id IN (3, 8, 12);
+UPDATE post
+SET status      = 'COMPLETED',
+    culture_fit = 'PLANNER'
+WHERE id IN (4, 10, 15);
+UPDATE post
+SET status      = 'COMPLETED',
+    culture_fit = 'PRACTICAL'
+WHERE id IN (7, 11, 20);
 
 -- 2. 완료된 프로젝트에 GitHub 링크 추가 (Portfolio 엔티티용)
-INSERT INTO portfolio (user_id, post_id, post_title, post_link, average_score, created_at) VALUES
-                                                                                               (1, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/kimsy/react-project', 4.7, NOW()),
-                                                                                               (3, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/songcw/react-contribution', 4.5, NOW()),
-                                                                                               (5, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/jangjm/react-project-devops', 4.8, NOW()),
-                                                                                               (2, 3, '스프링 백엔드 개발자 모집', 'https://github.com/seojw/spring-backend', 4.6, NOW()),
-                                                                                               (1, 3, '스프링 백엔드 개발자 모집', 'https://github.com/kimsy/spring-contribution', 4.3, NOW()),
-                                                                                               (5, 3, '스프링 백엔드 개발자 모집', 'https://github.com/jangjm/spring-devops-config', 4.9, NOW()),
-                                                                                               (3, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/songcw/ios-app-main', 4.5, NOW()),
-                                                                                               (2, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/seojw/ios-app-backend', 4.4, NOW()),
-                                                                                               (4, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/eunnh/ios-app-planning', 4.6, NOW()),
-                                                                                               (5, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/jangjm/devops-project', 4.9, NOW()),
-                                                                                               (2, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/seojw/devops-backend', 4.7, NOW()),
-                                                                                               (10, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/goyn/devops-fullstack', 4.5, NOW());
+INSERT INTO portfolio (user_id, post_id, post_title, post_link, average_score, created_at)
+VALUES (1, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/kimsy/react-project', 4.7, NOW()),
+       (3, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/songcw/react-contribution', 4.5, NOW()),
+       (5, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/jangjm/react-project-devops', 4.8, NOW()),
+       (2, 3, '스프링 백엔드 개발자 모집', 'https://github.com/seojw/spring-backend', 4.6, NOW()),
+       (1, 3, '스프링 백엔드 개발자 모집', 'https://github.com/kimsy/spring-contribution', 4.3, NOW()),
+       (5, 3, '스프링 백엔드 개발자 모집', 'https://github.com/jangjm/spring-devops-config', 4.9, NOW()),
+       (3, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/songcw/ios-app-main', 4.5, NOW()),
+       (2, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/seojw/ios-app-backend', 4.4, NOW()),
+       (4, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/eunnh/ios-app-planning', 4.6, NOW()),
+       (5, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/jangjm/devops-project', 4.9, NOW()),
+       (2, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/seojw/devops-backend', 4.7, NOW()),
+       (10, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/goyn/devops-fullstack', 4.5, NOW());
 
 -- 3. 피어 리뷰 데이터 추가
 -- 프로젝트 1에 대한 피어 리뷰
-INSERT INTO peer_review (reviewer_member_id, reviewee_member_id, post_id, collaboration_score, technical_score, work_again_score, average_score, review_comment, review_date) VALUES
+INSERT INTO peer_review (reviewer_member_id, reviewee_member_id, post_id, collaboration_score, technical_score,
+                         work_again_score, average_score, review_comment, review_date)
+VALUES
 -- 멤버 3이 멤버 1을 리뷰
 (3, 1, 1, 5, 4, 5, 4.7, '프로젝트 리더로서 팀을 잘 이끌어주었습니다. 소통이 원활했고 기술적인 문제 해결 능력도 뛰어났습니다.', NOW()),
 -- 멤버 5가 멤버 1을 리뷰
@@ -536,9 +665,21 @@ INSERT INTO peer_review (reviewer_member_id, reviewee_member_id, post_id, collab
 (2, 10, 7, 4, 5, 5, 4.7, '기술적 문제 해결 능력과 효율적인 코드 작성 능력이 인상적이었습니다. 협업 태도도 매우 좋았습니다.', NOW());
 
 -- 4. 몇 개의 프로젝트 컬처핏 타입 업데이트
-UPDATE post SET culture_fit = 'AUTONOMOUS' WHERE id IN (2, 13, 26);
-UPDATE post SET culture_fit = 'PLANNER' WHERE id IN (6, 16, 21);
-UPDATE post SET culture_fit = 'COMMUNICATIVE' WHERE id IN (17, 22, 27);
-UPDATE post SET culture_fit = 'PRACTICAL' WHERE id IN (14, 23, 28);
-UPDATE post SET culture_fit = 'HARMONY' WHERE id IN (18, 24, 29);
-UPDATE post SET culture_fit = 'DIRECTIVE' WHERE id IN (19, 25, 30);
+UPDATE post
+SET culture_fit = 'AUTONOMOUS'
+WHERE id IN (2, 13, 26);
+UPDATE post
+SET culture_fit = 'PLANNER'
+WHERE id IN (6, 16, 21);
+UPDATE post
+SET culture_fit = 'COMMUNICATIVE'
+WHERE id IN (17, 22, 27);
+UPDATE post
+SET culture_fit = 'PRACTICAL'
+WHERE id IN (14, 23, 28);
+UPDATE post
+SET culture_fit = 'HARMONY'
+WHERE id IN (18, 24, 29);
+UPDATE post
+SET culture_fit = 'DIRECTIVE'
+WHERE id IN (19, 25, 30);
