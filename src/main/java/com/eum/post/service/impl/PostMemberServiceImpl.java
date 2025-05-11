@@ -1,9 +1,10 @@
 package com.eum.post.service.impl;
 
+import com.eum.global.exception.CustomException;
+import com.eum.global.exception.ErrorCode;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.PostMemberDto;
-import com.eum.post.model.dto.response.PostMemberResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostMember;
 import com.eum.post.model.entity.enumerated.Status;
@@ -33,10 +34,16 @@ public class PostMemberServiceImpl implements PostMemberService {
     public List<PostMemberDto> updateMembers(
             Long postId,
             List<String> nicknames,
-            Long ownerId
+            UUID ownerId
     ) {
+        // 권한 검증 추가 - 이 부분이 현재 없음
+        if (!isOwnerByPublicId(postId, ownerId)) {
+            throw new CustomException(ErrorCode.POST_ACCESS_DENIED,
+                    "해당 게시글의 멤버를 수정할 권한이 없습니다.");
+        }
+
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND, "게시글을 찾을 수 없습니다. ID: " + postId));
 
         // 닉네임 목록으로 멤버 조회
         List<Member> requestedMembers = memberRepository.findAllByNicknameIn(nicknames);
@@ -69,12 +76,19 @@ public class PostMemberServiceImpl implements PostMemberService {
     @Override
     @Transactional(readOnly = true)
     public boolean isOwner(Long postId,
-                           Long memberId
+                           Long ownerId
     ) {
-        return postMemberRepository.existsByPostIdAndMemberIdAndIsOwnerTrue(postId, memberId);
+        return postMemberRepository.existsByPostIdAndMemberIdAndIsOwnerTrue(postId, ownerId);
     }
 
-    private void addNewMembers(Long postId, Long ownerId, List<Member> requestedMembers, Post post) {
+    @Override
+    public boolean isOwnerByPublicId(Long postId, UUID ownerId) {
+        Member member = memberRepository.findByPublicId(ownerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        return isOwner(postId, member.getId());  // 기존 메서드 재사용
+    }
+
+    private void addNewMembers(Long postId, UUID ownerId, List<Member> requestedMembers, Post post) {
         Set<Long> membersToAdd = requestedMembers.stream()
                 .map(Member::getId)
                 .filter(publicId -> !publicId.equals(ownerId))  // 소유자 제외
@@ -111,7 +125,7 @@ public class PostMemberServiceImpl implements PostMemberService {
         }
     }
 
-    private void ensureOwnerExists(Long postId, Long ownerId, List<PostMember> existingMembers, Post post) {
+    private void ensureOwnerExists(Long postId, UUID ownerId, List<PostMember> existingMembers, Post post) {
         PostMember ownerMember = existingMembers.stream()
                 .filter(PostMember::getIsOwner)
                 .findFirst()
@@ -119,8 +133,8 @@ public class PostMemberServiceImpl implements PostMemberService {
 
         // 모집자가 없으면 새로 추가 (추가적인 검증)
         if (ownerMember == null) {
-            Member owner = memberRepository.findById(ownerId)
-                    .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다. ID: " + ownerId));
+            Member owner = memberRepository.findByPublicId(ownerId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND, "회원을 찾을 수 없습니다. ID: " + ownerId));
 
             ownerMember = PostMember.of(post, owner, true);
             postMemberRepository.save(ownerMember);
@@ -139,7 +153,7 @@ public class PostMemberServiceImpl implements PostMemberService {
                     .findFirst();
 
             if (missingNickname.isPresent()) {
-                throw new EntityNotFoundException("닉네임으로 멤버를 찾을 수 없습니다: " + missingNickname.get());
+                throw new CustomException(ErrorCode.MEMBER_NOT_FOUND, "닉네임으로 멤버를 찾을 수 없습니다: " + missingNickname.get());
             }
         }
     }

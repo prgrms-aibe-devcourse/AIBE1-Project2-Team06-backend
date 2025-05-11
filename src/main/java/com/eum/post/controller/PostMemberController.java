@@ -37,17 +37,8 @@ public class PostMemberController {
     {
         UUID publicId = (UUID) httpRequest.getAttribute("publicId");
 
-        // publicId로 Member 조회하여 내부 ID 얻기
-        Member member = memberRepository.findByPublicId(publicId)
-                .orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다."));
-
-        // 본인이 게시글 모집자인지 확인 (권한 검사)
-        if (!postMemberService.isOwner(postId, member.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
         return ResponseEntity.ok(
-                postMemberService.updateMembers(postId, request.nicknames(), member.getId())
+                postMemberService.updateMembers(postId, request.nicknames(), publicId)
                         .stream()
                         .map(PostMemberResponse::from)
                         .collect(Collectors.toList())

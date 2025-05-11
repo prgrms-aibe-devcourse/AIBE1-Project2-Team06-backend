@@ -12,7 +12,6 @@ import com.eum.post.model.dto.PositionDto;
 import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.TechStackDto;
 import com.eum.post.model.dto.request.PostRequest;
-import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostMember;
