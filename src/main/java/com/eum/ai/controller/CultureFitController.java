@@ -20,4 +20,10 @@ public class CultureFitController {
             @RequestBody CultureFitRequest request) {
         return cultureFitService.recommendCultureFit(postId, request);
     }
+
+    @PostMapping("/preview")
+    public Mono<CultureFit> previewCulturefit(
+            @RequestBody CultureFitRequest request) {
+        return cultureFitService.previewCultureFit(request);
+    }
 }

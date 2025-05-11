@@ -37,4 +37,9 @@ public class CultureFitRecommendationServiceImpl implements CultureFitRecommenda
         });
     }
 
+    @Override
+    public Mono<CultureFit> previewCultureFit(CultureFitRequest cultureFitRequest) {
+        return geminiClient.requestCultureFit(cultureFitRequest);
+    }
+
 }

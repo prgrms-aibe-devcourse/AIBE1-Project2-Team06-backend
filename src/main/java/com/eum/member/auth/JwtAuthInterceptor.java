@@ -21,6 +21,9 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
         String method = request.getMethod();
         String requestURI = request.getRequestURI();
 
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            return true;
+        }
         if (requestURI.startsWith("/api/v1/posts") && method.equals("GET")) {
             return true;
         }

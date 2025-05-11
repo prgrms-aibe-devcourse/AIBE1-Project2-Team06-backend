@@ -8,6 +8,7 @@ import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,6 +51,7 @@ public class CultureFitRecommendationServiceImplTest {
     }
 
     @Test
+    @DisplayName("컬쳐핏 추천 - 성공")
     void recommendCultureFitSuccessTest() {
         when(postRepository.findById(1L)).thenReturn(Optional.of(mockPost));
         when(geminiClient.requestCultureFit(testRequest)).thenReturn(Mono.just(CultureFit.AUTONOMOUS));
@@ -65,6 +67,7 @@ public class CultureFitRecommendationServiceImplTest {
     }
 
     @Test
+    @DisplayName("컬쳐핏 추천 - 게시물 없음 실패")
     void recommendCultureFitPostNotFound() {
         when(postRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -79,6 +82,19 @@ public class CultureFitRecommendationServiceImplTest {
         verifyNoInteractions(geminiClient);
     }
 
+    @Test
+    @DisplayName("자신의 컬쳐핏 추천 - 성공")
+    void previewCultureFitTest() {
+        // given
+        when(geminiClient.requestCultureFit(testRequest)).thenReturn(Mono.just(CultureFit.AUTONOMOUS));
 
+        // when & then
+        StepVerifier.create(cultureFitService.previewCultureFit(testRequest))
+                .expectNext(CultureFit.AUTONOMOUS)
+                .verifyComplete();
+
+        verify(geminiClient).requestCultureFit(testRequest);
+        verifyNoInteractions(postRepository);
+    }
 
 }
