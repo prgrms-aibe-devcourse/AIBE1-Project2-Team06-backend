@@ -5,6 +5,7 @@ import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
+import com.eum.post.model.entity.enumerated.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
