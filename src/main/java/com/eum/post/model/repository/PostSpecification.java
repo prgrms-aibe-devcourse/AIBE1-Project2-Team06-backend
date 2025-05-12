@@ -128,13 +128,12 @@ public class PostSpecification {
         };
     }
 
-    // Status로 필터링
-    public static Specification<Post> hasStatus(Status status) {
-        return (root, query, criteriaBuilder) -> {
-            if (status == null) {
-                return null;
-            }
-            return criteriaBuilder.equal(root.get("status"), status);
-        };
+    // Status 필터링
+    public static Specification<Post> isRecruiting() {
+        return (root, query, criteriaBuilder) ->
+            criteriaBuilder.or(
+                    criteriaBuilder.equal(root.get("status"), Status.RECRUITING),
+                    criteriaBuilder.equal(root.get("status"), Status.ONGOING)
+            );
     }
 }

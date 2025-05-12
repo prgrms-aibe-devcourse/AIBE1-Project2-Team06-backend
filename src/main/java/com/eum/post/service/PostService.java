@@ -23,7 +23,6 @@ public interface PostService {
 
     void deletePost(Long postId, UUID publicId);
 
-    //PostResponse completePost(Long postId, UUID publicId, String githubLink) ;
     PostDto completePost(Long postId, UUID publicId, String githubLink) ;
 
     // 필터링 기능 추가
@@ -32,10 +31,9 @@ public interface PostService {
             RecruitType recruitType,
             ProgressMethod progressMethod,
             CultureFit cultureFit,
-            Status status,
+            Boolean isRecruiting,
             Long positionId,
             List<Long> techStackIds,
             Pageable pageable
     );
-
 }

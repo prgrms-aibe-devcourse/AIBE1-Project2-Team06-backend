@@ -15,7 +15,6 @@ public interface PostMemberService {
      * @param ownerId 소유자(모집자) ID
      * @return 업데이트된 멤버 목록
      */
-    //List<PostMemberDto> updateMembers(Long postId, List<String> nicknames, Long ownerId);
     List<PostMemberDto> updateMembers(Long postId, List<String> nicknames, UUID ownerId);
 
     /**

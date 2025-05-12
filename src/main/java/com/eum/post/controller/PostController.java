@@ -8,7 +8,6 @@ import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
-import com.eum.post.model.entity.enumerated.Status;
 import com.eum.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +54,6 @@ public class PostController {
         RecruitType recruitTypeEnum = RecruitType.fromString(filter.recruitType());
         ProgressMethod progressMethodEnum = ProgressMethod.fromString(filter.progressMethod());
         CultureFit cultureFitEnum = CultureFit.fromString(filter.cultureFit());
-        Status statusEnum = Status.fromString(filter.status());
 
         // 서비스 호출 및 응답 변환
         return ResponseEntity.ok(
@@ -64,7 +62,7 @@ public class PostController {
                                 recruitTypeEnum,
                                 progressMethodEnum,
                                 cultureFitEnum,
-                                statusEnum,
+                                filter.isRecruiting(),
                                 filter.positionId(),
                                 filter.techStackIds(),
                                 pageable)

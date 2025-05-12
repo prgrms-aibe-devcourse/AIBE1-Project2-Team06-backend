@@ -253,7 +253,8 @@ public class PostServiceImpl implements PostService{
             RecruitType recruitType,
             ProgressMethod progressMethod,
             CultureFit cultureFit,
-            Status status,
+            //Status status,
+            Boolean isRecruiting,  // 추가된 매개변수
             Long positionId,
             List<Long> techStackIds,
             Pageable pageable) {
@@ -281,9 +282,10 @@ public class PostServiceImpl implements PostService{
             spec = spec.and(PostSpecification.hasCultureFit(cultureFit));
         }
 
-        // 상태에 대한 필터링 - 기본적으로 RECRUITING 상태 적용
-        // status 매개변수가 null이면 Status.fromString 메소드에서 RECRUITING을 반환
-        spec = spec.and(PostSpecification.hasStatus(status));
+        // 모집 중인 글만 보기 필터링
+        if (isRecruiting != null && isRecruiting) {
+            spec = spec.and(PostSpecification.isRecruiting());
+        }
 
         // 포지션에 대한 필터링
         if (positionId != null) {
