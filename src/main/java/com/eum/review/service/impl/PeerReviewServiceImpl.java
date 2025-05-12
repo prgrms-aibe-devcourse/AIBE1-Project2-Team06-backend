@@ -2,14 +2,16 @@ package com.eum.review.service.impl;
 
 import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
+import com.eum.member.model.entity.Member;
+import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.Status;
 import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
-import com.eum.review.model.dto.response.UserReviewCommentResponse;
-import com.eum.review.model.dto.response.UserReviewScoreResponse;
+import com.eum.review.model.dto.response.MemberReviewCommentResponse;
+import com.eum.review.model.dto.response.MemberReviewScoreResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import com.eum.review.service.PeerReviewService;
@@ -26,12 +28,13 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     private final PeerReviewRepository peerReviewRepository;
     private final PostRepository postRepository;
     private final PostMemberRepository postMemberRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     @Override
-    public PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerUserId) {
+    public PeerReviewResponse createReview(PeerReviewCreateRequest request, Long reviewerMemberId, Long revieweeMemberId) {
         // 1. 자기 자신에 대한 리뷰가 아닌지 확인
-        if (reviewerUserId.equals(request.revieweeMemberId())){
+        if (reviewerMemberId.equals(revieweeMemberId)){
             throw new CustomException(ErrorCode.SELF_REVIEW_NOT_ALLOWED);
         }
 
@@ -45,24 +48,42 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         }
 
         // 4. 리뷰어가 팀의 멤버인지 확인
-        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), reviewerUserId)){
+        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), reviewerMemberId)){
             throw new CustomException(ErrorCode.POST_ACCESS_DENIED, "리뷰어는 해당 팀의 멤버여야 합니다.");
         }
 
         // 5. 리뷰 대상이 팀의 멤버인지 확인
-        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), request.revieweeMemberId())) {
+        if (!postMemberRepository.existsByPostIdAndMemberId(request.postId(), revieweeMemberId)) {
             throw new CustomException(ErrorCode.REVIEW_TARGET_NOT_TEAM_MEMBER);
         }
 
-        PeerReview peerReview = request.toEntity(reviewerUserId, post);
+        PeerReview peerReview = request.toEntity(reviewerMemberId, revieweeMemberId,post);
         PeerReview savedReview = peerReviewRepository.save(peerReview);
 
-        return PeerReviewResponse.from(savedReview);
+        Member reviewer = memberRepository.findById(reviewerMemberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Member reviewee = memberRepository.findById(revieweeMemberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return PeerReviewResponse.of(
+                savedReview.getId(),
+                reviewer.getPublicId(),
+                reviewee.getPublicId(),
+                post.getId(),
+                post.getTitle(),
+                savedReview.getCollaborationScore(),
+                savedReview.getTechnicalScore(),
+                savedReview.getWorkAgainScore(),
+                savedReview.getAverageScore(),
+                savedReview.getReviewComment(),
+                savedReview.getReviewDate()
+        );
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserReviewScoreResponse calculateUserReviewScore(Long userId) {
+    public MemberReviewScoreResponse calculateUserReviewScore(Long userId) {
         Double overallAvgScore = peerReviewRepository.calculateOverallAverageScore(userId);
 
         if (overallAvgScore == null) {overallAvgScore = 0.0;}
@@ -70,15 +91,18 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         int reviewCount = reviews.size();
 
-        return UserReviewScoreResponse.from(userId, overallAvgScore, reviewCount);
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return MemberReviewScoreResponse.from(member.getPublicId(), overallAvgScore, reviewCount);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<UserReviewCommentResponse> getUserReviewComments(Long userId) {
+    public List<MemberReviewCommentResponse> getUserReviewComments(Long userId) {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         return reviews.stream()
-                .map(UserReviewCommentResponse::from)
+                .map(MemberReviewCommentResponse::from)
                 .collect(Collectors.toList());
     }
 }

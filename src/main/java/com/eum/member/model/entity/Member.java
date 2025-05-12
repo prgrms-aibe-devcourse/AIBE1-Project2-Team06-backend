@@ -22,7 +22,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true, updatable = false, length = 36)
     private UUID publicId; // 외부 통신에 쓰이는 id -> jwt 만들기
 
     // 카카오에서 받은 user 식별자
