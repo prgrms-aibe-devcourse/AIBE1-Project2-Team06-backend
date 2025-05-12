@@ -106,6 +106,30 @@ VALUES ('68d4435a-3bc0-4bc5-924e-04fab2d2696e', 'kakao_1001', 'kakao', '김시�
        ('ef0a7967-47f8-4438-a111-550a6e75124f', 'kakao_1010', 'kakao', '고윤정', 'https://picsum.photos/id/10/200',
         '4 years', '풀스택 개발자', NOW(), NOW());
 
+# prod
+# INSERT INTO member (public_id, auth_id, provider, nickname, profile_image_url,
+#                     career, short_description, created_at, updated_at)
+# VALUES (UUID_TO_BIN('a1a8b441-8f20-4952-bf4d-921290e11aa6'), 'kakao_1001', 'kakao', '김시용',
+#         'https://picsum.photos/id/1/200', '1 year', '프론트엔드 주니어', NOW(), NOW()),
+#        (UUID_TO_BIN('bc31fc1b-ee0b-4bb5-bb9a-1735f7e36efc'), 'kakao_1002', 'kakao', '서주원',
+#         'https://picsum.photos/id/2/200', '3 years', '백엔드 개발자', NOW(), NOW()),
+#        (UUID_TO_BIN('1d9000fb-bca2-4697-b2f9-d92d6c4d7695'), 'kakao_1003', 'kakao', '송창욱',
+#         'https://picsum.photos/id/3/200', '2 years', 'IOS 앱 개발자', NOW(), NOW()),
+#        (UUID_TO_BIN('df9653d3-f593-4fa3-a845-7e9bf034230f'), 'kakao_1004', 'kakao', '은나현',
+#         'https://picsum.photos/id/4/200', '4 years', '기획 전문가', NOW(), NOW()),
+#        (UUID_TO_BIN('b24c1197-726b-4cb2-84f1-02307f792e3b'), 'kakao_1005', 'kakao', '장정명',
+#         'https://picsum.photos/id/5/200', '5 years', 'DevOps 엔지니어', NOW(), NOW()),
+#        (UUID_TO_BIN('907ef5e2-1349-43ce-91b5-a3a92097da1f'), 'kakao_1006', 'kakao', '유지민',
+#         'https://picsum.photos/id/6/200', '1 year', '마케팅 주니어', NOW(), NOW()),
+#        (UUID_TO_BIN('a8d3fa35-6b81-4bd3-aaa3-ef412396b6d5'), 'kakao_1007', 'kakao', '김민정',
+#         'https://picsum.photos/id/7/200', '6 years', 'PM / 기획 겸직', NOW(), NOW()),
+#        (UUID_TO_BIN('02148aeb-1746-4f3b-83a0-178d8f537146'), 'kakao_1008', 'kakao', '장원영',
+#         'https://picsum.photos/id/8/200', '3 years', 'React Native 개발자', NOW(), NOW()),
+#        (UUID_TO_BIN('9243dc11-4a0f-45b2-b589-9f65834d7650'), 'kakao_1009', 'kakao', '이지은',
+#         'https://picsum.photos/id/9/200', '2 years', 'Unity 기반 게임 개발자', NOW(), NOW()),
+#        (UUID_TO_BIN('c9bfe778-2271-423a-a48d-763bfc9f0edd'), 'kakao_1010', 'kakao', '고윤정',
+#         'https://picsum.photos/id/10/200', '4 years', '풀스택 개발자', NOW(), NOW());
+
 INSERT INTO member_position (member_id, position_id)
 VALUES (1, 1), -- 프런트엔드
        (2, 2), -- 백엔드
