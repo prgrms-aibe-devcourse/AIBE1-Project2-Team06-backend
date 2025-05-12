@@ -36,7 +36,8 @@ public class PortfolioServiceImpl implements PortfolioService {
                 postId,
                 post.getTitle(),
                 link,
-                averageScore
+                averageScore,
+                post.getRecruitType()
         );
 
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
