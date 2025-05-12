@@ -5,6 +5,7 @@ import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.Post;
+import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.model.repository.PortfolioRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.post.service.PortfolioService;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +48,19 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioDto> getUserPortfolios(Long userId) {
-        return List.of();
+        List<Portfolio> portfolios = portfolioRepository.findAllByUserId(userId);
+
+        return portfolios.stream()
+                .map(PortfolioDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PortfolioDto> getUserPortfoliosByType(Long userId, RecruitType recruitType) {
+        List<Portfolio> portfolios = portfolioRepository.findAllByUserIdAndRecruitType(userId, recruitType);
+
+        return portfolios.stream()
+                .map(PortfolioDto::from)
+                .collect(Collectors.toList());
     }
 }
