@@ -15,14 +15,14 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Table(name = "Member")
+@Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, updatable = false, length = 36)
+    @Column(columnDefinition = "BINARY(16)", nullable = false, unique = true, updatable = false)
     private UUID publicId; // 외부 통신에 쓰이는 id -> jwt 만들기
 
     // 카카오에서 받은 user 식별자

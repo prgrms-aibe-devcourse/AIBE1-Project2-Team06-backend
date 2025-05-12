@@ -16,5 +16,5 @@ spring:
     init:
       mode: never
       encoding: UTF-8
-      data-locations: classpath:data.sql  # 기본 경로 유지
+      data-locations: classpath:data-prod.sql  # 기본 경로 유지
 
