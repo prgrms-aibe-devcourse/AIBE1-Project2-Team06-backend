@@ -1,5 +1,6 @@
 package com.eum.post.controller;
 
+import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.request.PostFilterRequest;
 import com.eum.post.model.dto.request.GithubLinkRequest;
 import com.eum.post.model.dto.request.PostRequest;
@@ -35,8 +36,8 @@ public class PostController {
      */
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
-        PostResponse response = postService.findByPostId(postId);
-        return ResponseEntity.ok(response);
+        PostDto dto = postService.findByPostId(postId);
+        return ResponseEntity.ok(PostResponse.from(dto));
     }
 
     /**
@@ -47,23 +48,26 @@ public class PostController {
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPosts(
             PostFilterRequest filter,
-            @PageableDefault(page = 0, size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 8, sort = {"createdAt","id"}, direction = Sort.Direction.DESC) Pageable pageable) {
 
         // Enum 변환
         RecruitType recruitTypeEnum = RecruitType.fromString(filter.recruitType());
         ProgressMethod progressMethodEnum = ProgressMethod.fromString(filter.progressMethod());
         CultureFit cultureFitEnum = CultureFit.fromString(filter.cultureFit());
 
-        // 서비스 호출
-        Page<PostResponse> responses = postService.findPostsWithFilters(
-                filter.keyword(),
-                recruitTypeEnum,
-                progressMethodEnum,
-                cultureFitEnum,
-                filter.positionId(),
-                filter.techStackIds(),
-                pageable);
-        return ResponseEntity.ok(responses);
+        // 서비스 호출 및 응답 변환
+        return ResponseEntity.ok(
+                postService.findPostsWithFilters(
+                                filter.keyword(),
+                                recruitTypeEnum,
+                                progressMethodEnum,
+                                cultureFitEnum,
+                                filter.isRecruiting(),
+                                filter.positionId(),
+                                filter.techStackIds(),
+                                pageable)
+                        .map(PostResponse::from)
+        );
     }
 
     /**
@@ -73,20 +77,17 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
             @RequestBody PostRequest request,
-            //@RequestHeader("Authorization") UUID userId
             HttpServletRequest httpRequest
         ) {
 
         // JWT 인터셉터가 설정한 publicId 가져오기
         UUID publicId = (UUID) httpRequest.getAttribute("publicId");
-        if (publicId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
-        PostResponse response = postService.create(request, publicId);
-        //PostResponse response = postService.create(request, userId);
-        // 201 Created 상태코드와 함께 응답
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                PostResponse.from(
+                        postService.create(request, publicId)
+                )
+        );
     }
 
     /**
@@ -99,17 +100,12 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable Long postId,
-            //@RequestHeader("Authorization") UUID userId
             HttpServletRequest httpRequest
     ) {
 
         UUID publicId = (UUID) httpRequest.getAttribute("publicId");
-        if (publicId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
         postService.deletePost(postId, publicId);
-        //postService.deletePost(postId, userId);
         return ResponseEntity.noContent().build(); // 204 No Content 상태코드 반환
     }
 
@@ -125,18 +121,16 @@ public class PostController {
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
             @RequestBody PostRequest request,
-            //@RequestHeader("Authorization") UUID userId
             HttpServletRequest httpRequest
     ) {
 
         UUID publicId = (UUID) httpRequest.getAttribute("publicId");
-        if (publicId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
-        PostResponse response = postService.update(postId, request, publicId);
-        //PostResponse response = postService.update(postId, request, userId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                PostResponse.from(
+                        postService.update(postId, request, publicId)
+                )
+        );
     }
 
     @PatchMapping("/{postId}/complete")
@@ -149,6 +143,11 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return ResponseEntity.ok(postService.completePost(postId, publicId, request.githubLink()));
+        //return ResponseEntity.ok(postService.completePost(postId, publicId, request.githubLink()));
+        return ResponseEntity.ok(
+                PostResponse.from(
+                        postService.completePost(postId, publicId, request.githubLink())
+                )
+        );
     }
 }
