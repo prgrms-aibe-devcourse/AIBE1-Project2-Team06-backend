@@ -1,5 +1,6 @@
 package com.eum.post.model.entity;
 
+import com.eum.member.model.entity.Member;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "portfolio",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "post_id"})
+                @UniqueConstraint(columnNames = {"member_id", "post_id"})
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Portfolio {
@@ -22,8 +23,9 @@ public class Portfolio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(nullable = false)
     private Long postId;
@@ -46,7 +48,7 @@ public class Portfolio {
     private LocalDateTime createdAt;
 
     public static Portfolio of(
-            Long userId,
+            Member member,
             Long postId,
             String postTitle,
             String postLink,
@@ -54,7 +56,7 @@ public class Portfolio {
             RecruitType recruitType
     ) {
         Portfolio portfolio = new Portfolio();
-        portfolio.userId = userId;
+        portfolio.member = member;
         portfolio.postId = postId;
         portfolio.postTitle = postTitle;
         portfolio.postLink = postLink;

@@ -115,7 +115,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
-        if (!portfolio.getUserId().equals(userId)) {
+        if (!portfolio.getMember().getId().equals(userId)) {
             throw new CustomException(ErrorCode.PORTFOLIO_ACCESS_DENIED);
         }
 

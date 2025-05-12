@@ -18,7 +18,7 @@ public record PortfolioDto(
     public static PortfolioDto from(Portfolio portfolio) {
         return new PortfolioDto(
                 portfolio.getId(),
-                portfolio.getUserId(),
+                portfolio.getMember().getId(),
                 portfolio.getPostId(),
                 portfolio.getPostTitle(),
                 portfolio.getPostLink(),

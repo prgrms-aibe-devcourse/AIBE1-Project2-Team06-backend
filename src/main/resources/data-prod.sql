@@ -600,7 +600,7 @@ SET status      = 'COMPLETED',
 WHERE id IN (7, 11, 20);
 
 -- 2. 완료된 프로젝트에 GitHub 링크 추가 (Portfolio 엔티티용)
-INSERT INTO portfolio (user_id, post_id, post_title, post_link, average_score, recruit_type, created_at)
+INSERT INTO portfolio (member_id, post_id, post_title, post_link, average_score, recruit_type, created_at)
 VALUES (1, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/kimsy/react-project', 4.7, 'PROJECT', NOW()),
        (3, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/songcw/react-contribution', 4.5, 'PROJECT', NOW()),
        (5, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/jangjm/react-project-devops', 4.8, 'PROJECT', NOW()),

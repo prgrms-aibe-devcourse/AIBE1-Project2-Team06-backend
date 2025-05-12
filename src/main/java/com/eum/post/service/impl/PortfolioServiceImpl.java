@@ -2,6 +2,7 @@ package com.eum.post.service.impl;
 
 import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
+import com.eum.member.model.entity.Member;
 import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.dto.response.PortfolioResponse;
 import com.eum.post.model.entity.Portfolio;
@@ -25,17 +26,17 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final PeerReviewRepository peerReviewRepository;
 
     @Override
-    public PortfolioDto createPortfolio(Long userId, Long postId, String link) {
+    public PortfolioDto createPortfolio(Member member, Long postId, String link) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        Double averageScore = peerReviewRepository.calculateOverallAverageScore(userId);
+        Double averageScore = peerReviewRepository.calculateOverallAverageScore(member.getId());
         if (averageScore == null) {
             averageScore = 0.0;
         }
 
         Portfolio portfolio = Portfolio.of(
-                userId,
+                member,
                 postId,
                 post.getTitle(),
                 link,
@@ -49,7 +50,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioResponse> getUserPortfolios(Long userId) {
-        List<Portfolio> portfolios = portfolioRepository.findAllByUserId(userId);
+        List<Portfolio> portfolios = portfolioRepository.findAllByMemberId(userId);
 
         return portfolios.stream()
                 .map(PortfolioResponse::from)
@@ -58,7 +59,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioResponse> getUserPortfoliosByType(Long userId, RecruitType recruitType) {
-        List<Portfolio> portfolios = portfolioRepository.findAllByUserIdAndRecruitType(userId, recruitType);
+        List<Portfolio> portfolios = portfolioRepository.findAllByMemberIdAndRecruitType(userId, recruitType);
 
         return portfolios.stream()
                 .map(PortfolioResponse::from)
