@@ -7,14 +7,12 @@ import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.service.PortfolioService;
+import com.eum.review.model.dto.response.PeerReviewResponse;
 import com.eum.review.service.PeerReviewService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,5 +48,21 @@ public class PortfolioController {
             portfolios = portfolioService.getUserPortfolios(member.getId());
         }
         return ResponseEntity.ok(portfolios);
+    }
+
+    @GetMapping("/{portfolioId}/reviews")
+    public ResponseEntity<List<PeerReviewResponse>> getPortfolioReviews (
+            @PathVariable Long portfolioId,
+            HttpServletRequest httpServletRequest
+    ){
+        UUID publicId = (UUID) httpServletRequest.getAttribute("publicId");
+
+        Member member = memberRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<PeerReviewResponse> reviews = peerReviewService.getUserReviewsForPost(
+                member.getId(), portfolioId);
+
+        return ResponseEntity.ok(reviews);
     }
 }

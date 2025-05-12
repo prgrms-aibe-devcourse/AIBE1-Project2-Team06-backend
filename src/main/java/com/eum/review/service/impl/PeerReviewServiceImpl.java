@@ -4,8 +4,10 @@ import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
+import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.Status;
+import com.eum.post.model.repository.PortfolioRepository;
 import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
@@ -29,6 +31,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     private final PostRepository postRepository;
     private final PostMemberRepository postMemberRepository;
     private final MemberRepository memberRepository;
+    private final PortfolioRepository portfolioRepository;
 
     @Transactional
     @Override
@@ -103,6 +106,40 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         return reviews.stream()
                 .map(MemberReviewCommentResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PeerReviewResponse> getUserReviewsForPost(Long userId, Long portfolioId) {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+
+        if (!portfolio.getUserId().equals(userId)) {
+            throw new CustomException(ErrorCode.PORTFOLIO_ACCESS_DENIED);
+        }
+
+        List<PeerReview> reviews = peerReviewRepository.findAllByPostIdAndRevieweeMemberId(
+                portfolio.getPostId(), userId);
+
+        return reviews.stream()
+                .map(review -> {
+                    Member reviewer = memberRepository.findById(review.getReviewerMemberId())
+                            .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+                    return PeerReviewResponse.of(
+                            review.getId(),
+                            reviewer.getPublicId(),
+                            memberRepository.findById(userId).get().getPublicId(),
+                            portfolio.getPostId(),
+                            portfolio.getPostTitle(),
+                            review.getCollaborationScore(),
+                            review.getTechnicalScore(),
+                            review.getWorkAgainScore(),
+                            review.getAverageScore(),
+                            review.getReviewComment(),
+                            review.getReviewDate()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 }
