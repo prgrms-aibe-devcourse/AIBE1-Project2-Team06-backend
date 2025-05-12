@@ -1,5 +1,6 @@
 package com.eum.post.model.entity;
 
+import com.eum.post.model.entity.enumerated.RecruitType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,6 +37,10 @@ public class Portfolio {
     @Column
     private Double averageScore;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RecruitType recruitType;
+
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
@@ -45,7 +50,8 @@ public class Portfolio {
             Long postId,
             String postTitle,
             String postLink,
-            Double averageScore
+            Double averageScore,
+            RecruitType recruitType
     ) {
         Portfolio portfolio = new Portfolio();
         portfolio.userId = userId;
@@ -53,6 +59,7 @@ public class Portfolio {
         portfolio.postTitle = postTitle;
         portfolio.postLink = postLink;
         portfolio.averageScore = averageScore;
+        portfolio.recruitType = recruitType;
         return portfolio;
     }
 
