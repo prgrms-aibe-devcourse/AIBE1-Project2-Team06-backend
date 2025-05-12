@@ -614,19 +614,26 @@ SET status      = 'COMPLETED',
 WHERE id IN (7, 11, 20);
 
 -- 2. 완료된 프로젝트에 GitHub 링크 추가 (Portfolio 엔티티용)
-INSERT INTO portfolio (user_id, post_id, post_title, post_link, average_score, created_at)
-VALUES (1, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/kimsy/react-project', 4.7, NOW()),
-       (3, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/songcw/react-contribution', 4.5, NOW()),
-       (5, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/jangjm/react-project-devops', 4.8, NOW()),
-       (2, 3, '스프링 백엔드 개발자 모집', 'https://github.com/seojw/spring-backend', 4.6, NOW()),
-       (1, 3, '스프링 백엔드 개발자 모집', 'https://github.com/kimsy/spring-contribution', 4.3, NOW()),
-       (5, 3, '스프링 백엔드 개발자 모집', 'https://github.com/jangjm/spring-devops-config', 4.9, NOW()),
-       (3, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/songcw/ios-app-main', 4.5, NOW()),
-       (2, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/seojw/ios-app-backend', 4.4, NOW()),
-       (4, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/eunnh/ios-app-planning', 4.6, NOW()),
-       (5, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/jangjm/devops-project', 4.9, NOW()),
-       (2, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/seojw/devops-backend', 4.7, NOW()),
-       (10, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/goyn/devops-fullstack', 4.5, NOW());
+INSERT INTO portfolio (user_id, post_id, post_title, post_link, average_score, recruit_type, created_at)
+VALUES (1, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/kimsy/react-project', 4.7, 'PROJECT',NOW()),
+       (3, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/songcw/react-contribution', 4.5, 'PROJECT',NOW()),
+       (5, 1, '리액트 기반 웹 프로젝트 팀원 모집합니다', 'https://github.com/jangjm/react-project-devops', 4.8, 'PROJECT',NOW()),
+       (2, 3, '스프링 백엔드 개발자 모집', 'https://github.com/seojw/spring-backend', 4.6, 'PROJECT',NOW()),
+       (1, 3, '스프링 백엔드 개발자 모집', 'https://github.com/kimsy/spring-contribution', 4.3, 'PROJECT',NOW()),
+       (5, 3, '스프링 백엔드 개발자 모집', 'https://github.com/jangjm/spring-devops-config', 4.9, 'PROJECT',NOW()),
+       (3, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/songcw/ios-app-main', 4.5, 'PROJECT',NOW()),
+       (2, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/seojw/ios-app-backend', 4.4, 'PROJECT',NOW()),
+       (4, 5, 'iOS 앱 개발 프로젝트 함께하실 분', 'https://github.com/eunnh/ios-app-planning', 4.6, 'PROJECT',NOW()),
+       (5, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/jangjm/devops-project', 4.9, 'PROJECT',NOW()),
+       (2, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/seojw/devops-backend', 4.7, 'PROJECT',NOW()),
+       (10, 7, 'DevOps 관련 프로젝트 팀원 구합니다', 'https://github.com/goyn/devops-fullstack', 4.5, 'PROJECT',NOW()),
+       (2, 4, '자바 스터디 그룹 참여자 모집', 'https://github.com/seojw/java-study', 4.2, 'STUDY', NOW()),
+       (7, 4, '자바 스터디 그룹 참여자 모집', 'https://github.com/kimmj/java-study-contribution', 4.4, 'STUDY', NOW()),
+       (10, 4, '자바 스터디 그룹 참여자 모집', 'https://github.com/goyj/java-study-notes', 4.3, 'STUDY', NOW()),
+       (7, 8, '마케팅 전략 수립 스터디', 'https://github.com/kimmj/marketing-study', 4.5, 'STUDY', NOW()),
+       (4, 8, '마케팅 전략 수립 스터디', 'https://github.com/eunnh/marketing-study-notes', 4.3, 'STUDY', NOW()),
+       (4, 9, '프로덕트 매니저 역량 강화 스터디', 'https://github.com/eunnh/pm-study', 4.6, 'STUDY', NOW()),
+       (8, 9, '프로덕트 매니저 역량 강화 스터디', 'https://github.com/jangwy/pm-study-contribution', 4.4, 'STUDY', NOW());
 
 -- 3. 피어 리뷰 데이터 추가
 -- 프로젝트 1에 대한 피어 리뷰

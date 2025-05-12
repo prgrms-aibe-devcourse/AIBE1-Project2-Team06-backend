@@ -8,14 +8,11 @@ import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
+import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.request.PostRequest;
-import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
-import com.eum.post.model.entity.enumerated.LinkType;
-import com.eum.post.model.entity.enumerated.Period;
-import com.eum.post.model.entity.enumerated.ProgressMethod;
-import com.eum.post.model.entity.enumerated.RecruitType;
+import com.eum.post.model.entity.enumerated.*;
 import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostPositionRepository;
 import com.eum.post.model.repository.PostRepository;
@@ -35,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +106,7 @@ public class PostServiceImplTest {
         Member mockMember = mock(Member.class);
         lenient().when(mockMember.getId()).thenReturn(testUserId);
         lenient().when(mockMember.getPublicId()).thenReturn(testPublicId);
+        lenient().when(mockMember.getNickname()).thenReturn("테스트 사용자");
         lenient().when(memberRepository.findByPublicId(testPublicId)).thenReturn(Optional.of(mockMember));
 
         // Post 객체도 Mock으로 변경하여 필요한 메서드 스텁
@@ -123,6 +122,11 @@ public class PostServiceImplTest {
         lenient().when(testPost.getLinkType()).thenReturn(LinkType.KAKAO);
         lenient().when(testPost.getLink()).thenReturn("https://test.com");
         lenient().when(testPost.getMemberPublicId()).thenReturn(testPublicId);
+        lenient().when(testPost.getMemberNickname()).thenReturn("테스트 사용자");
+        lenient().when(testPost.getStatus()).thenReturn(Status.RECRUITING);
+        lenient().when(testPost.getCultureFit()).thenReturn(CultureFit.NONE);
+        lenient().when(testPost.getCreatedAt()).thenReturn(LocalDateTime.now());
+        lenient().when(testPost.getUpdatedAt()).thenReturn(LocalDateTime.now());
     }
 
     @Test
@@ -134,7 +138,7 @@ public class PostServiceImplTest {
         given(positionRepository.findById(1L)).willReturn(Optional.of(testPosition));
 
         //when
-        PostResponse response = postService.create(testPostRequest, testPublicId);
+        PostDto response = postService.create(testPostRequest, testPublicId);
 
         // then
         assertNotNull(response);
@@ -189,7 +193,7 @@ public class PostServiceImplTest {
         given(postPositionRepository.findByPostId(postId)).willReturn(Arrays.asList());
 
         // when
-        PostResponse response = postService.findByPostId(postId);
+        PostDto response = postService.findByPostId(postId);
 
         // then
         assertNotNull(response);
@@ -258,7 +262,7 @@ public class PostServiceImplTest {
             return null;
         }).when(testPost).updatePost(any(PostUpdateResponse.class));
 
-        PostResponse response = postService.update(postId, updateRequest, testPublicId);
+        PostDto response = postService.update(postId, updateRequest, testPublicId);
 
         assertNotNull(response);
         assertEquals("수정된 제목", response.title());
@@ -328,7 +332,7 @@ public class PostServiceImplTest {
         when(postTechStackRepository.findByPostId(postId)).thenReturn(Arrays.asList());
         when(postPositionRepository.findByPostId(postId)).thenReturn(Arrays.asList());
 
-        PostResponse response = postService.completePost(postId, testPublicId, githubLink);
+        PostDto response = postService.completePost(postId, testPublicId, githubLink);
 
         assertNotNull(response);
         verify(portfolioService, times(1)).createPortfolio(testUserId, postId, githubLink);
@@ -345,8 +349,8 @@ public class PostServiceImplTest {
         given(postTechStackRepository.findByPostId(any())).willReturn(Arrays.asList());
         given(postPositionRepository.findByPostId(any())).willReturn(Arrays.asList());
 
-        Page<PostResponse> responses = postService.findPostsWithFilters(
-                null, null, null, null, null, null, pageable
+        Page<PostDto> responses = postService.findPostsWithFilters(
+                null, null, null, null, null, null, null, pageable
         );
 
         assertNotNull(responses);
@@ -366,8 +370,8 @@ public class PostServiceImplTest {
         given(postTechStackRepository.findByPostId(any())).willReturn(Arrays.asList());
         given(postPositionRepository.findByPostId(any())).willReturn(Arrays.asList());
 
-        Page<PostResponse> responses = postService.findPostsWithFilters(
-                keyword, null, null, null, null, null, pageable
+        Page<PostDto> responses = postService.findPostsWithFilters(
+                keyword, null, null, null, null, null, null, pageable
         );
 
         assertNotNull(responses);

@@ -1,8 +1,13 @@
 package com.eum.post.model.repository;
 
 import com.eum.post.model.entity.Portfolio;
+import com.eum.post.model.entity.enumerated.RecruitType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
+import java.util.List;
 
+public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
+    List<Portfolio> findAllByUserId(Long userId);
+
+    List<Portfolio> findAllByUserIdAndRecruitType(Long userId, RecruitType recruitType);
 }

@@ -4,14 +4,17 @@ import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
+import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.Status;
+import com.eum.post.model.repository.PortfolioRepository;
 import com.eum.post.model.repository.PostMemberRepository;
 import com.eum.post.model.repository.PostRepository;
 import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
 import com.eum.review.model.dto.response.MemberReviewCommentResponse;
 import com.eum.review.model.dto.response.MemberReviewScoreResponse;
+import com.eum.review.model.dto.response.PortfolioReviewResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import com.eum.review.service.PeerReviewService;
@@ -29,6 +32,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     private final PostRepository postRepository;
     private final PostMemberRepository postMemberRepository;
     private final MemberRepository memberRepository;
+    private final PortfolioRepository portfolioRepository;
 
     @Transactional
     @Override
@@ -103,6 +107,32 @@ public class PeerReviewServiceImpl implements PeerReviewService {
         List<PeerReview> reviews = peerReviewRepository.findAllByRevieweeMemberId(userId);
         return reviews.stream()
                 .map(MemberReviewCommentResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PortfolioReviewResponse> getUserReviewsForPost(Long userId, Long portfolioId) {
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+
+        if (!portfolio.getUserId().equals(userId)) {
+            throw new CustomException(ErrorCode.PORTFOLIO_ACCESS_DENIED);
+        }
+
+        List<PeerReview> reviews = peerReviewRepository.findAllByPostIdAndRevieweeMemberId(
+                portfolio.getPostId(), userId);
+
+        return reviews.stream()
+                .map(review -> {
+                    Member reviewer = memberRepository.findById(review.getReviewerMemberId())
+                            .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+                    return PortfolioReviewResponse.of(
+                            review,
+                            reviewer.getPublicId(),
+                            reviewer.getNickname()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 }

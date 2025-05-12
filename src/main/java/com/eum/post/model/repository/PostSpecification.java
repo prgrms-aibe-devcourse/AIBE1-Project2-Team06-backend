@@ -6,6 +6,7 @@ import com.eum.post.model.entity.PostTechStack;
 import com.eum.post.model.entity.enumerated.CultureFit;
 import com.eum.post.model.entity.enumerated.ProgressMethod;
 import com.eum.post.model.entity.enumerated.RecruitType;
+import com.eum.post.model.entity.enumerated.Status;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -125,5 +126,14 @@ public class PostSpecification {
             // AND 조건 (모든 기술 스택을 포함하는 게시글)
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    // Status 필터링
+    public static Specification<Post> isRecruiting() {
+        return (root, query, criteriaBuilder) ->
+            criteriaBuilder.or(
+                    criteriaBuilder.equal(root.get("status"), Status.RECRUITING),
+                    criteriaBuilder.equal(root.get("status"), Status.ONGOING)
+            );
     }
 }

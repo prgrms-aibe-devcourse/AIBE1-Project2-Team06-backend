@@ -12,7 +12,6 @@ import com.eum.post.model.dto.PositionDto;
 import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.TechStackDto;
 import com.eum.post.model.dto.request.PostRequest;
-import com.eum.post.model.dto.response.PostResponse;
 import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.PostMember;
@@ -57,7 +56,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public PostResponse create(
+    public PostDto create(
             PostRequest postRequest,
             UUID publicId
     ) {
@@ -81,9 +80,7 @@ public class PostServiceImpl implements PostService{
         // position 연결
         List<PositionDto> positionDtos = savePositions(savedPost, postRequest.positionIds());
 
-        // 4. DTO 변환 및 반환
-        PostDto postDto = PostDto.from(savedPost, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     // 기술 스택 저장 메소드
@@ -145,7 +142,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponse findByPostId(Long postId) {
+    public PostDto findByPostId(Long postId) {
         // 게시글 조회
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -156,14 +153,12 @@ public class PostServiceImpl implements PostService{
         // 관련 포지션 조회
         List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
 
-        // DTO 변환 및 반환
-        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     @Override
     @Transactional
-    public PostResponse update(
+    public PostDto update(
             Long postId,
             PostRequest postRequest,
             UUID publicId
@@ -199,9 +194,7 @@ public class PostServiceImpl implements PostService{
         List<TechStackDto> techStackDtos = saveTechStacks(post, postRequest.techStackIds());
         List<PositionDto> positionDtos = savePositions(post, postRequest.positionIds());
 
-        // DTO 변환 및 반환
-        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     @Override
@@ -232,7 +225,7 @@ public class PostServiceImpl implements PostService{
 
     //merge 된 부분
     @Override
-    public PostResponse completePost(Long postId, UUID publicId, String githubLink) {
+    public PostDto completePost(Long postId, UUID publicId, String githubLink) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -250,13 +243,22 @@ public class PostServiceImpl implements PostService{
         List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
         List<PositionDto> positionDtos = findPositionsByPostId(postId);
 
-        PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-        return PostResponse.from(postDto);
+        return PostDto.from(post, techStackDtos, positionDtos);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponse> findPostsWithFilters(String keyword, RecruitType recruitType, ProgressMethod progressMethod, CultureFit cultureFit, Long positionId, List<Long> techStackIds, Pageable pageable) {
+    public Page<PostDto> findPostsWithFilters(
+            String keyword,
+            RecruitType recruitType,
+            ProgressMethod progressMethod,
+            CultureFit cultureFit,
+            //Status status,
+            Boolean isRecruiting,  // 추가된 매개변수
+            Long positionId,
+            List<Long> techStackIds,
+            Pageable pageable) {
+
         // 명세 조합
         Specification<Post> spec = Specification.where(null);
 
@@ -280,6 +282,11 @@ public class PostServiceImpl implements PostService{
             spec = spec.and(PostSpecification.hasCultureFit(cultureFit));
         }
 
+        // 모집 중인 글만 보기 필터링
+        if (isRecruiting != null && isRecruiting) {
+            spec = spec.and(PostSpecification.isRecruiting());
+        }
+
         // 포지션에 대한 필터링
         if (positionId != null) {
             spec = spec.and(PostSpecification.hasPosition(positionId));
@@ -299,9 +306,7 @@ public class PostServiceImpl implements PostService{
             List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
             List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
 
-            // DTO 변환
-            PostDto postDto = PostDto.from(post, techStackDtos, positionDtos);
-            return PostResponse.from(postDto);
+            return PostDto.from(post, techStackDtos, positionDtos);
         });
     }
 }
