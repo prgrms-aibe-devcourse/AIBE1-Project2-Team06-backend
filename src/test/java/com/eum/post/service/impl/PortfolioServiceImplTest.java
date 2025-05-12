@@ -3,6 +3,7 @@ package com.eum.post.service.impl;
 import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.dto.PortfolioDto;
+import com.eum.post.model.dto.response.PortfolioResponse;
 import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.repository.PortfolioRepository;
@@ -162,7 +163,7 @@ public class PortfolioServiceImplTest {
     @DisplayName("사용자 포트폴리오 목록 조회")
     void getUserPortfoliosSuccess() {
         // when
-        List<PortfolioDto> result = portfolioService.getUserPortfolios(userId);
+        List<PortfolioResponse> result = portfolioService.getUserPortfolios(userId);
 
         // then
         assertNotNull(result);

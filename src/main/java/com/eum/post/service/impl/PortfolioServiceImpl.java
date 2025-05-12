@@ -3,6 +3,7 @@ package com.eum.post.service.impl;
 import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
 import com.eum.post.model.dto.PortfolioDto;
+import com.eum.post.model.dto.response.PortfolioResponse;
 import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.Post;
 import com.eum.post.model.entity.enumerated.RecruitType;
@@ -47,20 +48,20 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioDto> getUserPortfolios(Long userId) {
+    public List<PortfolioResponse> getUserPortfolios(Long userId) {
         List<Portfolio> portfolios = portfolioRepository.findAllByUserId(userId);
 
         return portfolios.stream()
-                .map(PortfolioDto::from)
+                .map(PortfolioResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PortfolioDto> getUserPortfoliosByType(Long userId, RecruitType recruitType) {
+    public List<PortfolioResponse> getUserPortfoliosByType(Long userId, RecruitType recruitType) {
         List<Portfolio> portfolios = portfolioRepository.findAllByUserIdAndRecruitType(userId, recruitType);
 
         return portfolios.stream()
-                .map(PortfolioDto::from)
+                .map(PortfolioResponse::from)
                 .collect(Collectors.toList());
     }
 }

@@ -5,6 +5,7 @@ import com.eum.global.exception.ErrorCode;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.PortfolioDto;
+import com.eum.post.model.dto.response.PortfolioResponse;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.service.PortfolioService;
 import com.eum.review.model.dto.response.PortfolioReviewResponse;
@@ -26,7 +27,7 @@ public class PortfolioController {
     private final MemberRepository memberRepository;
 
     @GetMapping("/my")
-    public ResponseEntity<List<PortfolioDto>> getMyPortfolios(
+    public ResponseEntity<List<PortfolioResponse>> getMyPortfolios(
             @RequestParam(required = false) String recruitType,
             HttpServletRequest httpServletRequest
     ) {
@@ -35,7 +36,7 @@ public class PortfolioController {
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<PortfolioDto> portfolios;
+        List<PortfolioResponse> portfolios;
         if (recruitType != null) {
             // Enum으로 변환
             RecruitType type = RecruitType.fromString(recruitType);
