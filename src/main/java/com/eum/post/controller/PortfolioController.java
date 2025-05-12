@@ -7,7 +7,7 @@ import com.eum.member.model.repository.MemberRepository;
 import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.entity.enumerated.RecruitType;
 import com.eum.post.service.PortfolioService;
-import com.eum.review.model.dto.response.PeerReviewResponse;
+import com.eum.review.model.dto.response.PortfolioReviewResponse;
 import com.eum.review.service.PeerReviewService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class PortfolioController {
     }
 
     @GetMapping("/{portfolioId}/reviews")
-    public ResponseEntity<List<PeerReviewResponse>> getPortfolioReviews (
+    public ResponseEntity<List<PortfolioReviewResponse>> getPortfolioReviews (
             @PathVariable Long portfolioId,
             HttpServletRequest httpServletRequest
     ){
@@ -60,7 +60,7 @@ public class PortfolioController {
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<PeerReviewResponse> reviews = peerReviewService.getUserReviewsForPost(
+        List<PortfolioReviewResponse> reviews = peerReviewService.getUserReviewsForPost(
                 member.getId(), portfolioId);
 
         return ResponseEntity.ok(reviews);

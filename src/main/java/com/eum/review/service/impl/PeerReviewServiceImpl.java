@@ -14,6 +14,7 @@ import com.eum.review.model.dto.request.PeerReviewCreateRequest;
 import com.eum.review.model.dto.response.PeerReviewResponse;
 import com.eum.review.model.dto.response.MemberReviewCommentResponse;
 import com.eum.review.model.dto.response.MemberReviewScoreResponse;
+import com.eum.review.model.dto.response.PortfolioReviewResponse;
 import com.eum.review.model.entity.PeerReview;
 import com.eum.review.model.repository.PeerReviewRepository;
 import com.eum.review.service.PeerReviewService;
@@ -110,7 +111,7 @@ public class PeerReviewServiceImpl implements PeerReviewService {
     }
 
     @Override
-    public List<PeerReviewResponse> getUserReviewsForPost(Long userId, Long portfolioId) {
+    public List<PortfolioReviewResponse> getUserReviewsForPost(Long userId, Long portfolioId) {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
 
@@ -126,18 +127,10 @@ public class PeerReviewServiceImpl implements PeerReviewService {
                     Member reviewer = memberRepository.findById(review.getReviewerMemberId())
                             .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-                    return PeerReviewResponse.of(
-                            review.getId(),
+                    return PortfolioReviewResponse.of(
+                            review,
                             reviewer.getPublicId(),
-                            memberRepository.findById(userId).get().getPublicId(),
-                            portfolio.getPostId(),
-                            portfolio.getPostTitle(),
-                            review.getCollaborationScore(),
-                            review.getTechnicalScore(),
-                            review.getWorkAgainScore(),
-                            review.getAverageScore(),
-                            review.getReviewComment(),
-                            review.getReviewDate()
+                            reviewer.getNickname()
                     );
                 })
                 .collect(Collectors.toList());
