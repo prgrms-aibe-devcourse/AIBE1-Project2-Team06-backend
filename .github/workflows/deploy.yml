@@ -82,4 +82,7 @@ jobs:
               -e GEMINI_API_URL="${{ secrets.GEMINI_API_URL }}" \
               -e GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
               -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              -e DB_URL="${{ secrets.DB_URL }}" \
+              -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               evencrunchy/aibe1-project2-team06-backend:latest
