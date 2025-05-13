@@ -70,8 +70,7 @@ public class PortfolioController {
     @GetMapping("/{publicId}")
     public ResponseEntity<List<PortfolioResponse>> getUserPortfolios(
             @PathVariable UUID publicId,
-            @RequestParam(required = false) String recruitType,
-            HttpServletRequest httpServletRequest
+            @RequestParam(required = false) String recruitType
     ) {
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -93,8 +92,7 @@ public class PortfolioController {
     @GetMapping("/{publicId}/{portfolioId}/reviews")
     public ResponseEntity<List<PortfolioReviewResponse>> getUserPortfolioReviews(
             @PathVariable UUID publicId,
-            @PathVariable Long portfolioId,
-            HttpServletRequest httpServletRequest
+            @PathVariable Long portfolioId
     ) {
         Member member = memberRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
