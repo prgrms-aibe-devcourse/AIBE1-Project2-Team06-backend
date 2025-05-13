@@ -3,6 +3,8 @@ package com.eum.post.model.entity;
 import com.eum.member.model.entity.Member;
 import com.eum.post.model.dto.response.PostUpdateResponse;
 import com.eum.post.model.entity.enumerated.*;
+import com.eum.review.model.entity.PeerReview;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -79,6 +81,9 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostMember> postMembers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PeerReview> peerReviews;
 
     // 정적 팩토리 메서드
     public static Post of(
