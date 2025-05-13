@@ -320,28 +320,35 @@ public class PostServiceImplTest {
     @Test
     @DisplayName("게시글 완료 - 성공")
     void completePostSuccess() {
+        // given
         Long postId = 1L;
         String githubLink = "https://github.com";
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
 
-        // Member 객체 모킹 추가
         Member mockMember = mock(Member.class);
-        when(mockMember.getId()).thenReturn(testUserId);
+        lenient().when(mockMember.getId()).thenReturn(testUserId);
         when(memberRepository.findByPublicId(testPublicId)).thenReturn(Optional.of(mockMember));
 
         when(postTechStackRepository.findByPostId(postId)).thenReturn(Arrays.asList());
         when(postPositionRepository.findByPostId(postId)).thenReturn(Arrays.asList());
 
-        // PortfolioDto 반환값 모킹
+        // Member 객체를 받는 인터페이스로 변경
         PortfolioDto mockPortfolioDto = mock(PortfolioDto.class);
-        when(portfolioService.createPortfolio(any(Member.class), eq(postId), eq(githubLink)))
+        lenient().when(portfolioService.createPortfolio(mockMember, postId, githubLink))
                 .thenReturn(mockPortfolioDto);
 
+        // when
         PostDto response = postService.completePost(postId, testPublicId, githubLink);
 
+        // then
         assertNotNull(response);
+
+        // 실제로 사용된 스텁들 검증
+        verify(postRepository, times(1)).findById(postId);
+        verify(memberRepository, times(1)).findByPublicId(testPublicId);
         verify(portfolioService, times(1)).createPortfolio(mockMember, postId, githubLink);
+        verify(testPost, times(1)).updateStatus(Status.COMPLETED);
     }
 
     @Test
