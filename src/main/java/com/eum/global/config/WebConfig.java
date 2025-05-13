@@ -30,6 +30,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/v1/posts/**")
                 .addPathPatterns("/api/v1/peer-reviews/**")
                 .addPathPatterns("/api/v1/culture-fit/**")
-                .addPathPatterns("/api/v1/portfolios/**"); // 필요한 경로 지정
+                .addPathPatterns("/api/v1/portfolios/my")
+                .excludePathPatterns("/api/v1/portfolios/*/reviews")
+                .excludePathPatterns("/api/v1/portfolios/*/*/reviews"); // 필요한 경로 지정
     }
 }
