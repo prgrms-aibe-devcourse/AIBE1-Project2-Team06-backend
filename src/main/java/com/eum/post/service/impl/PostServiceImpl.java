@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -225,6 +226,7 @@ public class PostServiceImpl implements PostService{
 
     //merge 된 부분
     @Override
+    @Transactional
     public PostDto completePost(Long postId, UUID publicId, String githubLink) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -240,9 +242,25 @@ public class PostServiceImpl implements PostService{
 
         portfolioService.createPortfolio(member, postId, githubLink);
 
-        List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
-        List<PositionDto> positionDtos = findPositionsByPostId(postId);
+//        List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
+//        List<PositionDto> positionDtos = findPositionsByPostId(postId);
+//
+//        return PostDto.from(post, techStackDtos, positionDtos);
 
+        // 최적화된 방식으로 연관 데이터 한 번에 조회
+        List<PostTechStack> techStacks = postTechStackRepository.findByPostIdInWithTechStack(List.of(postId));
+        List<PostPosition> positions = postPositionRepository.findByPostIdInWithPosition(List.of(postId));
+
+        // DTO 변환
+        List<TechStackDto> techStackDtos = techStacks.stream()
+                .map(pts -> TechStackDto.from(pts.getTechStack()))
+                .collect(Collectors.toList());
+
+        List<PositionDto> positionDtos = positions.stream()
+                .map(pp -> PositionDto.from(pp.getPosition()))
+                .collect(Collectors.toList());
+
+        // 최종 DTO 반환
         return PostDto.from(post, techStackDtos, positionDtos);
     }
 
@@ -300,11 +318,53 @@ public class PostServiceImpl implements PostService{
         // 필터링된 결과 조회
         Page<Post> posts = postRepository.findAll(spec, pageable);
 
-        // 응답 변환
+//        // 응답 변환
+//        return posts.map(post -> {
+//            // 각 게시글에 연결된 기술 스택과 포지션 조회
+//            List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
+//            List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
+//
+//            return PostDto.from(post, techStackDtos, positionDtos);
+//        });
+
+        // 게시글 ID 목록 추출
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .collect(Collectors.toList());
+
+        // 한 번에 모든 TechStack 및 Position 정보 조회
+        List<PostTechStack> allTechStacks = postIds.isEmpty() ?
+                List.of() :
+                postTechStackRepository.findByPostIdInWithTechStack(postIds);
+
+        List<PostPosition> allPositions = postIds.isEmpty() ?
+                List.of() :
+                postPositionRepository.findByPostIdInWithPosition(postIds);
+
+        // 게시글 ID별로 TechStack 및 Position 그룹화
+        Map<Long, List<TechStackDto>> techStacksByPostId = allTechStacks.stream()
+                .collect(Collectors.groupingBy(
+                        pts -> pts.getPost().getId(),
+                        Collectors.mapping(
+                                pts -> TechStackDto.from(pts.getTechStack()),
+                                Collectors.toList()
+                        )
+                ));
+
+        Map<Long, List<PositionDto>> positionsByPostId = allPositions.stream()
+                .collect(Collectors.groupingBy(
+                        pp -> pp.getPost().getId(),
+                        Collectors.mapping(
+                                pp -> PositionDto.from(pp.getPosition()),
+                                Collectors.toList()
+                        )
+                ));
+
+        // DTO 변환
         return posts.map(post -> {
-            // 각 게시글에 연결된 기술 스택과 포지션 조회
-            List<TechStackDto> techStackDtos = findTechStacksByPostId(post.getId());
-            List<PositionDto> positionDtos = findPositionsByPostId(post.getId());
+            Long postId = post.getId();
+            List<TechStackDto> techStackDtos = techStacksByPostId.getOrDefault(postId, new ArrayList<>());
+            List<PositionDto> positionDtos = positionsByPostId.getOrDefault(postId, new ArrayList<>());
 
             return PostDto.from(post, techStackDtos, positionDtos);
         });
