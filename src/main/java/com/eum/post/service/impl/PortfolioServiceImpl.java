@@ -65,4 +65,10 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .map(PortfolioResponse::from)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Portfolio getPortfolioById(Long portfolioId) {
+        return portfolioRepository.findById(portfolioId)
+                .orElseThrow(() -> new CustomException(ErrorCode.ENTITY_NOT_FOUND));
+    }
 }
