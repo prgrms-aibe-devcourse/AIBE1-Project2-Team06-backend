@@ -77,6 +77,7 @@ public class MemberServiceImpl implements MemberService {
                 .toList();
 
         return new MemberProfileResponseDto(
+                member.getPublicId(),
                 member.getNickname(),
                 member.getCareer(),
                 member.getShortDescription(),
@@ -102,6 +103,7 @@ public class MemberServiceImpl implements MemberService {
                 .toList();
 
         return new MemberProfileResponseDto(
+                member.getPublicId(),
                 member.getNickname(),
                 member.getCareer(),
                 member.getShortDescription(),
@@ -126,6 +128,7 @@ public class MemberServiceImpl implements MemberService {
                 .toList();
 
         return new MemberProfileResponseDto(
+                member.getPublicId(),
                 member.getNickname(),
                 member.getCareer(),
                 member.getShortDescription(),
