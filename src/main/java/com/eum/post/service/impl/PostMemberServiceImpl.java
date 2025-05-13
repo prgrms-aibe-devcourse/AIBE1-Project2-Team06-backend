@@ -89,9 +89,12 @@ public class PostMemberServiceImpl implements PostMemberService {
     }
 
     private void addNewMembers(Long postId, UUID ownerId, List<Member> requestedMembers, Post post) {
+        Member owner = memberRepository.findByPublicId(ownerId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
         Set<Long> membersToAdd = requestedMembers.stream()
                 .map(Member::getId)
-                .filter(publicId -> !publicId.equals(ownerId))  // 소유자 제외
+                .filter(publicId -> !publicId.equals(owner.getId()))  // 소유자 제외
                 .collect(Collectors.toSet());
 
         List<PostMember> newMembers = new ArrayList<>();
