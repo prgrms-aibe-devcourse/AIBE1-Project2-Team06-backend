@@ -50,7 +50,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioResponse> getUserPortfolios(Long userId) {
-        List<Portfolio> portfolios = portfolioRepository.findAllByMemberId(userId);
+        List<Portfolio> portfolios = portfolioRepository.findAllByUserId(userId);
 
         return portfolios.stream()
                 .map(PortfolioResponse::from)
@@ -59,7 +59,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public List<PortfolioResponse> getUserPortfoliosByType(Long userId, RecruitType recruitType) {
-        List<Portfolio> portfolios = portfolioRepository.findAllByMemberIdAndRecruitType(userId, recruitType);
+        List<Portfolio> portfolios = portfolioRepository.findAllByUserIdAndRecruitType(userId, recruitType);
 
         return portfolios.stream()
                 .map(PortfolioResponse::from)

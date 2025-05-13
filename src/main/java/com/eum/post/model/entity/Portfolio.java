@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "portfolio",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"member_id", "post_id"})
+                @UniqueConstraint(columnNames = {"user_id", "post_id"})
         })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Portfolio {
@@ -24,7 +24,7 @@ public class Portfolio {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private Member member;
 
     @Column(nullable = false)

@@ -2,6 +2,7 @@ package com.eum.post.service.impl;
 
 import com.eum.global.exception.CustomException;
 import com.eum.global.exception.ErrorCode;
+import com.eum.member.model.entity.Member;
 import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.dto.response.PortfolioResponse;
 import com.eum.post.model.entity.Portfolio;
@@ -68,7 +69,6 @@ public class PortfolioServiceImplTest {
 
         savedPortfolio = mock(Portfolio.class);
         lenient().when(savedPortfolio.getId()).thenReturn(1L);
-        lenient().when(savedPortfolio.getUserId()).thenReturn(userId);
         lenient().when(savedPortfolio.getPostId()).thenReturn(postId);
         lenient().when(savedPortfolio.getPostTitle()).thenReturn(postTitle);
         lenient().when(savedPortfolio.getPostLink()).thenReturn(link);
@@ -79,6 +79,9 @@ public class PortfolioServiceImplTest {
     @DisplayName("포트폴리오 생성 - 성공 (리뷰 점수 있음)")
     void createPortfolioWithScoreSuccess() {
         // given
+        Member mockMember = mock(Member.class);
+        when(mockMember.getId()).thenReturn(userId);
+
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
         given(peerReviewRepository.calculateOverallAverageScore(userId)).willReturn(averageScore);
         given(portfolioRepository.save(any(Portfolio.class))).willReturn(savedPortfolio);
@@ -87,7 +90,7 @@ public class PortfolioServiceImplTest {
         ArgumentCaptor<Portfolio> portfolioCaptor = ArgumentCaptor.forClass(Portfolio.class);
 
         // when
-        PortfolioDto result = portfolioService.createPortfolio(userId, postId, link);
+        PortfolioDto result = portfolioService.createPortfolio(mockMember, postId, link);
 
         // then
         assertNotNull(result);
@@ -104,7 +107,7 @@ public class PortfolioServiceImplTest {
 
         // 실제 저장된 Portfolio 객체의 값 검증
         Portfolio capturedPortfolio = portfolioCaptor.getValue();
-        assertEquals(userId, capturedPortfolio.getUserId());
+        assertEquals(mockMember, capturedPortfolio.getMember());
         assertEquals(postId, capturedPortfolio.getPostId());
         assertEquals(postTitle, capturedPortfolio.getPostTitle());
         assertEquals(link, capturedPortfolio.getPostLink());
@@ -115,13 +118,16 @@ public class PortfolioServiceImplTest {
     @DisplayName("포트폴리오 생성 - 성공 (리뷰 점수 없음)")
     void createPortfolioNoScoreSuccess() {
         // given
+        Member mockMember = mock(Member.class);
+        when(mockMember.getId()).thenReturn(userId);
+
         given(postRepository.findById(postId)).willReturn(Optional.of(testPost));
         given(peerReviewRepository.calculateOverallAverageScore(userId)).willReturn(null);
 
         // 저장 시 반환할 Portfolio 객체를 다시 모킹 (평균 점수 0.0)
         Portfolio savedPortfolioNoScore = mock(Portfolio.class);
         when(savedPortfolioNoScore.getId()).thenReturn(1L);
-        when(savedPortfolioNoScore.getUserId()).thenReturn(userId);
+        when(savedPortfolioNoScore.getMember()).thenReturn(userId);
         when(savedPortfolioNoScore.getPostId()).thenReturn(postId);
         when(savedPortfolioNoScore.getPostTitle()).thenReturn(postTitle);
         when(savedPortfolioNoScore.getPostLink()).thenReturn(link);
