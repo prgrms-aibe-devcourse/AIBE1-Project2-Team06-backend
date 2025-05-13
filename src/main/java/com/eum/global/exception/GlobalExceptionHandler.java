@@ -89,21 +89,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    // 그 외 모든 예외 (500)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAllExceptions(
-            Exception ex, HttpServletRequest request) {
-        log.error("서버 오류: {}", ex.getMessage(), ex);
-
-        ErrorResponse response = ErrorResponse.of(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "서버 내부 오류가 발생했습니다",
-                request.getRequestURI(),
-                ex.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
-
     // Enum 필드 이름 추출 메소드
     private String extractEnumFieldName(String errorMessage) {
         // 예시: "Cannot deserialize value of type `com.eum.post.model.entity.enumerated.RecruitType` from String..."
@@ -132,5 +117,20 @@ public class GlobalExceptionHandler {
                 errorCode.getCode()
         );
         return ResponseEntity.status(errorCode.getStatus()).body(response);
+    }
+
+    // 그 외 모든 예외 (500)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAllExceptions(
+            Exception ex, HttpServletRequest request) {
+        log.error("서버 오류: {}", ex.getMessage(), ex);
+
+        ErrorResponse response = ErrorResponse.of(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "서버 내부 오류가 발생했습니다",
+                request.getRequestURI(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
