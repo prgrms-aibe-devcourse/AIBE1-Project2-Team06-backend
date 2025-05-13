@@ -124,6 +124,7 @@ public class PostMemberServiceImpl implements PostMemberService {
 
         if (!membersToRemove.isEmpty()) {
             postMemberRepository.deleteAll(membersToRemove);
+            postMemberRepository.flush();
             log.info("게시글 멤버 삭제: postId={}, count={}", postId, membersToRemove.size());
         }
     }
