@@ -8,6 +8,7 @@ import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
+import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostUpdateResponse;
@@ -319,23 +320,35 @@ public class PostServiceImplTest {
     @Test
     @DisplayName("게시글 완료 - 성공")
     void completePostSuccess() {
+        // given
         Long postId = 1L;
         String githubLink = "https://github.com";
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
 
-        // Member 객체 모킹 추가 (이미 setUp에서 했다면 필요 없을 수 있음)
         Member mockMember = mock(Member.class);
-        when(mockMember.getId()).thenReturn(testUserId);
+        lenient().when(mockMember.getId()).thenReturn(testUserId);
         when(memberRepository.findByPublicId(testPublicId)).thenReturn(Optional.of(mockMember));
 
         when(postTechStackRepository.findByPostId(postId)).thenReturn(Arrays.asList());
         when(postPositionRepository.findByPostId(postId)).thenReturn(Arrays.asList());
 
+        // Member 객체를 받는 인터페이스로 변경
+        PortfolioDto mockPortfolioDto = mock(PortfolioDto.class);
+        lenient().when(portfolioService.createPortfolio(mockMember, postId, githubLink))
+                .thenReturn(mockPortfolioDto);
+
+        // when
         PostDto response = postService.completePost(postId, testPublicId, githubLink);
 
+        // then
         assertNotNull(response);
-        verify(portfolioService, times(1)).createPortfolio(testUserId, postId, githubLink);
+
+        // 실제로 사용된 스텁들 검증
+        verify(postRepository, times(1)).findById(postId);
+        verify(memberRepository, times(1)).findByPublicId(testPublicId);
+        verify(portfolioService, times(1)).createPortfolio(mockMember, postId, githubLink);
+        verify(testPost, times(1)).updateStatus(Status.COMPLETED);
     }
 
     @Test

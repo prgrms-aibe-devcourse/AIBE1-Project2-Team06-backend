@@ -1,13 +1,14 @@
-package com.eum.post.model.dto;
+package com.eum.post.model.dto.response;
 
 import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.enumerated.RecruitType;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-public record PortfolioDto(
+public record PortfolioResponse(
         Long id,
-        Long useId,
+        UUID publicId,
         Long postId,
         String postTitle,
         String postLink,
@@ -15,10 +16,10 @@ public record PortfolioDto(
         RecruitType recruitType,
         LocalDateTime createAt
 ) {
-    public static PortfolioDto from(Portfolio portfolio) {
-        return new PortfolioDto(
+    public static PortfolioResponse from(Portfolio portfolio) {
+        return new PortfolioResponse(
                 portfolio.getId(),
-                portfolio.getMember().getId(),
+                portfolio.getMember().getPublicId(),
                 portfolio.getPostId(),
                 portfolio.getPostTitle(),
                 portfolio.getPostLink(),

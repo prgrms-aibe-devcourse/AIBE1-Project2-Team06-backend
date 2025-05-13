@@ -238,7 +238,7 @@ public class PostServiceImpl implements PostService{
         Member member = memberRepository.findByPublicId(publicId)
                         .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        portfolioService.createPortfolio(member.getId(), postId, githubLink);
+        portfolioService.createPortfolio(member, postId, githubLink);
 
         List<TechStackDto> techStackDtos = findTechStacksByPostId(postId);
         List<PositionDto> positionDtos = findPositionsByPostId(postId);
