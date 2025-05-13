@@ -8,6 +8,7 @@ import com.eum.global.model.repository.PositionRepository;
 import com.eum.global.model.repository.TechStackRepository;
 import com.eum.member.model.entity.Member;
 import com.eum.member.model.repository.MemberRepository;
+import com.eum.post.model.dto.PortfolioDto;
 import com.eum.post.model.dto.PostDto;
 import com.eum.post.model.dto.request.PostRequest;
 import com.eum.post.model.dto.response.PostUpdateResponse;
@@ -324,7 +325,7 @@ public class PostServiceImplTest {
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(testPost));
 
-        // Member 객체 모킹 추가 (이미 setUp에서 했다면 필요 없을 수 있음)
+        // Member 객체 모킹 추가
         Member mockMember = mock(Member.class);
         when(mockMember.getId()).thenReturn(testUserId);
         when(memberRepository.findByPublicId(testPublicId)).thenReturn(Optional.of(mockMember));
@@ -332,10 +333,15 @@ public class PostServiceImplTest {
         when(postTechStackRepository.findByPostId(postId)).thenReturn(Arrays.asList());
         when(postPositionRepository.findByPostId(postId)).thenReturn(Arrays.asList());
 
+        // PortfolioDto 반환값 모킹
+        PortfolioDto mockPortfolioDto = mock(PortfolioDto.class);
+        when(portfolioService.createPortfolio(any(Member.class), eq(postId), eq(githubLink)))
+                .thenReturn(mockPortfolioDto);
+
         PostDto response = postService.completePost(postId, testPublicId, githubLink);
 
         assertNotNull(response);
-        verify(portfolioService, times(1)).createPortfolio(testUserId, postId, githubLink);
+        verify(portfolioService, times(1)).createPortfolio(mockMember, postId, githubLink);
     }
 
     @Test

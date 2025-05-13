@@ -4,9 +4,11 @@ import com.eum.post.model.entity.Portfolio;
 import com.eum.post.model.entity.enumerated.RecruitType;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record PortfolioResponse(
         Long id,
+        UUID publicId,
         Long postId,
         String postTitle,
         String postLink,
@@ -17,6 +19,7 @@ public record PortfolioResponse(
     public static PortfolioResponse from(Portfolio portfolio) {
         return new PortfolioResponse(
                 portfolio.getId(),
+                portfolio.getMember().getPublicId(),
                 portfolio.getPostId(),
                 portfolio.getPostTitle(),
                 portfolio.getPostLink(),
